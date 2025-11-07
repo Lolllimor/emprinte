@@ -17,9 +17,9 @@ export function BookClubHero({
   onButtonClick,
 }: BookClubHeroProps) {
   return (
-    <div className="absolute md:relative left-7 top-12 md:left-0 md:top-0 w-[337px] lg:w-[464px] xl:w-[564px] flex flex-col items-start gap-6 md:mr-10 lg:mr-14 xl:mr-22">
+    <div className="absolute md:relative left-7 top-12 md:left-0 md:top-0 w-[337px] lg:w-[464px] xl:w-[564px] flex flex-col items-start gap-6 md:mr-10 lg:mr-14 xl:mr-[120px]">
       <div className="flex h-6 px-4 justify-center items-center gap-2.5 rounded-3xl bg-[#E63715]">
-        <span className="text-xs xl:text-base leading-[150%] font-normal text-white font-campton">
+        <span className="text-xs md:text-base leading-[150%] font-normal text-white font-campton">
           {badge}
         </span>
       </div>

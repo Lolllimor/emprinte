@@ -4,7 +4,7 @@ export function BookClub() {
       <div className="w-full h-[542px] md:h-[650px] lg:h-full relative">
         <div className=" pl-6 md:pl-0 flex flex-col items-start gap-2 h-[116px] lg:h-fit">
           <div className="flex h-6 px-4 justify-center items-center gap-2.5 rounded-3xl bg-[#E63715]">
-            <span className="text-xs lg:text-base leading-[150%] font-normal text-white font-campton">
+            <span className="text-xs md:text-base leading-[150%] font-normal text-white font-campton">
               Impacting Lives
             </span>
           </div>
