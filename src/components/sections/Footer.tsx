@@ -69,17 +69,17 @@ export function Footer() {
                   </a>
                 </div>
               </div>
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-base md:text-[28px] leading-[28px] font-bold text-center text-black font-lora">
+              <div className="flex flex-col items-center gap-2 md:gap-6">
+                <div className="text-base md:text-[28px] leading-[28px] md:leading-normal font-bold text-center text-black font-lora">
                   Follow Us
                 </div>
 
-                <div className="inline-flex flex-col justify-center items-start gap-6">
+                <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-6">
                   <a
                     href="https://instagram.com/emprinte"
                     aria-label="Instagram"
                   >
-                    <RiInstagramFill color="#015B51" size={32} />
+                    <RiInstagramFill color="#015B51" size={38} />
                   </a>
 
                   <a
