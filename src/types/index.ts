@@ -51,7 +51,9 @@ export interface MenuOverlayProps {
 export interface MenuPanelProps {
   isOpen: boolean;
   links: NavigationLink[];
-  onLinkClick: () => void;
+  onLinkClick?: (link: NavigationLink) => void;
+  onClose: () => void;
+  onContactClick?: () => void;
   className?: string;
 }
 

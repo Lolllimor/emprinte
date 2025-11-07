@@ -1,12 +1,10 @@
-// NavigationLinkItem component following Single Responsibility Principle
-// Handles only the rendering of a single navigation link
-
+import type { MouseEvent } from 'react';
 import type { NavigationLink } from '@/types';
 
 interface NavigationLinkItemProps {
   link: NavigationLink;
   className?: string;
-  onLinkClick?: () => void;
+  onLinkClick?: (link: NavigationLink) => void;
 }
 
 export function NavigationLinkItem({
@@ -14,10 +12,19 @@ export function NavigationLinkItem({
   className = '',
   onLinkClick,
 }: NavigationLinkItemProps) {
+  const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (!onLinkClick) {
+      return;
+    }
+
+    event.preventDefault();
+    onLinkClick(link);
+  };
+
   return (
     <a
       href={link.href}
-      onClick={onLinkClick}
+      onClick={handleClick}
       className={`text-gray-800 hover:text-green-800 transition-colors font-semibold font-campton ${className}`}
     >
       {link.label}

@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: 'EMPRINTE Readers Hub - Transforming Africa, One Book at a Time',
   description:
     'Join Emprinté Readers Hub - Where Books Connect, Inspire, and Change Lives.',
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({

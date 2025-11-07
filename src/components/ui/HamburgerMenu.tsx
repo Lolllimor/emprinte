@@ -1,4 +1,3 @@
-
 import type { HamburgerMenuProps } from '@/types';
 
 export function HamburgerMenu({

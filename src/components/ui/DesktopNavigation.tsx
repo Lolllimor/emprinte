@@ -14,7 +14,7 @@ export function DesktopNavigation({
     >
       {links.map((link) => (
         <NavigationLinkItem
-          onLinkClick={onLinkClick ? () => onLinkClick(link) : undefined}
+          onLinkClick={onLinkClick}
           className={linkClassName}
           key={link.href}
           link={link}
