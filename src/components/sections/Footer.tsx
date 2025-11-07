@@ -50,19 +50,19 @@ export function Footer() {
                     Home
                   </a>
                   <a
-                    href="/"
+                    href="#bootcamps"
                     className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
                   >
                     Bootcamps
                   </a>
                   <a
-                    href="/"
+                    href="#initiatives"
                     className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
                   >
                     Initiatives
                   </a>
                   <a
-                    href="/"
+                    href="#about"
                     className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
                   >
                     About Us

@@ -15,7 +15,7 @@ export function Stats() {
   };
 
   return (
-    <section className="w-full relative">
+    <section id="about" className="w-full relative">
       <StatsList stats={stats} />
 
       <div className="w-full h-[525px] lg:h-[626px] xl:h-[842px] bg-white relative md:flex md:items-center md:justify-end">

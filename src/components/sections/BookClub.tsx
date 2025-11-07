@@ -1,6 +1,6 @@
 export function BookClub() {
   return (
-    <section id="about" className="w-full bg-white pb-3 lg:py-[55px] md:py-[35px] flex flex-col items-center pl-0 xl:pl-30 lg:pl-16 md:pl-10 max-w-[1440px] mx-auto">
+    <section id="initiatives" className="w-full bg-white pb-3 lg:py-[55px] md:py-[35px] flex flex-col items-center pl-0 xl:pl-30 lg:pl-16 md:pl-10 max-w-[1440px] mx-auto">
       <div className="w-full h-[542px] md:h-[650px] lg:h-full relative">
         <div className=" pl-6 md:pl-0 flex flex-col items-start gap-2 h-[116px] lg:h-fit">
           <div className="flex h-6 px-4 justify-center items-center gap-2.5 rounded-3xl bg-[#E63715]">

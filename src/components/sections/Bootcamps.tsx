@@ -48,15 +48,12 @@ const Star = () => (
 
 export function Bootcamps() {
   return (
-    <section id="bootcamps" className="w-full bg-[#F0FFFD] px-0 pb-8 overflow-hidden md:pb-0 lg:pb-8 ">
+    <section className="w-full bg-[#F0FFFD] px-0 pb-8 overflow-hidden md:pb-0 lg:pb-8 ">
       <div className="relative lg:flex lg:items-start lg:justify-between lg:max-w-[1440px] lg:mx-auto ">
         {/* Cards Container */}
         <div className="relative h-[800px] md:h-[320px] lg:h-[380px]  xl:h-[450px] w-full ">
           <div className="relative w-[535px] h-[804px] lg:w-full lg:h-full">
-            <div
-              className="absolute left-[25px] top-[25px] md:right-[-380px] lg:right-[-120px] md:left-auto lg:top-[120px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#C7C8F7] transform rotate-[-13.613deg] md:rotate-[10.613deg] z-10"
-    
-            >
+            <div className="absolute left-[25px] top-[25px] md:right-[-380px] lg:right-[-120px] md:left-auto lg:top-[120px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#C7C8F7] transform rotate-[-13.613deg] md:rotate-[10.613deg] z-10">
               <div className="w-[33px] h-[33px] relative flex justify-center items-center">
                 <div className="w-[33px] h-[33px] rounded-[7px] bg-white flex items-center justify-center">
                   <Star />
@@ -100,10 +97,7 @@ export function Bootcamps() {
               </div>
             </div>
 
-            <div
-              className="absolute left-[182px] md:left-[-80px] md:top-[25px] top-[81px] lg:left-[-130px] lg:top-[100px] w-[253px] h-[253px]  lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#FFDBF3] transform md:rotate-[14.861deg] lg:rotate-[-12.861deg] md:z-1"
-
-            >
+            <div className="absolute left-[182px] md:left-[-80px] md:top-[25px] top-[81px] lg:left-[-130px] lg:top-[100px] w-[253px] h-[253px]  lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#FFDBF3] transform md:rotate-[14.861deg] lg:rotate-[-12.861deg] md:z-1">
               <div className="w-[33px] h-[33px] md:w-[40px] md:h-[40px] relative">
                 <div className="w-[33px] h-[33px] rounded-[7px] bg-white flex justify-center items-center">
                   {' '}
@@ -135,9 +129,7 @@ export function Bootcamps() {
               </div>
             </div>
 
-            <div
-              className="absolute left-[205px] top-[283px] md:left-[300px] md:top-[50px] lg:left-[430px] lg:top-[200px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#FFF0B6] transform rotate-[-23.237deg] md:rotate-[-5.237deg] "
-            >
+            <div className="absolute left-[205px] top-[283px] md:left-[300px] md:top-[50px] lg:left-[430px] lg:top-[200px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#FFF0B6] transform rotate-[-23.237deg] md:rotate-[-5.237deg] ">
               <div className="w-[33px] h-[33px] md:w-[40px] md:h-[40px] relative">
                 <div className="w-[33px] h-[33px] rounded-[7px] bg-white flex justify-center items-center">
                   {' '}
@@ -169,10 +161,7 @@ export function Bootcamps() {
               </div>
             </div>
 
-            <div
-              className="absolute lg:hidden  xl:flex left-0 top-[389px] lg:left-[950px] lg:top-[155px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#428379] transform rotate-[-13.422deg] md:rotate-[-8.422deg] z-1"
-            
-            >
+            <div className="absolute lg:hidden  xl:flex left-0 top-[389px] lg:left-[950px] lg:top-[155px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#428379] transform rotate-[-13.422deg] md:rotate-[-8.422deg] z-1">
               <div className="w-[33px] h-[33px] md:w-[40px] md:h-[40px] relative">
                 <div className="w-[33px] h-[33px] rounded-[7px] bg-white flex justify-center items-center">
                   <Star />
@@ -203,9 +192,7 @@ export function Bootcamps() {
               </div>
             </div>
 
-            <div
-              className="absolute left-[129px] top-[513px] md:left-[120px] md:top-[50px] lg:left-[150px] lg:top-[180px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#FAB2B2] transform md:rotate-[-20.127deg] lg:rotate-[5.127deg] lg:z-0"
-            >
+            <div className="absolute left-[129px] top-[513px] md:left-[120px] md:top-[50px] lg:left-[150px] lg:top-[180px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#FAB2B2] transform md:rotate-[-20.127deg] lg:rotate-[5.127deg] lg:z-0">
               <div className="w-[33px] h-[33px] md:w-[40px] md:h-[40px] relative flex items-center justify-center">
                 <div className="w-[33px] h-[33px] rounded-[7px] bg-white flex justify-center items-center">
                   <Star />
@@ -236,9 +223,7 @@ export function Bootcamps() {
               </div>
             </div>
 
-            <div
-              className="absolute left-[-66px] top-[219px] md:left-[450px] md:top-[40px] lg:left-[690px] lg:top-[200px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#CAE594] transform rotate-[9.082deg] md:rotate-[11.082deg] "
-            >
+            <div className="absolute left-[-66px] top-[219px] md:left-[450px] md:top-[40px] lg:left-[690px] lg:top-[200px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#CAE594] transform rotate-[9.082deg] md:rotate-[11.082deg] ">
               <div className="w-[33px] h-[33px] md:w-[40px] md:h-[40px] relative">
                 <div className="w-[33px] h-[33px] rounded-[7px] bg-white flex justify-center items-center">
                   <Star />
@@ -246,7 +231,7 @@ export function Bootcamps() {
               </div>
 
               <div className="flex flex-col items-start gap-1">
-                  <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-tight font-bold text-black font-campton">
+                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-tight font-bold text-black font-campton">
                   5AM CLUB
                 </div>
                 <div className="text-xl lg:text-2xl leading-tight font-medium uppercase text-black font-lora">
@@ -272,7 +257,6 @@ export function Bootcamps() {
         </div>
 
         {/* Text Content - Desktop Only */}
-  
       </div>
     </section>
   );
