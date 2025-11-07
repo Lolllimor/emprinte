@@ -20,6 +20,9 @@ export function Header() {
         <Button
           variant="primary"
           className="hidden lg:block font-semibold rounded-xl lg:px-[25px]"
+          onClick={() => {
+            window.open('mailto:hello@emprintereaders.com', '_blank');
+          }}
         >
           Contact Us
         </Button>

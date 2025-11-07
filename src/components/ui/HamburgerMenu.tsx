@@ -1,6 +1,3 @@
-// HamburgerMenu component following Single Responsibility Principle
-// Handles only the hamburger icon button rendering
-// Following Open/Closed Principle - accepts className for extension
 
 import type { HamburgerMenuProps } from '@/types';
 

@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { StatsList } from './StatsList';
 import { BookClubHero } from './BookClubHero';
@@ -11,7 +11,7 @@ import { stats, bookClubHero } from '@/constants/data';
 
 export function Stats() {
   const handleJoinClick = () => {
-    console.log('Join button clicked');
+    window.open('https://bit.ly/emprinteapplication', '_blank');
   };
 
   return (

@@ -1,3 +1,4 @@
+'use client';
 import { Button } from '@/components/ui/Button';
 
 export function Hero() {
@@ -31,7 +32,8 @@ export function Hero() {
                 </span>{' '}
                 <span className="text-[#015B51]">
                   One Book
-                  <br className="md:hidden block lg:block xl:hidden" /> at a Time
+                  <br className="md:hidden block lg:block xl:hidden" /> at a
+                  Time
                 </span>
               </h1>
               <p className="text-base leading-[130%] font-medium text-[#7B7B7B] font-campton">
@@ -40,7 +42,13 @@ export function Hero() {
               </p>
             </div>
 
-            <Button variant="primary" className="w-full font-campton max-w-[276px]">
+            <Button
+              variant="primary"
+              className="w-full font-campton max-w-[276px] cursor-pointer"
+              onClick={() => {
+                window.open('https://bit.ly/emprinteapplication', '_blank');
+              }}
+            >
               Join Now
             </Button>
           </div>

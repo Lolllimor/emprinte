@@ -1,5 +1,3 @@
-// BookClubHero component following Single Responsibility Principle
-// Displays the hero section with CTA for Book Club
 
 interface BookClubHeroProps {
   badge?: string;
@@ -36,7 +34,7 @@ export function BookClubHero({
 
       <button
         onClick={onButtonClick}
-        className="w-full h-12 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-white"
+        className="w-full cursor-pointer h-12 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-white"
       >
         <span className="text-xl leading-[150%] font-medium text-[#015B51] font-campton">
           {buttonText}
