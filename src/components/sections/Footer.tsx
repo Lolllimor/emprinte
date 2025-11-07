@@ -76,14 +76,18 @@ export function Footer() {
 
                 <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-6">
                   <a
-                    href="https://instagram.com/emprinte"
+                    href="https://www.instagram.com/emprintereaders?igsh=MTU5cmcyc3QyamZtcg=="
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label="Instagram"
                   >
                     <RiInstagramFill color="#015B51" size={38} />
                   </a>
 
                   <a
-                    href="https://linkedin.com/company/emprinte"
+                    href="https://www.linkedin.com/company/emprinte-readers/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-8 h-8 rounded bg-[#015B51] flex items-center justify-center"
                     aria-label="LinkedIn"
                   >
@@ -91,7 +95,9 @@ export function Footer() {
                   </a>
 
                   <a
-                    href="https://twitter.com/emprinte"
+                    href="https://x.com/emprintereaders?s=21"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-8 h-8 rounded bg-[#015B51] flex items-center justify-center"
                     aria-label="Twitter"
                   >
