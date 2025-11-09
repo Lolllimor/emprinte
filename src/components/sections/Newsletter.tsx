@@ -77,8 +77,8 @@ export function Newsletter() {
               Explore Thousands of Stories with Us
             </h2>
             <p className="text-base md:text-2xl leading-[20px] md:leading-[24px] font-medium text-white font-campton">
-              Subscribe to our mailing list to be the first to know about our
-              events and more
+              Subscribe to our mailing list. Be the first to know about our
+              initiatives and events.
             </p>
           </div>
         </div>

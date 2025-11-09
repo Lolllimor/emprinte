@@ -1,6 +1,9 @@
 export function BookClub() {
   return (
-    <section id="initiatives" className="w-full bg-white pb-3 lg:py-[55px] md:py-[35px] flex flex-col items-center pl-0 xl:pl-30 lg:pl-16 md:pl-10 max-w-[1440px] mx-auto">
+    <section
+      id="initiatives"
+      className="w-full bg-white pb-3 lg:py-[55px] md:py-[35px] flex flex-col items-center pl-0 xl:pl-30 lg:pl-16 md:pl-10 max-w-[1440px] mx-auto"
+    >
       <div className="w-full h-[542px] md:h-[650px] lg:h-full relative">
         <div className=" pl-6 md:pl-0 flex flex-col items-start gap-2 h-[116px] lg:h-fit">
           <div className="flex h-6 px-4 justify-center items-center gap-2.5 rounded-3xl bg-[#E63715]">
@@ -23,7 +26,7 @@ export function BookClub() {
           <div className="flex p-4 flex-col justify-center items-center gap-2 lg:rounded-3xl rounded-2xl bg-[#015B51] w-fit  h-fit">
             <div className="flex flex-col items-center">
               <div className="xl:text-[80px] lg:text-[60px] md:text-[45px] text-[40px] leading-tight font-bold text-center text-white font-lora">
-                5000
+                10,000
               </div>
               <div className="xl:text-[40px] lg:text-[30px] md:text-[20px] text-[20px] leading-tight font-medium text-center text-white font-campton">
                 BOOKS
@@ -34,10 +37,10 @@ export function BookClub() {
 
             <div className="flex flex-col items-center">
               <div className="xl:text-[80px] lg:text-[60px] md:text-[45px] text-[40px] leading-tight font-bold text-center text-white font-lora">
-                281
+                52
               </div>
               <div className="xl:text-[40px] lg:text-[30px] md:text-[20px] text-[20px] leading-tight font-medium text-center text-white font-campton">
-                AFRICANS
+                COUNTRIES
               </div>
             </div>
           </div>
@@ -51,8 +54,8 @@ export function BookClub() {
               BUILD A READER
             </h3>
             <p className="xl:text-[32px] lg:text-[24px] md:text-[16px] xl:leading-[48px] lg:leading-[34px] leading-[24px] font-normal text-[#7B7B7B] font-campton">
-              We set out to impact the lives of Nigerian Secondary School
-              Students.
+              An initiative to put 10,000 books in the hands of 10,000 African
+              teenagers by 2030.
             </p>
           </div>
         </div>
