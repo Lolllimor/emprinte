@@ -45,7 +45,7 @@ export const bookClubHero = {
   badge: 'Book Club',
   title: 'Reading That Changes the World.',
   description:
-    "At Emprinté, we're on a mission to make Africa the world's most passionate reading community. From our engaging projects to our vibrant online space, we're helping readers grow, connect, and thrive. Ready to turn the page?",
+    "At Emprinte, we're on a mission to make Africa the world's most passionate reading community. From our engaging projects to our vibrant online space, we're helping readers grow, connect, and thrive. Ready to turn the page?",
   buttonText: 'Join Now',
 };
 

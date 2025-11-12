@@ -37,7 +37,7 @@ export function Hero() {
                 </span>
               </h1>
               <p className="text-base leading-[130%] font-medium text-[#7B7B7B] font-campton">
-                Join Emprinté Readers Hub – Where Books Connect, Inspire, and
+                Join Emprinte Readers Hub – Where Books Connect, Inspire, and
                 Change Lives.
               </p>
             </div>
