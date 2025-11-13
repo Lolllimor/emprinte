@@ -69,7 +69,7 @@ export function BookClub() {
             <div className="flex p-4 flex-col justify-center items-center gap-2 rounded-3xl bg-[#015B51] ">
               <div className="flex flex-col items-center">
                 <div className="text-[40px] leading-tight font-bold text-center text-white font-lora">
-                  5000
+                  10,000
                 </div>
                 <div className="text-xl leading-tight font-medium text-center text-white font-campton">
                   BOOKS
@@ -80,10 +80,10 @@ export function BookClub() {
 
               <div className="flex flex-col items-center">
                 <div className="text-[40px] leading-tight font-bold text-center text-white font-lora">
-                  281
+                  52
                 </div>
                 <div className="text-xl leading-tight font-medium text-center text-white font-campton">
-                  AFRICANS
+                  COUNTRIES
                 </div>
               </div>
             </div>
@@ -95,8 +95,8 @@ export function BookClub() {
             BUILD A READER
           </h3>
           <p className="text-base leading-[24px] font-medium text-[#7B7B7B] font-campton">
-            We set out to impact the lives of Nigerian Secondary School
-            Students.
+            An initiative to put 10,000 books in the hands of 10,000 African
+            teenagers by 2030.
           </p>
         </div>
       </div>
