@@ -27,10 +27,10 @@ export function Footer() {
                   </div>
                   <div className="flex flex-col items-start gap-2">
                     <div className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton">
-                      Adepeju - 09076899091
+                      Praise - 09076899091
                     </div>
                     <div className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton">
-                      Abiola - 08168211428
+                      Adepeju - 08168211428
                     </div>
                   </div>
                 </div>
