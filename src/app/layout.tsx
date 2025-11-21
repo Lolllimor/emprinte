@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description:
     'Join Emprinte Readers Hub - Where Books Connect, Inspire, and Change Lives.',
   icons: {
-    icon: '/favicon.png',
+    icon: '/icon.png',
   },
 };
 
