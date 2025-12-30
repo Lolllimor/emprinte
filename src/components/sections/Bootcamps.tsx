@@ -48,7 +48,7 @@ const Star = () => (
 
 export function Bootcamps() {
   return (
-    <section className="w-full bg-[#F0FFFD] px-0 pb-8 overflow-hidden md:pb-0 lg:pb-8 ">
+    <section className="w-full bg-[#F0FFFD] px-0 pb-8 overflow-hidden md:pb-0 lg:pb-8 lg:block hidden">
       <div className="relative lg:flex lg:items-start lg:justify-between lg:max-w-[1440px] lg:mx-auto ">
         {/* Cards Container */}
         <div className="relative h-[800px] md:h-[320px] lg:h-[380px]  xl:h-[450px] w-full ">

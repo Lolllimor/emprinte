@@ -19,7 +19,8 @@ export const metadata: Metadata = {
   description:
     'Join Emprinte Readers Hub - Where Books Connect, Inspire, and Change Lives.',
   icons: {
-    icon: '/icon.png',
+    icon: [{ url: '/favicon.ico' }, { url: '/favicon.png', type: 'image/png' }],
+    apple: '/apple-touch-icon.png',
   },
 };
 
