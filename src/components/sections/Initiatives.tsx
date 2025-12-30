@@ -21,7 +21,7 @@ export function Initiatives() {
             <span>Make Progress.</span>
           </div>
         </div>
-        <p className="text-[#7B7B7B] font-medium font-campton mt-4 max-w-[328px]">
+        <p className="text-[#7B7B7B] font-medium font-campton mt-4 max-w-[328px] md:hidden">
           Our bootcamps push you to live what you learn. Join a group of
           motivated readers, commit to daily tasks, and holding each other
           accountable.
