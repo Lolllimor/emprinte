@@ -17,41 +17,42 @@ export function BookClub() {
   return (
     <section
       id="initiatives"
-      className="w-full relative bg-white flex flex-col items-center  max-w-[1440px] mx-auto"
+      className="w-full relative bg-[url(/map-green.png)] bg-cover bg-center flex flex-col items-center  max-w-[1440px] h-full mx-auto"
     >
-      <div className="absolute inset-0 top-0 left-0">
-        <InitiativeBg />
-      </div>
-      <div className="flex items-center justify-start w-full gap-7.5 z-10 pr-[120px]">
+     
+      <div className="flex items-center justify-start w-full gap-7.5 z-10 xl:pr-[120px] lg:pr-[75px] pr-6">
+        <div className='hidden lg:block'>
+
         <BuildAReaderImage />
-        <div className="flex-1 flex flex-col gap-8">
+        </div>
+        <div className="flex-1 flex flex-col gap-8 py-8 pl-4 lg:py-0 lg:pl-0">
           <Badge>
             Explore our Initiatives
           </Badge>
        
           <div className="flex flex-col text-white gap-1 ">
-            <span className="text-2xl font-campton">Ongoing Initiative..</span>
+            <span className="xl:text-2xl text-base font-campton">Ongoing Initiative..</span>
             <div className="flex items-end">
-              <p className="text-[82px] max-w-[351px] leading-[0.9] font-bold font-lora">
+              <p className="xl:text-[82px] text-6xl xl:max-w-[351px] max-w-[255px] leading-[0.9] font-bold font-lora">
                 BUILD A READER
               </p>
-              <span className="font-lora text-5xl font-bold">2.0</span>
+              <span className="font-lora xl:text-5xl text-2xl font-bold">2.0</span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 w-full max-w-full ">
-            <div className="flex justify-between items-start">
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl md:text-5xl font-bold text-white font-campton">
+          <div className="flex flex-col gap-2 w-full max-w-full mt-4 lg:mt-0">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-1">
+                <span className="lg:text-3xl xl:text-5xl font-bold text-white font-campton">
                   {booksCollected}
                 </span>
-                <span className="text-base md:text-lg text-white/90 font-campton font-medium ml-2">
+                <span className="xl:text-lg text-sm text-white/90 font-campton font-medium xl:ml-2 ml-1">
                   of {totalBooks} Books
                 </span>
               </div>
               <div className="flex items-center gap-2 text-white">
-                <BookIcon />
-                <span className="text-base md:text-[28px] font-medium font-campton">
+                <BookIcon size={24} />
+                <span className="text-base xld:text-[28px] font-medium font-campton">
                   N{pricePerBook.toLocaleString()}/BOOK
                 </span>
               </div>
@@ -63,7 +64,7 @@ export function BookClub() {
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
-              <div className="flex justify-between mt-1.5 text-sm md:text-base text-white font-medium font-campton">
+              <div className="flex justify-between mt-1.5 text-sm xl:text-base text-white font-medium font-campton">
                 {[0, 100, 200, 300, 400, totalBooks].map((n) => (
                   <span key={n}>{n}</span>
                 ))}
@@ -71,10 +72,10 @@ export function BookClub() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="w-full bg-[#E63715] h-16 text-white rounded-xl text-2xl font-medium">
+            <button className="w-full bg-[#E63715] xl:h-16 h-10  text-white rounded-xl xl:text-2xl font-medium">
               Donate Now
             </button>
-            <button className="w-full bg-transparent border h-16 text-white rounded-xl text-2xl font-medium">
+            <button className="w-full bg-transparent border xl:h-16 h-10 text-white rounded-xl xl:text-2xl font-medium">
               Learn More
             </button>
           </div>

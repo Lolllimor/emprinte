@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 
+import { getApiUrl } from '@/lib/api';
 import { newsletterSchema } from '@/lib/validation/newsletter';
 
 export function Newsletter() {
@@ -31,7 +32,7 @@ export function Newsletter() {
     }
 
     try {
-      const response = await fetch('/api/emails', {
+      const response = await fetch(getApiUrl('emails'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: parsed.data.email }),

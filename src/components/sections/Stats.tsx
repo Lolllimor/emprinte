@@ -14,20 +14,17 @@ export function Stats() {
     <section id="about" className="w-full relative">
       <StatsList stats={stats} />
 
-      <div className="w-full h-[450px] lg:h-[550px] xl:h-[617px] bg-white relative md:flex md:items-center md:justify-start">
-        <div className="w-full h-full absolute left-0 top-0">
-          <BookClubBg />
-        </div>
-        <div className="flex flex-col gap-10 z-10 ml-[120px]">
+      <div className="w-full h-[450px] bg-[url('/book.png')] bg-cover bg-center lg:h-[438px] xl:h-[617px] relative flex flex-col md:flex-row md:items-center justify-center md:justify-start gap-[84px] p-6 md:p-0">
+        <div className="flex flex-col gap-10 z-10 xl:ml-[120px] lg:ml-[75px] md:ml-6 md:w-1/2 w-full">
           <div className="flex flex-col gap-4">
             <Badge>Emprinte Growth Tracker 2026</Badge>
 
-            <p className="text-base md:text-4xl xl:text-6xl leading-snug font-bold text-[#015B51] max-w-[469px] font-lora">
+            <p className="text-4xl xl:text-6xl leading-snug font-bold text-[#015B51]  lg:max-w-[390px] xl:max-w-[469px] font-lora">
               Turn Clarity Into Measurable Progress
             </p>
           </div>
-          <button className="w-full cursor-pointer h-12 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-[#015B51]">
-            <span className="text-xl leading-[150%] font-medium text-white font-campton">
+          <button className=" cursor-pointer lg:h-12 h-10 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-[#015B51] lg:max-w-[400px] w-1/2">
+            <span className="lg:text-xl text-base leading-[150%] font-medium text-white font-campton">
               Download For Free
             </span>
           </button>

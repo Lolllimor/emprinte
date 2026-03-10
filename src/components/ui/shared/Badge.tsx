@@ -9,7 +9,7 @@ interface BadgeProps {
 export function Badge({ children, className = '' }: BadgeProps) {
   return (
     <span
-      className={`bg-[#E63715] text-white h-6 px-4 flex justify-center items-center rounded-full w-fit text-base font-campton font-normal ${className}`}
+      className={`bg-[#E63715] text-white h-6 px-4 flex justify-center items-center rounded-full w-fit text-xs md:text-base font-campton font-normal ${className}`}
     >
       {children}
     </span>
