@@ -1,11 +1,13 @@
-import { Header } from '@/components/sections/Header';
-import { Hero } from '@/components/sections/Hero';
-import { Stats } from '@/components/sections/Stats';
-import { BookClub } from '@/components/sections/BookClub';
+import { Testimonials } from '@/components/sections/Testimonials';
 import { Initiatives } from '@/components/sections/Initiatives';
-import { Bootcamps } from '@/components/sections/Bootcamps';
 import { Newsletter } from '@/components/sections/Newsletter';
+import { Bootcamps } from '@/components/sections/Bootcamps';
+import { BookClub } from '@/components/sections/BookClub';
+import { Insights } from '@/components/sections/Insights';
+import { Header } from '@/components/sections/Header';
 import { Footer } from '@/components/sections/Footer';
+import { Stats } from '@/components/sections/Stats';
+import { Hero } from '@/components/sections/Hero';
 
 export default function Home() {
   return (
@@ -17,6 +19,8 @@ export default function Home() {
         <BookClub />
         <Initiatives />
         <Bootcamps />
+        <Insights />
+        <Testimonials />
         <Newsletter />
         <Footer />
       </div>

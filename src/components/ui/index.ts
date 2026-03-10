@@ -6,5 +6,5 @@ export { MenuOverlay } from './MenuOverlay';
 export { MenuPanel } from './MenuPanel';
 export { StatCard } from './StatCard';
 export { Button } from './Button';
-export { Badge } from './Badge';
+export { Badge } from './shared/Badge';
 export { Logo } from './Logo';

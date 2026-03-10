@@ -6,6 +6,8 @@ import type {
   SocialMediaLink,
   ContactInfo,
   BootcampCardProps,
+  InsightArticle,
+  Testimonial,
 } from '@/types';
 
 export const navigationLinks: NavigationLink[] = [
@@ -48,6 +50,64 @@ export const bookClubHero = {
     "At Emprinte, we're on a mission to make Africa the world's most passionate reading community. From our engaging projects to our vibrant online space, we're helping readers grow, connect, and thrive. Ready to turn the page?",
   buttonText: 'Join Now',
 };
+
+export const insightArticles: InsightArticle[] = [
+  {
+    id: '1',
+    date: 'Friday, April 8, 2026',
+    title: 'This Place Will Contain The Title Of The Article.',
+    description:
+      'This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article.',
+    image: 'https://picsum.photos/400/280?random=1',
+  },
+  {
+    id: '2',
+    date: 'Friday, April 8, 2026',
+    title: 'This Place Will Contain The Title Of The Article.',
+    description:
+      'This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article.',
+    image: 'https://picsum.photos/400/280?random=2',
+  },
+  {
+    id: '3',
+    date: 'Friday, April 8, 2026',
+    title: 'This Place Will Contain The Title Of The Article.',
+    description:
+      'This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article.',
+    image: 'https://picsum.photos/400/280?random=3',
+  },
+];
+
+export const testimonials: Testimonial[] = [
+  {
+    id: '1',
+    text: 'The biggest change for me has been consistency. To put it simply, Emprinte is a community of growth and self-development.',
+    name: 'ADEOLA AINA',
+    title: 'PROJECT MANAGER',
+    rating: 5,
+  },
+  {
+    id: '2',
+    text: 'For me, Emprinte feels like a family away from home. The community has grown to represent a place where I can connect with like-minded, growth-inclined individuals.',
+    name: 'IFESOLA OWOYEMI',
+    title: 'HR MANAGER',
+    rating: 5,
+  },
+  {
+    id: '3',
+    text: 'Emprinte is my growth family. The community has helped me to be more disciplined, and has provided a space that constantly challenges me to be better.',
+    name: 'AYOBAMI AKOMOLAFE',
+    title: 'FASHION DESIGNER',
+    rating: 5,
+  },
+  {
+    id: '4',
+    text: 'Emprinte is I am able to among brigh passion for p',
+    name: 'SAMSON A',
+    title: 'R&D CHEMIST',
+    rating: 5,
+  },
+];
 
 export const bootcampCards: BootcampCardProps[] = [
   {

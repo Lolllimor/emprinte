@@ -64,6 +64,23 @@ export interface MenuState {
   open: () => void;
 }
 
+export interface Testimonial {
+  id: string;
+  text: string;
+  name: string;
+  title: string;
+  rating?: number;
+}
+
+export interface InsightArticle {
+  id: string;
+  date: string;
+  title: string;
+  description: string;
+  image: string;
+  href?: string;
+}
+
 export interface DesktopNavigationProps {
   links: NavigationLink[];
   className?: string;

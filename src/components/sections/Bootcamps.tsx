@@ -48,10 +48,10 @@ const Star = () => (
 
 export function Bootcamps() {
   return (
-    <section className="w-full bg-[#F0FFFD] px-0 pb-8 overflow-hidden md:pb-0 lg:pb-8 lg:block hidden">
-      <div className="relative lg:flex lg:items-start lg:justify-between lg:max-w-[1440px] lg:mx-auto ">
+    <section className="w-full bg-[#F0FFFD] px-0 pb-8 overflow-x-hidden h-fit  md:pb-0 lg:pb-8 lg:block hidden">
+      <div className="relative lg:flex lg:items-start lg:justify-between lg:max-w-[1440px] lg:mx-auto h-full">
         {/* Cards Container */}
-        <div className="relative h-[800px] md:h-[320px] lg:h-[380px]  xl:h-[450px] w-full ">
+        <div className="relative  xl:h-[550px] w-full ">
           <div className="relative w-[535px] h-[804px] lg:w-full lg:h-full">
             <div className="absolute left-[25px] top-[25px] md:right-[-380px] lg:right-[-120px] md:left-auto lg:top-[120px] w-[251px] h-[251px] lg:w-[304px] lg:h-[304px] p-5 flex flex-col justify-between items-start rounded-[20px] bg-[#C7C8F7] transform rotate-[-13.613deg] md:rotate-[10.613deg] z-10">
               <div className="w-[33px] h-[33px] relative flex justify-center items-center">
