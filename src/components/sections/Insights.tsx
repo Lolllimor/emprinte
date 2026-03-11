@@ -8,7 +8,7 @@ export function Insights() {
       id="insights"
       className="w-full bg-[#F0FFFD] px-4 py-12 sm:px-6 md:px-8 md:py-16 lg:px-[75px] lg:py-24 xl:px-[120px]"
     >
-      <div className="max-w-[1440px] mx-auto flex flex-col gap-8 sm:gap-10 md:gap-12">
+      <div className="max-w-[1200px] mx-auto flex flex-col gap-8 sm:gap-10 md:gap-12">
         <div className="flex flex-col gap-3 sm:gap-4">
           <Badge>Emprinte Insider</Badge>
           <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-5xl font-bold text-[#015B51] font-lora leading-tight max-w-[600px]">
@@ -16,7 +16,7 @@ export function Insights() {
           </h2>
         </div>
 
-        <div className="flex flex-col gap-10 sm:gap-12 md:gap-14 lg:gap-16">
+        <div className="flex flex-col gap-10 sm:gap-12 md:gap-14 lg:gap-16 ">
           {insightArticles.map((article) => (
             <article
               key={article.id}

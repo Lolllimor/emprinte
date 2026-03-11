@@ -8,7 +8,7 @@ export function Testimonials() {
       id="testimonials"
       className="w-full bg-white px-6 py-16 lg:py-24 xl:px-[120px] lg:px-[75px]"
     >
-      <div className="max-w-[1440px] mx-auto flex flex-col gap-12">
+      <div className="max-w-[1200px] mx-auto flex flex-col gap-12">
         <div className="flex flex-col gap-4">
           <Badge>Testimonials</Badge>
           <h2 className="text-4xl md:text-6xl font-bold text-[#015B51] font-lora leading-[1.1] max-w-[600px]">

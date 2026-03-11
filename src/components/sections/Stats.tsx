@@ -15,7 +15,7 @@ export function Stats() {
       <StatsList stats={stats} />
 
       <div className="w-full h-[450px] bg-[url('/book.png')] bg-cover bg-center lg:h-[438px] xl:h-[617px] relative flex flex-col md:flex-row md:items-center justify-center md:justify-start gap-[84px] p-6 md:p-0">
-        <div className="flex flex-col gap-10 z-10 xl:ml-[120px] lg:ml-[75px] md:ml-6 md:w-1/2 w-full">
+        <div className="flex flex-col gap-10 2xl:ml-auto xl:ml-[120px] lg:ml-[75px] md:ml-6 md:max-w-[1200px] 2xl:mx-auto w-full">
           <div className="flex flex-col gap-4">
             <Badge>Emprinte Growth Tracker 2026</Badge>
 
@@ -23,7 +23,7 @@ export function Stats() {
               Turn Clarity Into Measurable Progress
             </p>
           </div>
-          <button className=" cursor-pointer lg:h-12 h-10 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-[#015B51] lg:max-w-[400px] w-1/2">
+          <button onClick={() => window.open('https://docs.google.com/spreadsheets/d/1j7vHUolxqpuPQl1UD8abgavr6E4gYxIeH0sXV6y85TE/edit?usp=drivesdk', '_blank')} className=" cursor-pointer lg:h-12 h-10 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-[#015B51] lg:max-w-[400px] w-1/2">
             <span className="lg:text-xl text-base leading-[150%] font-medium text-white font-campton">
               Download For Free
             </span>

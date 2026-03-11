@@ -17,15 +17,15 @@ export function BookClub() {
   return (
     <section
       id="initiatives"
-      className="w-full relative bg-[url(/map-green.png)] bg-cover bg-center flex flex-col items-center  max-w-[1440px] h-full mx-auto"
+      className="w-full relative bg-[url(/map-green.png)] bg-cover bg-center flex flex-col items-center  h-full mx-auto"
     >
      
-      <div className="flex items-center justify-start w-full gap-7.5 z-10 xl:pr-[120px] lg:pr-[75px] pr-6">
+      <div className="flex items-center justify-start w-full gap-7.5 z-10 xl:pr-[120px] lg:pr-[75px] pr-6 max-w-[1200px] mx-auto">
         <div className='hidden lg:block'>
 
         <BuildAReaderImage />
         </div>
-        <div className="flex-1 flex flex-col gap-8 py-8 pl-4 lg:py-0 lg:pl-0">
+        <div className="flex-1 flex flex-col gap-8 py-8 pl-4 lg:py-0 lg:pl-0 ">
           <Badge>
             Explore our Initiatives
           </Badge>
