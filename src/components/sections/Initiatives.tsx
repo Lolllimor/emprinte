@@ -27,13 +27,13 @@ export function Initiatives() {
           accountable.
         </p>
 
-        {/* <p className="text-base lg:text-xl xl:text-2xl leading-[24px] lg:leading-[28px] xl:leading-[32px] font-medium text-[#7B7B7B] font-campton md:max-w-[350px] lg:max-w-[400px] xl:max-w-[574px]">
+        <p className="text-base lg:text-xl xl:text-2xl leading-[24px] lg:leading-[28px] xl:leading-[32px] font-medium text-[#7B7B7B] font-campton md:max-w-[350px] lg:max-w-[400px] xl:max-w-[574px]">
           Our bootcamps push you to live what you learn. Join a group of
           motivated readers, commit to growth and productivity.
-        </p> */}
-        <div className="w-full lg:max-w-[478px] md:max-w-[378px]  mt-8">
+        </p>
+        {/* <div className="w-full lg:max-w-[478px] md:max-w-[378px]  mt-8">
           <div className="rounded-2xl bg-[#CAE594] xl:p-6 p-4 flex flex-col lg:gap-6 gap-4">
-            {/* Title */}
+
             <div className="flex flex-col items-start gap-0">
               <h3 className="text-[28px] leading-snug md:leading-normal lg:text-4xl xl:text-[40px] font-bold text-black font-campton">
                 5AM Club Bootcamp
@@ -66,7 +66,6 @@ export function Initiatives() {
               </div>
             </div>
 
-            {/* CTA Button */}
             <button
               onClick={() =>
                 window.open(
@@ -79,7 +78,7 @@ export function Initiatives() {
               Click here to Join
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* 5AM Club Bootcamp Card */}

@@ -19,7 +19,7 @@ export default function Home() {
         <BookClub />
         <Initiatives />
         <Bootcamps />
-        <Insights />
+        {/* <Insights /> */}
         <Testimonials />
         <Newsletter />
         <Footer />
