@@ -6,7 +6,7 @@ import { BookIcon } from './BookIcon';
 import { Badge } from '../ui';
 
 const dummyBookProgress = {
-  booksCollected: 119,
+  booksCollected: 156,
   totalBooks: 500,
   pricePerBook: 2500,
 };
@@ -52,7 +52,7 @@ export function BookClub() {
               </div>
               <div className="flex items-center gap-2 text-white">
                 <BookIcon size={24} />
-                <span className="text-base xld:text-[28px] font-medium font-campton">
+                <span className="text-base xl:text-[28px] font-medium font-campton">
                   N{pricePerBook.toLocaleString()}/BOOK
                 </span>
               </div>
