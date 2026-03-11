@@ -100,13 +100,7 @@ export const testimonials: Testimonial[] = [
     title: 'FASHION DESIGNER',
     rating: 5,
   },
-  {
-    id: '4',
-    text: 'Emprinte is I am able to among brigh passion for p',
-    name: 'SAMSON A',
-    title: 'R&D CHEMIST',
-    rating: 5,
-  },
+ 
 ];
 
 export const bootcampCards: BootcampCardProps[] = [
