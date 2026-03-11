@@ -10,23 +10,23 @@ export function Hero() {
             <img
               src="/hero1.png"
               alt=""
-              className="absolute left-0 top-[101px] lg:top-[140px] xl:top-[264px] w-[153px] lg:w-[240px] lg:h-[360px] xl:w-[286px] xl:h-[460px] h-[266px] object-cover rounded-[2162px_2162px_13px_13px] border border-white"
+              className="absolute left-0 top-[101px] lg:top-[140px] xl:top-[264px] w-[153px] lg:w-[240px] lg:h-[360px] xl:w-[282px] xl:h-[460px] h-[266px] object-cover rounded-[2162px_2162px_13px_13px] border border-white"
             />
             <img
               src="/hero2.png"
               alt=""
-              className="absolute left-[65px] xl:left-[121px] top-0 w-[153px] lg:w-[240px] lg:h-[360px] xl:w-[286px] xl:h-[460px] h-[249px] object-cover rounded-[0_0_2162px_2162px] border border-white"
+              className="absolute left-[65px] xl:left-[121px] top-0 w-[153px] lg:w-[240px] lg:h-[360px] xl:w-[282px] xl:h-[460px] h-[249px] object-cover rounded-[0_0_2162px_2162px] border border-white"
             />
             <img
               src="/hero3.png"
               alt=""
-              className="absolute left-[188px] xl:left-[350px] top-[57px] xl:top-[101px] w-[153px] lg:w-[240px] lg:h-[360px] xl:w-[286px] xl:h-[460px] h-[263px] object-cover rounded-[2162px_2162px_13px_13px] border border-white"
+              className="absolute left-[188px] xl:left-[350px] top-[57px] xl:top-[101px] w-[153px] lg:w-[240px] lg:h-[360px] xl:w-[282px] xl:h-[460px] h-[263px] object-cover rounded-[2162px_2162px_13px_13px] border border-white"
             />
           </div>
 
           <div className="flex flex-col items-start gap-4 min-w-[300px] w-full xl:w-[519px] max-w-[520px] h-fit flex-1">
             <div className="flex flex-col items-start gap-2">
-              <h1 className="text-[32px] md:text-[36px] lg:text-[52px] xl:text-[64px] leading-[120%] font-bold text-[#142218] font-lora">
+              <h1 className="text-[32px] md:text-[36px] lg:text-[52px] xl:text-[64px] leading-snug font-bold text-[#142218] font-lora">
                 <span className="text-[#142218]">
                   Transforming <br /> Africa,
                 </span>{' '}
