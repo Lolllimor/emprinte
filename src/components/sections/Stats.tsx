@@ -23,7 +23,12 @@ export function Stats() {
               Turn Clarity Into Measurable Progress
             </p>
           </div>
-          <button onClick={() => window.open('https://docs.google.com/spreadsheets/d/1j7vHUolxqpuPQl1UD8abgavr6E4gYxIeH0sXV6y85TE/edit?usp=drivesdk', '_blank')} className=" cursor-pointer lg:h-12 h-10 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-[#015B51] lg:max-w-[400px] w-1/2">
+          <button
+            onClick={() =>
+              window.open('https://forms.gle/3F9dAAYdce5VSz1YA', '_blank')
+            }
+            className=" cursor-pointer lg:h-12 h-10 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-[#015B51] lg:max-w-[400px] w-1/2"
+          >
             <span className="lg:text-xl text-base leading-[150%] font-medium text-white font-campton">
               Download For Free
             </span>
