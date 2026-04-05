@@ -7,11 +7,18 @@ import { MenuOverlay } from '@/components/ui/MenuOverlay';
 import { MenuPanel } from '@/components/ui/MenuPanel';
 import { DesktopNavigation } from '@/components/ui/DesktopNavigation';
 import { useMenuState } from '@/hooks/useMenuState';
-import { navigationLinks } from '@/constants/data';
+import { contactInfo as defaultContact, navigationLinks } from '@/constants/data';
 import type { NavigationLink } from '@/types';
 import Image from 'next/image';
 
-export function Header() {
+type HeaderProps = {
+  /** Primary contact email for mailto (from `GET /api/settings`). */
+  contactEmail?: string;
+};
+
+export function Header({
+  contactEmail = defaultContact.email,
+}: HeaderProps) {
   const menuState = useMenuState();
   const [isDesktop, setIsDesktop] = useState<boolean>(() => {
     if (typeof window === 'undefined') {
@@ -84,7 +91,7 @@ export function Header() {
           variant="primary"
           className="hidden lg:block font-semibold rounded-xl lg:px-[25px]"
           onClick={() => {
-            window.open('mailto:hello@emprintereaders.com', '_blank');
+            window.open(`mailto:${encodeURIComponent(contactEmail)}`, '_blank');
           }}
         >
           Contact Us
@@ -106,7 +113,10 @@ export function Header() {
                 onClose={menuState.close}
                 onLinkClick={handleNavigation}
                 onContactClick={() => {
-                  window.open('mailto:hello@emprintereaders.com', '_blank');
+                  window.open(
+                    `mailto:${encodeURIComponent(contactEmail)}`,
+                    '_blank',
+                  );
                 }}
               />
             </div>

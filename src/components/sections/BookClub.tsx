@@ -1,19 +1,27 @@
 'use client';
+import { useEffect, useState } from 'react';
 
 import { BuildAReaderImage } from '../ui/BuildAReaderImage';
-import { InitiativeBg } from '../ui/InitiativeBg';
+import { BookProgressProps } from '@/types';
 import { BookIcon } from './BookIcon';
+import { getApiUrl } from '@/lib/api';
 import { Badge } from '../ui';
 
-const dummyBookProgress = {
-  booksCollected: 156,
-  totalBooks: 500,
-  pricePerBook: 2500,
-};
-
 export function BookClub() {
-  const { booksCollected, totalBooks, pricePerBook } = dummyBookProgress;
-  const progressPercent = Math.min((booksCollected / totalBooks) * 100, 100);
+  const [bookProgress, setBookProgress] = useState<BookProgressProps>();
+  const collected = bookProgress?.booksCollected ?? 0;
+  const total = bookProgress?.totalBooks ?? 0;
+  const progressPercent =
+    total > 0 ? Math.min((collected / total) * 100, 100) : 0;
+
+  useEffect(() => {
+    const fetchBookProgress = async () => {
+      const res = await fetch(getApiUrl('/build-a-reader'));
+      const data = await res.json();
+      setBookProgress(data);
+    };
+    fetchBookProgress();
+  }, []); 
   return (
     <section
       id="initiatives"
@@ -44,16 +52,16 @@ export function BookClub() {
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-1">
                 <span className="lg:text-3xl xl:text-5xl font-bold text-white font-campton">
-                  {booksCollected}
+                  {bookProgress?.booksCollected ?? "--"}
                 </span>
                 <span className="xl:text-lg text-sm text-white/90 font-campton font-medium xl:ml-2 ml-1">
-                  of {totalBooks} Books
+                  of {bookProgress?.totalBooks ?? "--"} Books
                 </span>
               </div>
               <div className="flex items-center gap-2 text-white">
                 <BookIcon size={24} />
                 <span className="text-base xl:text-[28px] font-medium font-campton">
-                  N{pricePerBook.toLocaleString()}/BOOK
+                  N{bookProgress?.pricePerBook?.toLocaleString() ?? "--"}/BOOK
                 </span>
               </div>
             </div>
@@ -61,12 +69,12 @@ export function BookClub() {
               <div className="h-6 md:h-8 w-full rounded-full bg-white border-4 border-white overflow-hidden">
                 <div
                   className="h-full rounded-full bg-[#ed4e32] transition-all"
-                  style={{ width: `${progressPercent}%` }}
+                  style={{ width: `${progressPercent ?? 0}%` }}
                 />
               </div>
               <div className="flex justify-between mt-1.5 text-sm xl:text-base text-white font-medium font-campton">
-                {[0, 100, 200, 300, 400, totalBooks].map((n) => (
-                  <span key={n}>{n}</span>
+                {[0, 100, 200, 300, 400, bookProgress?.totalBooks].map((n,idx) => (
+                  <span key={idx}>{n}</span>
                 ))}
               </div>
             </div>

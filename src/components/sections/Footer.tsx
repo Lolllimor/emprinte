@@ -1,8 +1,17 @@
 import { Logo } from '@/components/ui/Logo';
+import { contactInfo as defaultContactInfo } from '@/constants/data';
+import type { ContactInfo } from '@/types';
 import { ImLinkedin2 } from 'react-icons/im';
 import { RiInstagramFill } from 'react-icons/ri';
 
-export function Footer() {
+type FooterProps = {
+  /** From `GET /api/settings` (`contactInfo`). */
+  contactInfo?: ContactInfo;
+};
+
+export function Footer({
+  contactInfo = defaultContactInfo,
+}: FooterProps) {
   return (
     <footer className="w-full bg-white px-4 py-9 xl:px-[120px] lg:px-[64px] md:px-[32px]  ">
       <div className="max-w-[1440px] mx-auto  flex flex-col items-start gap-2.5">
@@ -17,7 +26,7 @@ export function Footer() {
                     Email
                   </div>
                   <div className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton">
-                    hello@emprintereaders.com
+                    {contactInfo.email}
                   </div>
                 </div>
 
@@ -26,12 +35,14 @@ export function Footer() {
                     Phone
                   </div>
                   <div className="flex flex-col items-start gap-2">
-                    <div className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton">
-                      Praise - 09076899091
-                    </div>
-                    <div className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton">
-                      Adepeju - 08168211428
-                    </div>
+                    {contactInfo.phone.map((p) => (
+                      <div
+                        key={`${p.label}-${p.number}`}
+                        className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton"
+                      >
+                        {p.label} - {p.number}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -48,6 +59,12 @@ export function Footer() {
                     className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
                   >
                     Home
+                  </a>
+                  <a
+                    href="/blog"
+                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
+                  >
+                    Blog
                   </a>
                   <a
                     href="#bootcamps"

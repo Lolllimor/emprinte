@@ -1,32 +1,20 @@
 import { NextResponse } from 'next/server';
 
-import { settingsSchema } from '@/lib/validation/admin';
-import {
-  navigationLinks,
-  footerNavigation,
-  socialMediaLinks,
-  contactInfo,
-  stats,
-} from '@/constants/data';
-
-// In-memory store (until backend is wired up).
-// Defaults from constants.
-let siteSettings = {
-  navigationLinks: [...navigationLinks],
-  footerNavigation: [...footerNavigation],
-  socialMediaLinks: [...socialMediaLinks],
-  contactInfo: { ...contactInfo, phone: [...contactInfo.phone] },
-  stats: [...stats],
-};
+import { requireEditApiAuth } from '@/lib/edit-api-auth';
+import { patchStatsById, siteSettings } from '@/lib/site-settings-store';
+import { settingsWriteSchema } from '@/lib/validation/admin';
 
 export async function GET() {
   return NextResponse.json(siteSettings);
 }
 
-export async function PATCH(request: Request) {
+async function writeSettings(request: Request) {
+  const denied = requireEditApiAuth(request);
+  if (denied) return denied;
+
   const body = await request.json().catch(() => null);
 
-  const parsed = settingsSchema.safeParse(body);
+  const parsed = settingsWriteSchema.safeParse(body);
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -34,16 +22,42 @@ export async function PATCH(request: Request) {
         error: 'Invalid input',
         details: parsed.error.flatten().fieldErrors,
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   const data = parsed.data;
+
+  let nextStats: typeof siteSettings.stats | undefined;
+  if (data.stats !== undefined && data.stats.length > 0) {
+    const patched = patchStatsById(siteSettings.stats, data.stats);
+    if (!patched.ok) {
+      return NextResponse.json(
+        {
+          error: patched.error,
+          ...(patched.message ? { message: patched.message } : {}),
+        },
+        { status: patched.status },
+      );
+    }
+    nextStats = patched.stats;
+  }
+
   if (data.navigationLinks) siteSettings.navigationLinks = data.navigationLinks;
-  if (data.footerNavigation) siteSettings.footerNavigation = data.footerNavigation;
-  if (data.socialMediaLinks) siteSettings.socialMediaLinks = data.socialMediaLinks;
+  if (data.footerNavigation)
+    siteSettings.footerNavigation = data.footerNavigation;
+  if (data.socialMediaLinks)
+    siteSettings.socialMediaLinks = data.socialMediaLinks;
   if (data.contactInfo) siteSettings.contactInfo = data.contactInfo;
-  if (data.stats !== undefined) siteSettings.stats = data.stats;
+  if (nextStats !== undefined) siteSettings.stats = nextStats;
 
   return NextResponse.json({ ok: true, data: siteSettings });
+}
+
+export async function PATCH(request: Request) {
+  return writeSettings(request);
+}
+
+export async function PUT(request: Request) {
+  return writeSettings(request);
 }

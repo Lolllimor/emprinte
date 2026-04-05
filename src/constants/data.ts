@@ -2,11 +2,12 @@
 // All static data in one place for easy maintenance
 
 import type {
-  NavigationLink,
-  SocialMediaLink,
-  ContactInfo,
   BootcampCardProps,
+  SocialMediaLink,
   InsightArticle,
+  NavigationLink,
+  SiteSettings,
+  ContactInfo,
   Testimonial,
 } from '@/types';
 
@@ -14,6 +15,7 @@ export const navigationLinks: NavigationLink[] = [
   { label: 'About Us', href: '#about' },
   { label: 'Initiatives', href: '#initiatives' },
   { label: 'Bootcamps', href: '#bootcamps' },
+  { label: 'Blog', href: '/blog' },
 ];
 
 export const footerNavigation: NavigationLink[] = [
@@ -43,6 +45,17 @@ export const stats = [
   { value: '2000+', label: 'Beautiful Stories' },
 ];
 
+/** Defaults for admin site settings; stats labels match the homepage and stay fixed in the editor. */
+export function getDefaultSiteSettings(): SiteSettings {
+  return {
+    navigationLinks: [...navigationLinks],
+    footerNavigation: [...footerNavigation],
+    socialMediaLinks: [...socialMediaLinks],
+    contactInfo: { ...contactInfo, phone: [...contactInfo.phone] },
+    stats: stats.map((s, i) => ({ id: String(i), ...s })),
+  };
+}
+
 export const bookClubHero = {
   badge: 'Book Club',
   title: 'Reading That Changes the World.',
@@ -54,27 +67,103 @@ export const bookClubHero = {
 export const insightArticles: InsightArticle[] = [
   {
     id: '1',
-    date: 'Friday, April 8, 2026',
-    title: 'This Place Will Contain The Title Of The Article.',
+    date: 'Monday, March 2, 2026',
+    title: 'Reading circles, real connection',
     description:
-      'This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article.',
-    image: 'https://picsum.photos/400/280?random=1',
+      'Why small groups change how we experience books—and each other.',
+    body:
+      'When readers gather in a circle, something shifts. The book stops being a solo exercise and becomes a shared language.\n\nAt Emprinte we have seen shy voices open up, bold opinions soften, and strangers become friends over a single chapter. You do not need a perfect venue or a flawless schedule—just consistency, kindness, and curiosity.\n\nIf you have been reading alone, consider inviting one other person this week. The story on the page is only half the journey; the other half is who you meet along the way.',
+    image: 'https://picsum.photos/800/500?random=11',
   },
   {
     id: '2',
-    date: 'Friday, April 8, 2026',
-    title: 'This Place Will Contain The Title Of The Article.',
+    date: 'Thursday, March 5, 2026',
+    title: 'One book at a time: building habits that last',
     description:
-      'This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article.',
-    image: 'https://picsum.photos/400/280?random=2',
+      'Gentle structure beats grand resolutions when you want reading to stick.',
+    body:
+      'Most reading goals fail because they are built on guilt instead of rhythm. A short daily window—ten or fifteen minutes—often outlasts marathon sessions that burn you out.\n\nStack your habit: same chair, same mug, same light. Remove friction by keeping the next title visible. Celebrate small streaks; they compound.\n\nWe built Emprinte around this truth: Africa\'s reading culture grows one habit, one household, one book club at a time.',
+    image: 'https://picsum.photos/800/500?random=12',
   },
   {
     id: '3',
-    date: 'Friday, April 8, 2026',
-    title: 'This Place Will Contain The Title Of The Article.',
+    date: 'Tuesday, March 10, 2026',
+    title: 'From excerpt to action',
     description:
-      'This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article. This Place Will Contain The Title Of The Article.',
-    image: 'https://picsum.photos/400/280?random=3',
+      'Turning insight into something you actually do this week.',
+    body:
+      'A good article or talk should leave you with one clear next step—not a vague buzz of inspiration.\n\nAfter you read, write a single sentence: "This week I will ___." Tell someone. That accountability quietly doubles your odds of follow-through.\n\nOur blog exists for moments like that: short enough to finish, grounded enough to matter. Take one idea, test it for seven days, and notice what changes.',
+    image: 'https://picsum.photos/800/500?random=13',
+  },
+  {
+    id: '4',
+    date: 'Friday, March 13, 2026',
+    title: 'The shelf you actually finish',
+    description:
+      'A smaller stack can mean more books read—not fewer.',
+    body:
+      'Overflowing shelves look impressive on camera, but they often hide guilt, not progress. Try keeping only three titles in active rotation: one challenging, one comforting, one borrowed from a friend.\n\nWhen you finish one, you earn the next. That small rule restores the pleasure of choosing instead of drowning in options.\n\nReaders who try this for a month usually report calmer evenings and fewer unfinished chapters.',
+    image: 'https://picsum.photos/800/500?random=14',
+  },
+  {
+    id: '5',
+    date: 'Wednesday, March 18, 2026',
+    title: 'Notes in the margin',
+    description:
+      'Why scribbling while you read deepens memory—and conversation.',
+    body:
+      'Underlining is not vandalism when it helps you return to the spark you felt. A star in the margin, a question mark, a date—these are breadcrumbs for your future self.\n\nIn a club, those marks become invitations: "What did you think when the author said this?" The page stays the same; the room changes.\n\nIf you resist writing in books, use a pocket notebook. The habit matters more than the medium.',
+    image: 'https://picsum.photos/800/500?random=15',
+  },
+  {
+    id: '6',
+    date: 'Monday, March 23, 2026',
+    title: 'When the chapter is heavy',
+    description:
+      'Reading difficult themes with care—for yourself and the group.',
+    body:
+      'Some stories ask for slowness, not speed. It is fine to pause, breathe, or set a book aside until you are ready.\n\nIn community, name the weight lightly: "This part stayed with me." That honesty gives others permission to feel without performing toughness.\n\nEmprinte gatherings aim to be brave and gentle at once. The goal is understanding, not winning a debate.',
+    image: 'https://picsum.photos/800/500?random=16',
+  },
+  {
+    id: '7',
+    date: 'Saturday, March 28, 2026',
+    title: 'Audio counts',
+    description:
+      'Listeners are readers too—here is how to honour the habit.',
+    body:
+      'Whether you press play on a commute or at home, you are still following narrative, voice, and pacing. Do not let anyone shrink that.\n\nIf you miss paper, pair audio with a print copy for favourite passages. The double exposure can be wonderful for dense or lyrical work.\n\nOur community welcomes every format that keeps you inside stories.',
+    image: 'https://picsum.photos/800/500?random=17',
+  },
+  {
+    id: '8',
+    date: 'Tuesday, April 1, 2026',
+    title: 'Young readers at the table',
+    description:
+      'Including children without turning book club into homework.',
+    body:
+      'A separate picture-book corner, a ten-minute share, or a "bring one sentence" rule can fold kids in without pressure.\n\nWhen young people see adults enjoy reading—not endure assignments—they file it away as something adults actually choose.\n\nStart small: one family night, one story, one laugh together.',
+    image: 'https://picsum.photos/800/500?random=18',
+  },
+  {
+    id: '9',
+    date: 'Friday, April 3, 2026',
+    title: 'Rotating hosts, steady heart',
+    description:
+      'Sharing leadership so one person never carries the whole room.',
+    body:
+      'A simple rotation—snacks, timekeeper, discussion opener—distributes care and keeps gatherings from burning out a single organiser.\n\nTemplates help: opening check-in, three questions, closing gratitude. Predictability frees creativity inside the conversation.\n\nIf your group is new, try the rotation for six sessions and adjust what feels stiff.',
+    image: 'https://picsum.photos/800/500?random=19',
+  },
+  {
+    id: '10',
+    date: 'Monday, April 6, 2026',
+    title: 'Closing the loop',
+    description:
+      'How to end a season of reading without losing momentum.',
+    body:
+      'A final session can name what shifted: one insight per person, one title to recommend outward, one date for the next season.\n\nDocument lightly—a group chat name, a shared list—so return feels easy, not heroic.\n\nBreaks are not failure. Soil rests between plantings; readers do too.',
+    image: 'https://picsum.photos/800/500?random=20',
   },
 ];
 

@@ -3,12 +3,20 @@ import { z } from 'zod';
 export const insightSchema = z.object({
   title: z.string().trim().min(1, 'Title is required'),
   description: z.string().trim().min(1, 'Description is required'),
+  body: z
+    .string()
+    .optional()
+    .transform((v) => (v && v.trim() ? v.trim() : undefined)),
   date: z.string().trim().min(1, 'Date is required'),
   image: z.string().url('Image must be a valid URL'),
   href: z
     .string()
     .optional()
     .transform((v) => (v && v.trim() ? v : undefined)),
+});
+
+export const insightUpdateSchema = insightSchema.extend({
+  id: z.string().trim().min(1),
 });
 
 export const navigationLinkSchema = z.object({
@@ -31,17 +39,36 @@ export const socialLinkSchema = z.object({
   href: z.string().url('Invalid URL'),
 });
 
+export const statValueSchema = z.string().trim().min(1);
+
 export const statSchema = z.object({
-  value: z.string().trim().min(1),
+  value: statValueSchema,
   label: z.string().trim().min(1),
 });
 
-export const settingsSchema = z.object({
-  navigationLinks: z.array(navigationLinkSchema),
-  footerNavigation: z.array(navigationLinkSchema),
-  socialMediaLinks: z.array(socialLinkSchema),
-  contactInfo: contactInfoSchema,
-  stats: z.array(statSchema).optional(),
+/** Partial update for PUT /api/stats/:id — `label` omitted keeps the current label. */
+export const statUpdateSchema = z.object({
+  value: statValueSchema,
+  label: z.string().trim().min(1).optional(),
+});
+
+/** One row in PUT /api/settings `stats` — patch by stable id. */
+export const settingsStatPatchEntrySchema = z.object({
+  id: z.union([
+    z.string().trim().min(1),
+    z.number().int().min(0),
+  ]),
+  value: statValueSchema,
+  label: z.string().trim().min(1).optional(),
+});
+
+/** PUT/PATCH `/api/settings`: all sections optional; omit `stats` to leave stats unchanged. */
+export const settingsWriteSchema = z.object({
+  navigationLinks: z.array(navigationLinkSchema).optional(),
+  footerNavigation: z.array(navigationLinkSchema).optional(),
+  socialMediaLinks: z.array(socialLinkSchema).optional(),
+  contactInfo: contactInfoSchema.optional(),
+  stats: z.array(settingsStatPatchEntrySchema).optional(),
 });
 
 export const buildAReaderSchema = z.object({

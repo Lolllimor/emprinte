@@ -1,23 +1,23 @@
 import { NextResponse } from 'next/server';
 
-import { insightSchema } from '@/lib/validation/admin';
-// In-memory store for admin-created insights (until backend is wired up).
-// In production, replace with database/API calls.
-let adminInsights: Array<{
-  id: string;
-  date: string;
-  title: string;
-  description: string;
-  image: string;
-  href?: string;
-}> = [];
+import { requireEditApiAuth } from '@/lib/edit-api-auth';
+import {
+  deleteInsight,
+  findInsightById,
+  getAllInsights,
+  prependInsight,
+  replaceInsight,
+} from '@/lib/insights-store';
+import { insightSchema, insightUpdateSchema } from '@/lib/validation/admin';
 
 export async function GET() {
-  const all = [...adminInsights];
-  return NextResponse.json(all);
+  return NextResponse.json(getAllInsights());
 }
 
 export async function POST(request: Request) {
+  const denied = requireEditApiAuth(request);
+  if (denied) return denied;
+
   const body = await request.json().catch(() => null);
 
   const parsed = insightSchema.safeParse(body);
@@ -28,11 +28,12 @@ export async function POST(request: Request) {
         error: 'Invalid input',
         details: parsed.error.flatten().fieldErrors,
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  const { title, description, date, image, href } = parsed.data;
+  const { title, description, date, image, href, body: articleBody } =
+    parsed.data;
 
   const id = String(Date.now());
   const item = {
@@ -41,10 +42,67 @@ export async function POST(request: Request) {
     title,
     description,
     image,
+    ...(articleBody ? { body: articleBody } : {}),
     ...(href ? { href } : {}),
   };
 
-  adminInsights = [item, ...adminInsights];
+  prependInsight(item);
 
   return NextResponse.json({ ok: true, data: item }, { status: 201 });
+}
+
+export async function PATCH(request: Request) {
+  const denied = requireEditApiAuth(request);
+  if (denied) return denied;
+
+  const body = await request.json().catch(() => null);
+
+  const parsed = insightUpdateSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        error: 'Invalid input',
+        details: parsed.error.flatten().fieldErrors,
+      },
+      { status: 400 },
+    );
+  }
+
+  const { id, title, description, date, image, href, body: articleBody } =
+    parsed.data;
+
+  if (!findInsightById(id)) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
+  const item = {
+    id,
+    title,
+    description,
+    date,
+    image,
+    ...(articleBody ? { body: articleBody } : {}),
+    ...(href ? { href } : {}),
+  };
+
+  replaceInsight(item);
+
+  return NextResponse.json({ ok: true, data: item });
+}
+
+export async function DELETE(request: Request) {
+  const denied = requireEditApiAuth(request);
+  if (denied) return denied;
+
+  const id = new URL(request.url).searchParams.get('id');
+  if (!id?.trim()) {
+    return NextResponse.json({ error: 'id query required' }, { status: 400 });
+  }
+
+  if (!deleteInsight(id)) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
+  return NextResponse.json({ ok: true });
 }
