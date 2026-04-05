@@ -30,14 +30,6 @@ export default function AdminLoginPage() {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-
-    if (!isBackendApiConfigured()) {
-      setError(
-        'Set NEXT_PUBLIC_API_URL in .env to your API server (login returns a JWT).',
-      );
-      return;
-    }
-
     setBusy(true);
     try {
       const res = await fetch(getApiUrl(AUTH_API.login), {
@@ -98,15 +90,7 @@ export default function AdminLoginPage() {
           session for admin requests.
         </p>
 
-        {!isBackendApiConfigured() ? (
-          <p
-            className="mt-4 text-sm text-amber-900/90 bg-amber-50 border border-amber-200/80 rounded-xl px-4 py-3 font-campton leading-snug"
-            role="status"
-          >
-            Set <code className="text-[13px]">NEXT_PUBLIC_API_URL</code> to your
-            backend.
-          </p>
-        ) : null}
+   
 
         <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-5">
           <div className="flex flex-col gap-2">
