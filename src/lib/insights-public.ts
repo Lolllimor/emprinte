@@ -1,6 +1,23 @@
 import { resolvePublicFetchUrl } from '@/lib/api';
 import type { InsightArticle } from '@/types';
 
+/** Public list for `/blog` — same source as admin (`GET /api/insights`). */
+export async function fetchInsightArticlesList(): Promise<
+  InsightArticle[] | null
+> {
+  try {
+    const res = await fetch(resolvePublicFetchUrl('insights'), {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return null;
+    const data: unknown = await res.json();
+    if (!Array.isArray(data)) return null;
+    return data as InsightArticle[];
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchInsightArticleById(
   id: string,
 ): Promise<InsightArticle | null> {

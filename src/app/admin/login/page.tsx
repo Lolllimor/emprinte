@@ -30,6 +30,14 @@ export default function AdminLoginPage() {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+
+    if (!isBackendApiConfigured()) {
+      setError(
+        'Set NEXT_PUBLIC_API_URL in .env to your API server (login returns a JWT).',
+      );
+      return;
+    }
+
     setBusy(true);
     try {
       const res = await fetch(getApiUrl(AUTH_API.login), {
