@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 
-import { findInsightById } from '@/lib/insights-store';
+import { findInsightById, replaceInsight } from '@/lib/insights-store';
+import { requireEditApiAuth } from '@/lib/edit-api-auth';
+import { insightSchema } from '@/lib/validation/admin';
 
 export async function GET(
   _request: Request,
@@ -17,4 +19,58 @@ export async function GET(
   }
 
   return NextResponse.json(item);
+}
+
+export async function PATCH(
+  request: Request,
+  context: { params: Promise<{ id: string }> },
+) {
+  const denied = requireEditApiAuth(request);
+  if (denied) return denied;
+
+  const { id } = await context.params;
+  const idTrimmed = id?.trim();
+  if (!idTrimmed) {
+    return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
+  }
+
+  const body = await request.json().catch(() => null);
+  const parsed = insightSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        error: 'Invalid input',
+        details: parsed.error.flatten().fieldErrors,
+      },
+      { status: 400 },
+    );
+  }
+
+  if (!findInsightById(idTrimmed)) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
+  const {
+    title,
+    description,
+    date,
+    image,
+    href,
+    body: articleBody,
+  } = parsed.data;
+
+  const item = {
+    id: idTrimmed,
+    title,
+    description,
+    date,
+    image,
+    ...(articleBody ? { body: articleBody } : {}),
+    ...(href ? { href } : {}),
+  };
+
+  replaceInsight(item);
+
+  return NextResponse.json({ ok: true, data: item });
 }

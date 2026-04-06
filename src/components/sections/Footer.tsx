@@ -84,6 +84,18 @@ export function Footer({
                   >
                     About Us
                   </a>
+                  <a
+                    href="/privacy-policy"
+                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
+                  >
+                    Privacy Policy
+                  </a>
+                  <a
+                    href="/request-account-deletion"
+                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
+                  >
+                    Request account deletion
+                  </a>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-2 md:gap-6">

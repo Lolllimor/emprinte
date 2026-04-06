@@ -32,8 +32,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const { title, description, date, image, href, body: articleBody } =
-    parsed.data;
+  const {
+    title,
+    description,
+    date,
+    image,
+    href,
+    body: articleBody,
+  } = parsed.data;
 
   const id = String(Date.now());
   const item = {
@@ -69,8 +75,15 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const { id, title, description, date, image, href, body: articleBody } =
-    parsed.data;
+  const {
+    id,
+    title,
+    description,
+    date,
+    image,
+    href,
+    body: articleBody,
+  } = parsed.data;
 
   if (!findInsightById(id)) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });

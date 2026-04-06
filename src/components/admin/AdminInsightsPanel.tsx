@@ -1,15 +1,17 @@
 'use client';
 
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState, type FormEvent } from 'react';
 
+import { FieldLabel, LabeledInput, LabeledTextarea } from './LabeledField';
 import { useAdminInsights } from '@/hooks/admin/useAdminInsights';
-import type { InsightArticle } from '@/types';
-import { AdminModal } from '@/components/admin/AdminModal';
-import { LabeledInput, LabeledTextarea } from './LabeledField';
 import { PrimarySubmitButton } from './PrimarySubmitButton';
+import { AdminModal } from '@/components/admin/AdminModal';
+import { getApiErrorMessage } from '@/lib/api-errors';
 import { FormStatusBanner } from './FormStatusBanner';
+import { editApiAuthHeaders } from '@/lib/api';
+import type { InsightArticle } from '@/types';
 
 /** Matches `BlogArticleList` grid card shell (public blog). */
 const adminBlogCardShell =
@@ -122,8 +124,24 @@ function AdminBlogPostCard({
   );
 }
 
+const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
+const ALLOWED_IMAGE_MIME = new Set(['image/jpeg', 'image/jpg', 'image/png']);
+
+function validateImageFileClient(file: File): string | null {
+  if (file.type && !ALLOWED_IMAGE_MIME.has(file.type)) {
+    return 'Only JPG and PNG files are allowed.';
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    return 'File must be 3 MB or smaller.';
+  }
+  return null;
+}
+
 export function AdminInsightsPanel() {
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [articleModalOpen, setArticleModalOpen] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const imageFileInputRef = useRef<HTMLInputElement>(null);
 
   const {
     listLoading,
@@ -163,6 +181,46 @@ export function AdminInsightsPanel() {
 
   const handleFormSubmit = (e: FormEvent) => {
     void submit(e);
+  };
+
+  const handleHeroImageFile = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    const clientErr = validateImageFileClient(file);
+    if (clientErr) {
+      setUploadError(clientErr);
+      return;
+    }
+
+    setUploadError(null);
+    setUploadingImage(true);
+    try {
+      const body = new FormData();
+      body.append('file', file);
+      const res = await fetch('/api/upload/cloudinary', {
+        method: 'POST',
+        headers: editApiAuthHeaders(),
+        body,
+      });
+      const data = (await res.json().catch(() => ({}))) as { url?: string };
+      if (!res.ok) {
+        setUploadError(getApiErrorMessage(data, 'Upload failed'));
+        return;
+      }
+      if (typeof data.url === 'string' && data.url) {
+        setField('image', data.url);
+      } else {
+        setUploadError('Upload did not return an image URL.');
+      }
+    } catch {
+      setUploadError('Upload failed.');
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   return (
@@ -218,7 +276,8 @@ export function AdminInsightsPanel() {
                 No posts yet
               </p>
               <p className="mx-auto mt-2 max-w-md font-campton text-sm font-medium leading-relaxed text-[#7B7B7B]">
-                Click <span className="font-semibold text-[#142218]">New post</span>{' '}
+                Click{' '}
+                <span className="font-semibold text-[#142218]">New post</span>{' '}
                 above to create your first article.
               </p>
             </div>
@@ -246,7 +305,7 @@ export function AdminInsightsPanel() {
         description={
           editingId
             ? 'Update the fields below and save. Changes appear on the live site right away.'
-            : 'Add title, excerpt, optional full article, date, and image URL. Publish when you are ready.'
+            : 'Add title, excerpt, optional full article, date, and hero image (upload or URL). Publish when you are ready.'
         }
         wide
       >
@@ -286,20 +345,71 @@ export function AdminInsightsPanel() {
             rows={10}
             placeholder="Use blank lines between paragraphs."
           />
-          <div className="grid gap-6 sm:grid-cols-2">
-            <LabeledInput
-              label="Publication date"
-              type="date"
-              value={form.date}
-              onChange={(e) => setField('date', e.target.value)}
-              required
-            />
+          <LabeledInput
+            label="Publication date"
+            type="date"
+            value={form.date}
+            onChange={(e) => setField('date', e.target.value)}
+            required
+          />
+
+          <div className="space-y-3">
+            <FieldLabel label="Hero image">
+              <input
+                ref={imageFileInputRef}
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,.jpg,.jpeg,.png"
+                className="sr-only"
+                aria-label="Upload hero image"
+                onChange={(e) => {
+                  void handleHeroImageFile(e);
+                }}
+              />
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  disabled={uploadingImage}
+                  onClick={() => imageFileInputRef.current?.click()}
+                  className="inline-flex items-center justify-center rounded-xl border-2 border-[#015B51] bg-white px-4 py-2.5 font-campton text-sm font-semibold text-[#015B51] shadow-[0_1px_2px_rgba(20,34,24,0.04)] transition hover:border-[#014238] hover:bg-[#015B51]/08 hover:text-[#014238] disabled:pointer-events-none disabled:opacity-50"
+                >
+                  {uploadingImage ? 'Uploading…' : 'Upload image'}
+                </button>
+                {form.image ? (
+                  <span className="font-campton text-xs font-medium text-[#5a6570]">
+                    URL filled — you can replace by uploading again or edit the
+                    field below.
+                  </span>
+                ) : (
+                  <span className="font-campton text-xs font-medium text-[#5a6570]">
+                    JPG or PNG, up to 3 MB. Or paste a URL below.
+                  </span>
+                )}
+              </div>
+              {form.image ? (
+                <div className="relative mt-2 aspect-video w-full max-w-md overflow-hidden rounded-xl border border-[#015B51]/12 bg-[#dfecea]">
+                  <img
+                    src={form.image}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                </div>
+              ) : null}
+              {uploadError ? (
+                <p
+                  className="font-campton text-sm font-medium text-red-700"
+                  role="alert"
+                >
+                  {uploadError}
+                </p>
+              ) : null}
+            </FieldLabel>
+
             <LabeledInput
               label="Image URL"
               type="url"
               value={form.image}
               onChange={(e) => setField('image', e.target.value)}
-              placeholder="https://..."
+              placeholder="https://… — set automatically after upload, or paste"
               required
             />
           </div>

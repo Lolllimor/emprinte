@@ -46,11 +46,12 @@ export async function POST(request: Request) {
   const { fullName, email, phone } = parsed.data;
   const emailKey = normalizeEmail(email);
 
-  if (
-    subscribers.some((s) => normalizeEmail(s.email) === emailKey)
-  ) {
+  if (subscribers.some((s) => normalizeEmail(s.email) === emailKey)) {
     return NextResponse.json(
-      { error: 'Already subscribed', message: 'This email is already on the list.' },
+      {
+        error: 'Already subscribed',
+        message: 'This email is already on the list.',
+      },
       { status: 409 },
     );
   }

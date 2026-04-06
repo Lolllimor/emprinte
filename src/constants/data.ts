@@ -23,6 +23,11 @@ export const footerNavigation: NavigationLink[] = [
   { label: 'Bootcamps', href: '#bootcamps' },
   { label: 'Initiatives', href: '#initiatives' },
   { label: 'About Us', href: '#about' },
+  { label: 'Privacy Policy', href: '/privacy-policy' },
+  {
+    label: 'Request account deletion',
+    href: '/request-account-deletion',
+  },
 ];
 
 export const socialMediaLinks: SocialMediaLink[] = [

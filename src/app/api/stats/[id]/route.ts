@@ -21,7 +21,10 @@ export async function PUT(
   const index = parseStatIndex(id?.trim() ?? '');
   if (index === null) {
     return NextResponse.json(
-      { error: 'Invalid id', message: 'Expected a non-negative integer index.' },
+      {
+        error: 'Invalid id',
+        message: 'Expected a non-negative integer index.',
+      },
       { status: 400 },
     );
   }

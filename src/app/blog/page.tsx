@@ -17,13 +17,13 @@ export const metadata: Metadata = {
 
 export default async function BlogPage() {
   const settings = await getSiteSettings();
-  const fromApi = await fetchInsightArticlesList();
-  const articles = fromApi ?? insightArticles;
+  const articles = await fetchInsightArticlesList();
+
 
   return (
     <main className="relative flex min-h-screen w-full flex-col bg-white">
       <Header contactEmail={settings.contactInfo.email} />
-      <BlogArticleList articles={articles} />
+      <BlogArticleList articles={articles ?? []} />
       <Footer contactInfo={settings.contactInfo} />
     </main>
   );

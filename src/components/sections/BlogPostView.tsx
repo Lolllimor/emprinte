@@ -52,7 +52,7 @@ export function BlogPostView({ article }: BlogPostViewProps) {
 
   return (
     <article className="w-full bg-[#f4faf8]">
-      <div className="border-b border-[#015B51]/[0.06] bg-[#eef8f5]">
+      <div className=" bg-[#eef8f5]">
         <div className={`${articleShell} pt-7 pb-9 md:pt-9 md:pb-10`}>
           <Link
             href="/blog"
@@ -91,7 +91,7 @@ export function BlogPostView({ article }: BlogPostViewProps) {
           />
         </figure>
 
-        <div className="mt-8 w-full max-w-3xl md:mt-10 lg:max-w-[40rem]">
+        <div className="mt-8 w-full  md:mt-10 ">
           <ArticleParagraphs text={proseText} isLead={hasBody} />
 
           {showExternal && !hasBody ? (

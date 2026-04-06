@@ -98,11 +98,14 @@ export function useAdminInsights() {
 
       try {
         if (editingId) {
-          const res = await fetch(getApiUrl('insights'), {
-            method: 'PATCH',
-            headers: jsonHeadersWithEditAuth(),
-            body: JSON.stringify({ id: editingId, ...payload }),
-          });
+          const res = await fetch(
+            getApiUrl(`insights/${editingId}`),
+            {
+              method: 'PATCH',
+              headers: jsonHeadersWithEditAuth(),
+              body: JSON.stringify(payload),
+            },
+          );
           const data = await res.json();
           if (!res.ok) {
             setStatus({
