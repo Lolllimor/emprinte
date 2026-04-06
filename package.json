@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@react-icons/all-files": "^4.1.0",
+    "cloudinary": "^2.9.0",
     "jose": "^6.2.2",
     "next": "16.0.10",
     "react": "19.2.0",

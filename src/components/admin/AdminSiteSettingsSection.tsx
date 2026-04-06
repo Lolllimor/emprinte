@@ -1,7 +1,6 @@
 'use client';
 
 import { AdminSection } from './AdminSection';
-import { NavigationLinksEditor } from './NavigationLinksEditor';
 import { FormStatusBanner } from './FormStatusBanner';
 import { PrimarySubmitButton } from './PrimarySubmitButton';
 import {
@@ -23,9 +22,6 @@ export function AdminSiteSettingsSection({ embedded }: AdminSiteSettingsSectionP
     status,
     submit,
     statsList,
-    updateNavLink,
-    addNavLink,
-    removeNavLink,
     setContactEmail,
     updatePhone,
     addPhone,

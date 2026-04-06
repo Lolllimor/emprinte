@@ -1,6 +1,4 @@
 "use client"
-import { CommunityIcon } from '../ui/CommunityIcon';
-import { CalendarIcon } from '../ui/Calendar';
 
 export function Initiatives() {
   return (

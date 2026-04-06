@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { Logo } from '@/components/ui/Logo';
 import { contactInfo as defaultContactInfo } from '@/constants/data';
 import type { ContactInfo } from '@/types';
@@ -8,6 +10,9 @@ type FooterProps = {
   /** From `GET /api/settings` (`contactInfo`). */
   contactInfo?: ContactInfo;
 };
+
+const navLinkClass =
+  'text-base leading-[28px]  text-[#7B7B7B] font-campton';
 
 export function Footer({
   contactInfo = defaultContactInfo,
@@ -54,48 +59,30 @@ export function Footer({
                   Navigation
                 </p>
                 <div className="flex flex-col gap-6 font-[20px] text-[#2B2742]">
-                  <a
-                    href="/"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
-                  >
+                  <Link href="/" className={navLinkClass}>
                     Home
-                  </a>
-                  <a
-                    href="/blog"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
-                  >
+                  </Link>
+                  <Link href="/blog" className={navLinkClass}>
                     Blog
-                  </a>
-                  <a
-                    href="#bootcamps"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
-                  >
+                  </Link>
+                  <a href="#bootcamps" className={navLinkClass}>
                     Bootcamps
                   </a>
-                  <a
-                    href="#initiatives"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
-                  >
+                  <a href="#initiatives" className={navLinkClass}>
                     Initiatives
                   </a>
-                  <a
-                    href="#about"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
-                  >
+                  <a href="#about" className={navLinkClass}>
                     About Us
                   </a>
-                  <a
-                    href="/privacy-policy"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
-                  >
+                  <Link href="/privacy-policy" className={navLinkClass}>
                     Privacy Policy
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/request-account-deletion"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
+                    className={navLinkClass}
                   >
                     Request account deletion
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-2 md:gap-6">
@@ -149,7 +136,7 @@ export function Footer({
           <div className="flex flex-col items-start gap-2 w-full">
             <div className="w-full h-px bg-[#015B51]"></div>
             <div className="text-xs leading-[28px] font-semibold text-[#7B7B7B] font-campton">
-              @2025 Emprinte Readers Hub All Right Reserved
+              @2026 Emprinte Readers Hub All Right Reserved
             </div>
           </div>
         </div>

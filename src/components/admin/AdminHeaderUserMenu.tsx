@@ -8,10 +8,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { profileFromJwtToken, profileInitial } from '@/lib/admin-profile';
 import { clearStoredEditToken, getEditTokenForClient } from '@/lib/api';
 
-export function AdminHeaderUserMenu() {
+function AdminHeaderUserMenuInner() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
   const router = useRouter();
 
   const token = typeof window !== 'undefined' ? getEditTokenForClient() : '';
@@ -20,10 +19,6 @@ export function AdminHeaderUserMenu() {
   const subtitle = preview.email || preview.name || 'Account';
 
   const close = useCallback(() => setOpen(false), []);
-
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -117,4 +112,9 @@ export function AdminHeaderUserMenu() {
       ) : null}
     </div>
   );
+}
+
+export function AdminHeaderUserMenu() {
+  const pathname = usePathname();
+  return <AdminHeaderUserMenuInner key={pathname} />;
 }

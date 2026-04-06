@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import { Header } from '@/components/sections/Header';
 import { Footer } from '@/components/sections/Footer';
 import { BlogArticleList } from '@/components/sections/BlogArticleList';
-import { insightArticles } from '@/constants/data';
 import { fetchInsightArticlesList } from '@/lib/insights-public';
 import { getSiteSettings } from '@/lib/site-settings-server';
 
