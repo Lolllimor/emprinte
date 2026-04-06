@@ -1,8 +1,22 @@
+import Link from 'next/link';
+
 import { Logo } from '@/components/ui/Logo';
+import { contactInfo as defaultContactInfo } from '@/constants/data';
+import type { ContactInfo } from '@/types';
 import { ImLinkedin2 } from 'react-icons/im';
 import { RiInstagramFill } from 'react-icons/ri';
 
-export function Footer() {
+type FooterProps = {
+  /** From `GET /api/settings` (`contactInfo`). */
+  contactInfo?: ContactInfo;
+};
+
+const navLinkClass =
+  'text-base leading-[28px]  text-[#7B7B7B] font-campton';
+
+export function Footer({
+  contactInfo = defaultContactInfo,
+}: FooterProps) {
   return (
     <footer className="w-full bg-white px-4 py-9 xl:px-[120px] lg:px-[64px] md:px-[32px]  ">
       <div className="max-w-[1440px] mx-auto  flex flex-col items-start gap-2.5">
@@ -17,7 +31,7 @@ export function Footer() {
                     Email
                   </div>
                   <div className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton">
-                    hello@emprintereaders.com
+                    {contactInfo.email}
                   </div>
                 </div>
 
@@ -26,12 +40,14 @@ export function Footer() {
                     Phone
                   </div>
                   <div className="flex flex-col items-start gap-2">
-                    <div className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton">
-                      Praise - 09076899091
-                    </div>
-                    <div className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton">
-                      Adepeju - 08168211428
-                    </div>
+                    {contactInfo.phone.map((p) => (
+                      <div
+                        key={`${p.label}-${p.number}`}
+                        className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton"
+                      >
+                        {p.label} - {p.number}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -43,30 +59,30 @@ export function Footer() {
                   Navigation
                 </p>
                 <div className="flex flex-col gap-6 font-[20px] text-[#2B2742]">
-                  <a
-                    href="/"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
-                  >
+                  <Link href="/" className={navLinkClass}>
                     Home
-                  </a>
-                  <a
-                    href="#bootcamps"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
-                  >
+                  </Link>
+                  <Link href="/blog" className={navLinkClass}>
+                    Blog
+                  </Link>
+                  <a href="#bootcamps" className={navLinkClass}>
                     Bootcamps
                   </a>
-                  <a
-                    href="#initiatives"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
-                  >
+                  <a href="#initiatives" className={navLinkClass}>
                     Initiatives
                   </a>
-                  <a
-                    href="#about"
-                    className="text-base leading-[28px]  text-[#7B7B7B] font-campton"
-                  >
+                  <a href="#about" className={navLinkClass}>
                     About Us
                   </a>
+                  <Link href="/privacy-policy" className={navLinkClass}>
+                    Privacy Policy
+                  </Link>
+                  <Link
+                    href="/request-account-deletion"
+                    className={navLinkClass}
+                  >
+                    Request account deletion
+                  </Link>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-2 md:gap-6">
@@ -120,7 +136,7 @@ export function Footer() {
           <div className="flex flex-col items-start gap-2 w-full">
             <div className="w-full h-px bg-[#015B51]"></div>
             <div className="text-xs leading-[28px] font-semibold text-[#7B7B7B] font-campton">
-              @2025 Emprinte Readers Hub All Right Reserved
+              @2026 Emprinte Readers Hub All Right Reserved
             </div>
           </div>
         </div>

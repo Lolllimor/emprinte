@@ -7,6 +7,8 @@ export interface ButtonProps {
 }
 
 export interface StatCardProps {
+  /** Stable row id from settings API (`GET /api/settings`). */
+  id?: string;
   value: string;
   label: string;
 }
@@ -78,6 +80,8 @@ export interface InsightArticle {
   title: string;
   description: string;
   image: string;
+  /** Full article text shown on `/blog/[id]`. */
+  body?: string;
   href?: string;
 }
 
@@ -87,3 +91,89 @@ export interface DesktopNavigationProps {
   linkClassName?: string;
   onLinkClick?: (link: NavigationLink) => void;
 }
+
+export interface StatsProps {
+  value: string;
+  label: string;
+}
+
+export interface BookProgressProps {
+  booksCollected: number;
+  totalBooks: number;
+  pricePerBook: number;
+}
+
+/** Payload for creating an insight from the admin form (no server id yet). */
+export interface InsightFormInput {
+  title: string;
+  description: string;
+  body: string;
+  date: string;
+  image: string;
+  href: string;
+}
+
+/** Site config editable from admin; reuses public content shapes. */
+export interface SiteSettings {
+  navigationLinks: NavigationLink[];
+  footerNavigation: NavigationLink[];
+  socialMediaLinks: SocialMediaLink[];
+  contactInfo: ContactInfo;
+  stats?: StatCardProps[];
+}
+
+/** Async form feedback used across admin sections. */
+export type FormSubmitStatus =
+  | { type: 'idle' }
+  | { type: 'loading' }
+  | { type: 'success'; message?: string }
+  | { type: 'error'; message?: string };
+
+export type AdminManageTile =
+  | 'buildAReader'
+  | 'testimonials'
+  | 'settings';
+
+/** Newsletter signup from `/api/emails` (admin list / export). */
+export interface NewsletterSubscriber {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  createdAt: string | null;
+}
+
+export interface Snapshot {
+  booksCollected: number | null;
+  contactEmail: string | null;
+  totalBooks: number | null;
+  testimonialCount: number;
+  insightCount: number;
+  error: string | null;
+  loading: boolean;
+}
+
+export interface AdminDashboardProps {
+  refreshKey: number;
+  onManage: (tile: AdminManageTile) => void;
+}
+
+export type DashboardTile =
+  | {
+      key: string;
+      title: string;
+      blurb: string;
+      statLabel: string;
+      highlight: string;
+      detail: string | null;
+      href: string;
+    }
+  | {
+      key: string;
+      title: string;
+      blurb: string;
+      statLabel: string;
+      highlight: string;
+      detail: string | null;
+      manage: AdminManageTile;
+    };

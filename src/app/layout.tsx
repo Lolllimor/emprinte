@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Lora, Open_Sans } from 'next/font/google';
+
+import { AppToaster } from '@/components/AppToaster';
 import './globals.css';
 
 const lora = Lora({
@@ -33,6 +35,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${lora.variable} ${openSans.variable} antialiased`}>
         {children}
+        <AppToaster />
       </body>
     </html>
   );

@@ -1,17 +1,22 @@
 
 import React from 'react';
+
 import { StatCard } from '@/components/ui/StatCard';
+import { StatRowSkeleton } from './StatRowSkeleton';
 import type { StatCardProps } from '@/types';
 
 interface StatsListProps {
   stats: StatCardProps[];
+  loading: boolean;
 }
 
-export function StatsList({ stats }: StatsListProps) {
+export function StatsList({ stats, loading }: StatsListProps) {
   return (
     <div className="bg-[#142218]">
       <div className="mx-auto w-full h-full px-6 py-6 xl:py-16 flex flex-col md:flex-row items-start lg:items-center lg:justify-center md:justify-between gap-4 md:gap-2 lg:gap-6 xl:gap-12 xl:justify-between xl:max-w-[1200px]">
-        {stats.map((stat, index) => (
+        {loading ? Array.from({ length: 3 }).map((_, index) => (
+          <StatRowSkeleton key={index} />
+        )) : stats.map((stat, index) => (
           <React.Fragment key={index}>
             <StatCard value={stat.value} label={stat.label} />
             {index < stats.length - 1 && (

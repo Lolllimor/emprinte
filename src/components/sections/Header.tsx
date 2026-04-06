@@ -1,24 +1,46 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
 import { Button } from '@/components/ui/Button';
 import { HamburgerMenu } from '@/components/ui/HamburgerMenu';
 import { MenuOverlay } from '@/components/ui/MenuOverlay';
 import { MenuPanel } from '@/components/ui/MenuPanel';
 import { DesktopNavigation } from '@/components/ui/DesktopNavigation';
 import { useMenuState } from '@/hooks/useMenuState';
-import { navigationLinks } from '@/constants/data';
+import { contactInfo as defaultContact, navigationLinks } from '@/constants/data';
 import type { NavigationLink } from '@/types';
 import Image from 'next/image';
 
-export function Header() {
+type HeaderProps = {
+  /** Primary contact email for mailto (from `GET /api/settings`). */
+  contactEmail?: string;
+};
+
+const LG_MEDIA = '(min-width: 1024px)';
+
+function subscribeLgMedia(callback: () => void) {
+  const mq = window.matchMedia(LG_MEDIA);
+  mq.addEventListener('change', callback);
+  return () => mq.removeEventListener('change', callback);
+}
+
+function lgMediaSnapshot() {
+  return window.matchMedia(LG_MEDIA).matches;
+}
+
+function lgMediaServerSnapshot() {
+  return false;
+}
+
+export function Header({
+  contactEmail = defaultContact.email,
+}: HeaderProps) {
   const menuState = useMenuState();
-  const [isDesktop, setIsDesktop] = useState<boolean>(() => {
-    if (typeof window === 'undefined') {
-      return false;
-    }
-    return window.innerWidth >= 1024;
-  });
+  const isDesktop = useSyncExternalStore(
+    subscribeLgMedia,
+    lgMediaSnapshot,
+    lgMediaServerSnapshot,
+  );
 
   const handleNavigation = useCallback((link: NavigationLink) => {
     if (typeof window === 'undefined') {
@@ -50,22 +72,10 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1024px)');
-
-    const handleChange = (event: MediaQueryListEvent) => {
-      setIsDesktop(event.matches);
-
-      if (event.matches) {
-        menuState.close();
-      }
-    };
-
-    setIsDesktop(mediaQuery.matches);
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [menuState]);
-
+    if (isDesktop) {
+      menuState.close();
+    }
+  }, [isDesktop, menuState]);
 
   return (
     <header className="w-full bg-white/90 backdrop-blur-sm py-4 px-8 xl:px-0   sticky top-0 z-50">
@@ -84,7 +94,7 @@ export function Header() {
           variant="primary"
           className="hidden lg:block font-semibold rounded-xl lg:px-[25px]"
           onClick={() => {
-            window.open('mailto:hello@emprintereaders.com', '_blank');
+            window.open(`mailto:${encodeURIComponent(contactEmail)}`, '_blank');
           }}
         >
           Contact Us
@@ -106,7 +116,10 @@ export function Header() {
                 onClose={menuState.close}
                 onLinkClick={handleNavigation}
                 onContactClick={() => {
-                  window.open('mailto:hello@emprintereaders.com', '_blank');
+                  window.open(
+                    `mailto:${encodeURIComponent(contactEmail)}`,
+                    '_blank',
+                  );
                 }}
               />
             </div>
