@@ -1,5 +1,6 @@
 'use client';
-import { Button } from '@/components/ui/Button';
+
+import Link from 'next/link';
 
 export function Hero() {
   return (
@@ -30,27 +31,24 @@ export function Hero() {
                 <span className="text-[#142218]">
                   Transforming <br /> Africa,
                 </span>{' '}
-                <span className="text-[#015B51]">
+                <span className="text-[#005D51]">
                   One Book
                   <br className="md:hidden block lg:block xl:hidden" /> at a
                   Time
                 </span>
               </h1>
-              <p className="text-base leading-[130%] font-medium text-[#7B7B7B] font-campton">
+              <p className="text-base leading-[130%] font-medium text-[#7B7B7B] font-poppins">
                 Join Emprinte Readers Hub – Where Books Connect, Inspire, and
                 Change Lives.
               </p>
             </div>
 
-            <Button
-              variant="primary"
-              className="w-full font-campton max-w-[276px] cursor-pointer"
-              onClick={() => {
-                window.open('https://bit.ly/emprinteapplication', '_blank');
-              }}
+            <Link
+              href="/apply"
+              className="lg:h-[56px] h-10 lg:px-10 px-5 flex justify-center items-center gap-2.5 rounded-lg font-medium transition-colors bg-[#005D51] text-white hover:bg-[#004438] text-base lg:text-xl leading-[150%] font-poppins w-full max-w-[276px]"
             >
               Join Now
-            </Button>
+            </Link>
           </div>
         </div>
       </div>
