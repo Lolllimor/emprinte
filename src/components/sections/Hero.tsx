@@ -2,7 +2,10 @@
 
 import Link from 'next/link';
 
+import { membershipApplyHref } from '@/constants/apply';
+
 export function Hero() {
+  const applyHref = membershipApplyHref();
   return (
     <section className="w-full bg-white py-6 xl:px-0 px-6 md:pb-16 md:pt-0 md:px-8 xl:min-h-[820px] max-w-[1200px] mx-auto flex">
       <div className="max-w-[390px] md:max-w-7xl mx-auto flex flex-col items-center gap-6 md:gap-12 flex-1 ">
@@ -44,7 +47,7 @@ export function Hero() {
             </div>
 
             <Link
-              href="/apply"
+              href={applyHref}
               className="lg:h-[56px] h-10 lg:px-10 px-5 flex justify-center items-center gap-2.5 rounded-lg font-medium transition-colors bg-[#005D51] text-white hover:bg-[#004438] text-base lg:text-xl leading-[150%] font-poppins w-full max-w-[276px]"
             >
               Join Now
