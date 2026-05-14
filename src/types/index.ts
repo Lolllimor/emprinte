@@ -76,11 +76,13 @@ export interface Testimonial {
 
 export interface InsightArticle {
   id: string;
+  /** Public URL segment: `/blog/{slug}`. Falls back to `id` when absent. */
+  slug?: string;
   date: string;
   title: string;
   description: string;
   image: string;
-  /** Full article text shown on `/blog/[id]`. */
+  /** Full article text or HTML shown on `/blog/[slug]`. */
   body?: string;
   href?: string;
   /** Byline on the article page (optional). */
@@ -118,6 +120,8 @@ export interface InsightFormInput {
   href: string;
   authorName: string;
   authorRole: string;
+  /** URL segment (optional); generated from title when empty on publish. */
+  slug: string;
 }
 
 /** Site config editable from admin; reuses public content shapes. */

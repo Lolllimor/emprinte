@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
+
+import { articlePublicPath } from '@/lib/insight-slug';
 import type { InsightArticle } from '@/types';
 
 type BlogArticleListProps = {
@@ -24,7 +26,7 @@ function ArticleCard({
       }
     >
       <Link
-        href={`/blog/${article.id}`}
+        href={`/blog/${encodeURIComponent(articlePublicPath(article))}`}
         className={
           isFeatured
             ? 'flex min-h-0 flex-1 flex-col gap-4 md:flex-row md:gap-6 lg:gap-8'

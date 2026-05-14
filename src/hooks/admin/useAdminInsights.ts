@@ -72,6 +72,7 @@ export function useAdminInsights() {
       href: item.href ?? '',
       authorName: item.authorName ?? '',
       authorRole: item.authorRole ?? '',
+      slug: item.slug ?? '',
     });
     setStatus({ type: 'idle' });
   }, []);
@@ -83,8 +84,8 @@ export function useAdminInsights() {
   }, []);
 
   const submit = useCallback(
-    async (e: FormEvent) => {
-      e.preventDefault();
+    async (e?: FormEvent) => {
+      e?.preventDefault();
       setStatus({ type: 'loading' });
 
       const wasEditing = editingId !== null;
@@ -100,6 +101,8 @@ export function useAdminInsights() {
       const ar = form.authorRole.trim();
       if (an) payload.authorName = an;
       if (ar) payload.authorRole = ar;
+      const slugTrim = form.slug.trim().toLowerCase();
+      if (slugTrim) payload.slug = slugTrim;
 
       try {
         if (editingId) {

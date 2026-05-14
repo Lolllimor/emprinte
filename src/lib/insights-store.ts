@@ -15,6 +15,11 @@ export function findInsightById(id: string): InsightArticle | undefined {
   return adminInsights.find((i) => i.id === id);
 }
 
+export function findInsightBySlugOrId(param: string): InsightArticle | undefined {
+  const p = param.trim();
+  return adminInsights.find((i) => i.id === p || i.slug === p);
+}
+
 export function prependInsight(item: InsightArticle): void {
   adminInsights = [item, ...adminInsights];
 }

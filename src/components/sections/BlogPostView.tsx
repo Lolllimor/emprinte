@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { ArticleShareBar } from '@/components/blog/ArticleShareBar';
+import { isProbablyRichHtml, sanitizeArticleHtml } from '@/lib/sanitize-article-html';
 import type { InsightArticle } from '@/types';
 
 const articleShell =
@@ -52,9 +53,22 @@ function ArticleParagraphs({ text, isLead }: { text: string; isLead?: boolean })
   );
 }
 
+function ArticleBodyContent({ text, isLead }: { text: string; isLead?: boolean }) {
+  if (isProbablyRichHtml(text)) {
+    const html = sanitizeArticleHtml(text);
+    if (!html) return null;
+    return (
+      <div
+        className="article-body max-w-none font-poppins text-sm leading-[1.75] text-[#2d3640] sm:text-base sm:leading-[1.72] [&_a]:text-[#005D51] [&_blockquote]:my-6 [&_blockquote]:border-l-2 [&_blockquote]:border-[#005D51]/25 [&_blockquote]:pl-4 [&_blockquote]:font-lora [&_blockquote]:italic [&_blockquote]:text-[#4d575f] [&_h2]:mt-10 [&_h2]:font-lora [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-[#142218] [&_h2]:first:mt-0 [&_h3]:mt-8 [&_h3]:font-lora [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[#142218] [&_li]:my-1.5 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-4 [&_p]:first:mt-0 [&_p]:last:mb-0 [&_strong]:font-semibold [&_strong]:text-[#142218] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    );
+  }
+  return <ArticleParagraphs text={text} isLead={isLead} />;
+}
+
 type BlogPostViewProps = {
   article: InsightArticle;
-  /** Canonical URL for this post (e.g. `https://…/blog/my-id`). */
   articleUrl: string;
 };
 
@@ -71,28 +85,28 @@ export function BlogPostView({ article, articleUrl }: BlogPostViewProps) {
   return (
     <article className="w-full bg-white">
       <div className={`${articleShell} pt-7 pb-9 md:pt-9 md:pb-10`}>
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-1 font-poppins text-xs font-semibold text-[#005D51] transition-colors hover:text-[#004438]"
-          >
-            <span aria-hidden>←</span>
-            <span>All posts</span>
-          </Link>
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-1 font-poppins text-xs font-semibold text-[#005D51] transition-colors hover:text-[#004438]"
+        >
+          <span aria-hidden>←</span>
+          <span>All posts</span>
+        </Link>
 
-          <header className="mt-6 flex w-full flex-col gap-3 sm:gap-4 lg:mt-8">
-            <p className="font-poppins text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#005D51]">
-              <time dateTime={article.date}>{article.date}</time>
+        <header className="mt-6 flex w-full flex-col gap-3 sm:gap-4 lg:mt-8">
+          <p className="font-poppins text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#005D51]">
+            <time dateTime={article.date}>{article.date}</time>
+          </p>
+          <h1 className="max-w-4xl font-lora text-xl font-bold leading-snug tracking-tight text-[#142218] sm:text-2xl md:text-3xl lg:text-[2rem]">
+            {article.title}
+          </h1>
+          {hasBody && article.description.trim() ? (
+            <p className="w-full max-w-none border-l-2 border-[#005D51]/35 pl-4 font-lora text-sm italic leading-snug text-[#4d575f] sm:text-base lg:text-lg">
+              {article.description}
             </p>
-            <h1 className="max-w-4xl font-lora text-xl font-bold leading-snug tracking-tight text-[#142218] sm:text-2xl md:text-3xl lg:text-[2rem]">
-              {article.title}
-            </h1>
-            {hasBody && article.description.trim() ? (
-              <p className="w-full max-w-none border-l-2 border-[#005D51]/35 pl-4 font-lora text-sm italic leading-snug text-[#4d575f] sm:text-base lg:text-lg">
-                {article.description}
-              </p>
-            ) : null}
-          </header>
-        </div>
+          ) : null}
+        </header>
+      </div>
 
       <div className={`${articleShell} pb-14 pt-7 md:pb-16 md:pt-9`}>
         <figure className="relative aspect-2/1 w-full overflow-hidden rounded-xl bg-[#dfecea] shadow-[0_12px_36px_-20px_rgba(20,34,24,0.28)] ring-1 ring-[#005D51]/10 lg:max-h-[min(480px,52vh)] lg:min-h-[260px]">
@@ -108,15 +122,19 @@ export function BlogPostView({ article, articleUrl }: BlogPostViewProps) {
         </figure>
 
         <div className="mt-8 w-full md:mt-10">
-          <ArticleShareBar articleUrl={articleUrl} title={article.title} />
+          <ArticleShareBar
+            className="mb-4"
+            articleUrl={articleUrl}
+            title={article.title}
+          />
 
-          <ArticleParagraphs text={proseText} isLead={hasBody} />
+          <ArticleBodyContent text={proseText} isLead={hasBody} />
 
           {showExternal && !hasBody ? (
             <div className="mt-10 rounded-xl border border-[#005D51]/12 bg-white px-4 py-6">
               <p className="font-poppins text-xs leading-relaxed text-[#5a6570] sm:text-sm">
-                The full story lives on an external site. After you finish
-                here, you can continue there.
+                The full story lives on an external site. After you finish here,
+                you can continue there.
               </p>
               <a
                 href={article.href}
@@ -129,16 +147,22 @@ export function BlogPostView({ article, articleUrl }: BlogPostViewProps) {
             </div>
           ) : null}
 
+          <ArticleShareBar
+            className="mt-12 border-t border-[#005D51]/10 pt-10"
+            articleUrl={articleUrl}
+            title={article.title}
+          />
+
           {article.authorName?.trim() || article.authorRole?.trim() ? (
             <aside
               className="mt-12 border-t border-[#005D51]/10 pt-10 md:mt-16 md:pt-12"
               aria-label="About the author"
             >
-              <div className="relative overflow-hidden rounded-2xl border border-[#005D51]/8 bg-white shadow-[0_1px_0_rgba(0,93,81,0.05),0_28px_56px_-32px_rgba(20,34,24,0.18)] ring-1 ring-[#005D51]/6">
+              <div className="relative overflow-hidden rounded-2xl border border-[#005D51]/10 bg-white">
                 <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-[#f0fffd]/90 via-white to-white" />
                 <div className="relative flex flex-col gap-6 p-6 sm:flex-row sm:items-start sm:gap-8 sm:p-8">
                   <div
-                    className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-[#005D51] text-xl font-semibold tracking-tight text-white shadow-[0_10px_28px_-12px_rgba(0,93,81,0.55)] ring-4 ring-white sm:h-22 sm:w-22 sm:text-2xl"
+                    className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-[#005D51] text-xl font-semibold tracking-tight text-white ring-4 ring-white sm:h-22 sm:w-22 sm:text-2xl"
                     aria-hidden
                   >
                     {authorInitials(

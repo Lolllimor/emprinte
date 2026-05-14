@@ -27,6 +27,17 @@ export const insightSchema = z.object({
       const t = v.trim();
       return t.length ? t.slice(0, 200) : undefined;
     }),
+  slug: z.preprocess(
+    (val) => {
+      if (val === '' || val === undefined || val === null) return undefined;
+      return String(val).trim().toLowerCase();
+    },
+    z
+      .string()
+      .max(96)
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use lowercase letters, numbers, and single hyphens only')
+      .optional(),
+  ),
 });
 
 export const insightUpdateSchema = insightSchema.extend({

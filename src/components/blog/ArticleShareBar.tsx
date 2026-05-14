@@ -9,12 +9,17 @@ import { toast } from 'sonner';
 type ArticleShareBarProps = {
   articleUrl: string;
   title: string;
+  className?: string;
 };
 
 const iconBtn =
-  'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#005D51]/18 bg-white text-[#005D51] shadow-[0_1px_0_rgba(0,93,81,0.04)] transition-colors hover:border-[#005D51]/35 hover:bg-[rgba(0,93,81,0.06)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005D51]';
+  'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#005D51]/18 bg-white text-[#005D51] transition-colors hover:border-[#005D51]/35 hover:bg-[rgba(0,93,81,0.06)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005D51]';
 
-export function ArticleShareBar({ articleUrl, title }: ArticleShareBarProps) {
+export function ArticleShareBar({
+  articleUrl,
+  title,
+  className = '',
+}: ArticleShareBarProps) {
   const [copied, setCopied] = useState(false);
 
   const encodedUrl = encodeURIComponent(articleUrl);
@@ -37,7 +42,9 @@ export function ArticleShareBar({ articleUrl, title }: ArticleShareBarProps) {
 
   return (
     <section
-      className="mt-8 rounded-xl border border-[#005D51]/10 bg-[#fafcfb] px-4 py-5 sm:px-5 md:mt-10"
+      className={['rounded-xl border border-[#005D51]/10 bg-[#fafcfb] px-4 py-5 sm:px-5', className]
+        .filter(Boolean)
+        .join(' ')}
       aria-label="Share this article"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
@@ -91,7 +98,7 @@ export function ArticleShareBar({ articleUrl, title }: ArticleShareBarProps) {
           <p className="font-poppins text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-[#7a858f]">
             Article link
           </p>
-          <div className="mt-2 flex items-stretch gap-2 rounded-lg border border-[#005D51]/12 bg-white shadow-[inset_0_1px_0_rgba(0,93,81,0.03)]">
+          <div className="mt-2 flex items-stretch gap-2 rounded-lg border border-[#005D51]/12 bg-white">
             <p className="min-w-0 flex-1 truncate px-3 py-2.5 font-mono text-[0.7rem] leading-snug text-[#4d575f] sm:text-xs">
               {articleUrl}
             </p>

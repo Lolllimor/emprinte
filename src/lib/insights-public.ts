@@ -19,12 +19,13 @@ export async function fetchInsightArticlesList(): Promise<
   }
 }
 
-export async function fetchInsightArticleById(
-  id: string,
+/** Resolve a post by URL segment (`slug` or legacy `id`). */
+export async function fetchInsightArticleBySlugParam(
+  slug: string,
 ): Promise<InsightArticle | null> {
   try {
     const res = await fetch(
-      resolvePublicFetchUrl(`insights/${encodeURIComponent(id)}`),
+      resolvePublicFetchUrl(`insights/${encodeURIComponent(slug)}`),
       {
         next: { revalidate: 60 },
         ...publicApiFetchInit(),

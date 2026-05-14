@@ -3,6 +3,7 @@ import type { InsightArticle } from '@/types';
 
 type Row = {
   id: string;
+  slug: string;
   date: string;
   title: string;
   description: string;
@@ -13,9 +14,13 @@ type Row = {
   author_role: string | null;
 };
 
+const SELECT_FIELDS =
+  'id, slug, date, title, description, image, body, href, author_name, author_role' as const;
+
 function rowToArticle(r: Row): InsightArticle {
   return {
     id: r.id,
+    slug: r.slug?.trim() || undefined,
     date: r.date,
     title: r.title,
     description: r.description,
@@ -28,8 +33,10 @@ function rowToArticle(r: Row): InsightArticle {
 }
 
 function articleToRow(item: InsightArticle): Record<string, unknown> {
+  const slug = item.slug?.trim() || item.id;
   return {
     id: item.id,
+    slug,
     date: item.date,
     title: item.title,
     description: item.description,
@@ -51,9 +58,7 @@ export async function fetchAllLandingInsightsFromDb(): Promise<
 
   const { data, error } = await sb
     .from('landing_insights')
-    .select(
-      'id, date, title, description, image, body, href, author_name, author_role',
-    )
+    .select(SELECT_FIELDS)
     .order('created_at', { ascending: false });
 
   if (error) {

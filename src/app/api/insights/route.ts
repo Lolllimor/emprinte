@@ -13,6 +13,7 @@ import {
   prependInsight,
   replaceInsight,
 } from '@/lib/insights-store';
+import { pickSlugForCreate, pickSlugForUpdate } from '@/lib/insight-slug';
 import { requireLandingAdminApiAuth } from '@/lib/supabase-api-auth';
 import { insightSchema, insightUpdateSchema } from '@/lib/validation/admin';
 
@@ -51,11 +52,21 @@ export async function POST(request: Request) {
     body: articleBody,
     authorName,
     authorRole,
+    slug: requestedSlug,
   } = parsed.data;
 
   const id = String(Date.now());
+
+  const dbList = await fetchAllLandingInsightsFromDb();
+  const slug = pickSlugForCreate(
+    title,
+    requestedSlug,
+    dbList ?? getAllInsights(),
+  );
+
   const item = {
     id,
+    slug,
     date,
     title,
     description,
@@ -66,7 +77,6 @@ export async function POST(request: Request) {
     ...(authorRole ? { authorRole } : {}),
   };
 
-  const dbList = await fetchAllLandingInsightsFromDb();
   if (dbList !== null) {
     const ok = await insertLandingInsightInDb(item);
     if (!ok) {
@@ -111,25 +121,28 @@ export async function PATCH(request: Request) {
     body: articleBody,
     authorName,
     authorRole,
+    slug: requestedSlug,
   } = parsed.data;
-
-  const item = {
-    id,
-    title,
-    description,
-    date,
-    image,
-    ...(articleBody ? { body: articleBody } : {}),
-    ...(href ? { href } : {}),
-    ...(authorName ? { authorName } : {}),
-    ...(authorRole ? { authorRole } : {}),
-  };
 
   const dbList = await fetchAllLandingInsightsFromDb();
   if (dbList !== null) {
-    if (!dbList.some((r) => r.id === id)) {
+    const existing = dbList.find((r) => r.id === id);
+    if (!existing) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
+    const slug = pickSlugForUpdate(existing, requestedSlug, dbList);
+    const item = {
+      id,
+      slug,
+      title,
+      description,
+      date,
+      image,
+      ...(articleBody ? { body: articleBody } : {}),
+      ...(href ? { href } : {}),
+      ...(authorName ? { authorName } : {}),
+      ...(authorRole ? { authorRole } : {}),
+    };
     const ok = await updateLandingInsightInDb(item);
     if (!ok) {
       return NextResponse.json(
@@ -140,9 +153,23 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ ok: true, data: item });
   }
 
-  if (!findInsightById(id)) {
+  const existing = findInsightById(id);
+  if (!existing) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
+  const slug = pickSlugForUpdate(existing, requestedSlug, getAllInsights());
+  const item = {
+    id,
+    slug,
+    title,
+    description,
+    date,
+    image,
+    ...(articleBody ? { body: articleBody } : {}),
+    ...(href ? { href } : {}),
+    ...(authorName ? { authorName } : {}),
+    ...(authorRole ? { authorRole } : {}),
+  };
 
   replaceInsight(item);
 

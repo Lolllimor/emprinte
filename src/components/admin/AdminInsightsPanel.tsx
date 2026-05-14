@@ -1,19 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState, type FormEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { FieldLabel, LabeledInput, LabeledTextarea } from './LabeledField';
 import { useAdminInsights } from '@/hooks/admin/useAdminInsights';
-import { PrimarySubmitButton } from './PrimarySubmitButton';
-import { AdminModal } from '@/components/admin/AdminModal';
-import { ArticleHeroCropModal } from '@/components/admin/ArticleHeroCropModal';
-import {
-  uploadImageToCloudinary,
-  validateJpegPngUnder3Mb,
-} from '@/lib/client-cloudinary-upload';
-import { FormStatusBanner } from './FormStatusBanner';
+import { articlePublicPath } from '@/lib/insight-slug';
 import type { InsightArticle } from '@/types';
 
 /** Matches `BlogArticleList` grid card shell (public blog). */
@@ -51,23 +42,15 @@ function CardGridSkeleton() {
 
 function AdminBlogPostCard({
   article,
-  isEditing,
-  onEdit,
   onDelete,
 }: {
   article: InsightArticle;
-  isEditing: boolean;
-  onEdit: () => void;
   onDelete: () => void;
 }) {
+  const path = articlePublicPath(article);
+
   return (
-    <article
-      className={`${adminBlogCardShell} ${
-        isEditing
-          ? 'ring-2 ring-[#005D51] ring-offset-2 ring-offset-[#f4faf8]'
-          : ''
-      }`}
-    >
+    <article className={adminBlogCardShell}>
       <div className="relative aspect-2/1 w-full shrink-0 overflow-hidden bg-[#e4f2ef]">
         <Image
           src={article.image}
@@ -90,18 +73,17 @@ function AdminBlogPostCard({
           {article.description}
         </p>
         <p className="font-mono text-[10px] leading-tight text-[#8a9399]">
-          id · {article.id}
+          /blog/{path}
         </p>
 
         <div className="mt-auto flex flex-col gap-3 border-t border-[#005D51]/08 pt-4">
           <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={onEdit}
-              className="inline-flex min-w-22 flex-1 items-center justify-center rounded-lg bg-[#005D51] px-3 py-2.5 font-poppins text-xs font-semibold text-white transition hover:bg-[#004438] sm:flex-none sm:px-4"
+            <Link
+              href={`/admin/blog/edit?id=${encodeURIComponent(article.id)}`}
+              className="inline-flex min-w-22 flex-1 items-center justify-center rounded-lg bg-[#005D51] px-3 py-2.5 text-center font-poppins text-xs font-semibold text-white transition hover:bg-[#004438] sm:flex-none sm:px-4"
             >
               Edit
-            </button>
+            </Link>
             <button
               type="button"
               onClick={onDelete}
@@ -111,7 +93,7 @@ function AdminBlogPostCard({
             </button>
           </div>
           <Link
-            href={`/blog/${article.id}`}
+            href={`/blog/${encodeURIComponent(path)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#005D51]/20 bg-[#F0FFFD]/80 px-3 py-2 font-poppins text-xs font-semibold text-[#005D51] transition hover:border-[#005D51]/35 hover:bg-[#005D51]/08"
@@ -127,118 +109,8 @@ function AdminBlogPostCard({
   );
 }
 
-const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
-const ALLOWED_IMAGE_MIME = new Set(['image/jpeg', 'image/jpg', 'image/png']);
-
-function validateImageFileClient(file: File): string | null {
-  if (file.type && !ALLOWED_IMAGE_MIME.has(file.type)) {
-    return 'Only JPG and PNG files are allowed.';
-  }
-  if (file.size > MAX_IMAGE_BYTES) {
-    return 'File must be 3 MB or smaller.';
-  }
-  return null;
-}
-
 export function AdminInsightsPanel() {
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [articleModalOpen, setArticleModalOpen] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [cropModalOpen, setCropModalOpen] = useState(false);
-  const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
-  const imageFileInputRef = useRef<HTMLInputElement>(null);
-
-  const {
-    listLoading,
-    cancelEdit,
-    editingId,
-    startEdit,
-    setField,
-    status,
-    remove,
-    submit,
-    list,
-    form,
-  } = useAdminInsights();
-
-  const closeArticleModal = () => {
-    setArticleModalOpen(false);
-    cancelEdit();
-  };
-
-  const openNewArticleModal = () => {
-    cancelEdit();
-    setArticleModalOpen(true);
-  };
-
-  const openEditArticleModal = (row: InsightArticle) => {
-    startEdit(row);
-    setArticleModalOpen(true);
-  };
-
-  useEffect(() => {
-    if (status.type !== 'success' || !articleModalOpen) return;
-    const msg = status.message ?? '';
-    if (msg === 'Article updated.' || msg === 'Article created.') {
-      setArticleModalOpen(false);
-    }
-  }, [status, articleModalOpen]);
-
-  const closeCropModal = () => {
-    setCropModalOpen(false);
-    if (cropImageSrc) {
-      URL.revokeObjectURL(cropImageSrc);
-      setCropImageSrc(null);
-    }
-  };
-
-  const handleFormSubmit = (e: FormEvent) => {
-    void submit(e);
-  };
-
-  const handleHeroImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (!file) return;
-
-    const clientErr = validateImageFileClient(file);
-    if (clientErr) {
-      setUploadError(clientErr);
-      return;
-    }
-
-    setUploadError(null);
-    if (cropImageSrc) {
-      URL.revokeObjectURL(cropImageSrc);
-    }
-    const url = URL.createObjectURL(file);
-    setCropImageSrc(url);
-    setCropModalOpen(true);
-  };
-
-  const uploadCroppedHeroFile = async (file: File): Promise<boolean> => {
-    const sizeErr = validateJpegPngUnder3Mb(file);
-    if (sizeErr) {
-      setUploadError(sizeErr);
-      return false;
-    }
-    setUploadingImage(true);
-    setUploadError(null);
-    try {
-      const result = await uploadImageToCloudinary(file);
-      if (!result.ok) {
-        setUploadError(result.message);
-        return false;
-      }
-      setField('image', result.url);
-      return true;
-    } catch {
-      setUploadError('Upload failed.');
-      return false;
-    } finally {
-      setUploadingImage(false);
-    }
-  };
+  const { listLoading, remove, list } = useAdminInsights();
 
   return (
     <div className="space-y-10">
@@ -255,17 +127,16 @@ export function AdminInsightsPanel() {
               All posts
             </h2>
             <p className="mt-1 font-poppins text-sm font-medium text-[#7B7B7B]">
-              Same card layout as the public blog. Use the button to add a post,
-              or edit from a card.
+              Open the full-page editor to write with rich formatting—same layout
+              as the public blog.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={openNewArticleModal}
-            className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#005D51] px-5 py-2.5 font-poppins text-sm font-semibold text-white shadow-[0_1px_2px_rgba(20,34,24,0.08)] transition hover:bg-[#004438] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/40 focus-visible:ring-offset-2"
+          <Link
+            href="/admin/blog/edit"
+            className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#005D51] px-5 py-2.5 text-center font-poppins text-sm font-semibold text-white shadow-[0_1px_2px_rgba(20,34,24,0.08)] transition hover:bg-[#004438] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/40 focus-visible:ring-offset-2"
           >
             New post
-          </button>
+          </Link>
         </div>
 
         <div className="bg-[#f4faf8]">
@@ -293,9 +164,8 @@ export function AdminInsightsPanel() {
                 No posts yet
               </p>
               <p className="mx-auto mt-2 max-w-md font-poppins text-sm font-medium leading-relaxed text-[#7B7B7B]">
-                Click{' '}
-                <span className="font-semibold text-[#142218]">New post</span>{' '}
-                above to create your first article.
+                Use <span className="font-semibold text-[#142218]">New post</span> to
+                open the editor and publish your first story.
               </p>
             </div>
           ) : (
@@ -304,8 +174,6 @@ export function AdminInsightsPanel() {
                 <li key={row.id} className="min-h-0 sm:min-h-[260px]">
                   <AdminBlogPostCard
                     article={row}
-                    isEditing={editingId === row.id && articleModalOpen}
-                    onEdit={() => openEditArticleModal(row)}
                     onDelete={() => remove(row.id)}
                   />
                 </li>
@@ -314,170 +182,6 @@ export function AdminInsightsPanel() {
           )}
         </div>
       </section>
-
-      <AdminModal
-        open={articleModalOpen}
-        onClose={closeArticleModal}
-        title={editingId ? 'Edit article' : 'New article'}
-        description={
-          editingId
-            ? 'Update the fields below and save. Changes appear on the live site right away.'
-            : 'Add title, excerpt, optional author, full article, date, and hero image (upload or URL). Publish when you are ready.'
-        }
-        wide
-      >
-        <form onSubmit={handleFormSubmit} className="flex flex-col gap-6">
-          {editingId ? (
-            <p className="rounded-xl border border-[#005D51]/15 bg-white/80 px-4 py-3 font-poppins text-sm font-medium text-[#142218]">
-              Editing an existing post.{' '}
-              <button
-                type="button"
-                onClick={() => {
-                  cancelEdit();
-                  setArticleModalOpen(true);
-                }}
-                className="font-semibold text-[#005D51] underline decoration-[#005D51]/35 underline-offset-2 hover:text-[#004438]"
-              >
-                Switch to new post
-              </button>
-            </p>
-          ) : null}
-          <LabeledInput
-            label="Title"
-            value={form.title}
-            onChange={(e) => setField('title', e.target.value)}
-            required
-          />
-          <LabeledTextarea
-            label="Short excerpt"
-            value={form.description}
-            onChange={(e) => setField('description', e.target.value)}
-            rows={3}
-            required
-          />
-          <LabeledTextarea
-            label="Full article (blog post page)"
-            value={form.body}
-            onChange={(e) => setField('body', e.target.value)}
-            rows={10}
-            placeholder="Use blank lines between paragraphs."
-          />
-          <LabeledInput
-            label="Publication date"
-            type="date"
-            value={form.date}
-            onChange={(e) => setField('date', e.target.value)}
-            required
-          />
-
-          <div className="rounded-xl border border-[#005D51]/10 bg-[#fafcfb] px-4 py-4 sm:px-5">
-            <p className="font-poppins text-sm font-semibold text-[#142218]">
-              Author byline
-            </p>
-            <p className="mt-1 font-poppins text-xs leading-relaxed text-[#5a6570]">
-              Optional. Shown on the public article page under the headline.
-            </p>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <LabeledInput
-                label="Author name"
-                value={form.authorName}
-                onChange={(e) => setField('authorName', e.target.value)}
-                placeholder="e.g. Olalekan Owolabi"
-                maxLength={120}
-              />
-              <LabeledInput
-                label="Role or title"
-                value={form.authorRole}
-                onChange={(e) => setField('authorRole', e.target.value)}
-                placeholder="e.g. Director, Emprinte Readers Hub"
-                maxLength={200}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <FieldLabel label="Hero image">
-              <input
-                ref={imageFileInputRef}
-                type="file"
-                accept="image/jpeg,image/jpg,image/png,.jpg,.jpeg,.png"
-                className="sr-only"
-                aria-label="Upload hero image"
-                onChange={handleHeroImageFile}
-              />
-              <div className="flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
-                  disabled={uploadingImage}
-                  onClick={() => imageFileInputRef.current?.click()}
-                  className="inline-flex items-center justify-center rounded-xl border-2 border-[#005D51] bg-white px-4 py-2.5 font-poppins text-sm font-semibold text-[#005D51] shadow-[0_1px_2px_rgba(20,34,24,0.04)] transition hover:border-[#004438] hover:bg-[#005D51]/08 hover:text-[#004438] disabled:pointer-events-none disabled:opacity-50"
-                >
-                  {uploadingImage ? 'Uploading…' : 'Upload image'}
-                </button>
-                {form.image ? (
-                  <span className="font-poppins text-xs font-medium text-[#5a6570]">
-                    URL filled — you can replace by uploading again or edit the
-                    field below.
-                  </span>
-                ) : (
-                  <span className="font-poppins text-xs font-medium text-[#5a6570]">
-                    JPG or PNG, up to 3 MB. You’ll crop to a 2:1 frame (Medium-style)
-                    before upload, or paste a URL below.
-                  </span>
-                )}
-              </div>
-              {form.image ? (
-                <div className="relative mt-2 aspect-2/1 w-full max-w-md overflow-hidden rounded-xl border border-[#005D51]/12 bg-[#dfecea]">
-                  <img
-                    src={form.image}
-                    alt=""
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                </div>
-              ) : null}
-              {uploadError ? (
-                <p
-                  className="font-poppins text-sm font-medium text-red-700"
-                  role="alert"
-                >
-                  {uploadError}
-                </p>
-              ) : null}
-            </FieldLabel>
-
-            <LabeledInput
-              label="Image URL"
-              type="url"
-              value={form.image}
-              onChange={(e) => setField('image', e.target.value)}
-              placeholder="https://… — set automatically after upload, or paste"
-              required
-            />
-          </div>
-          <LabeledInput
-            label="External link (optional)"
-            type="url"
-            value={form.href}
-            onChange={(e) => setField('href', e.target.value)}
-            placeholder="https://… — if you leave the full article empty"
-          />
-          <div className="pt-2">
-            <PrimarySubmitButton
-              loading={status.type === 'loading'}
-              idleLabel={editingId ? 'Save changes' : 'Publish article'}
-              loadingLabel={editingId ? 'Saving…' : 'Publishing…'}
-            />
-          </div>
-          <FormStatusBanner status={status} />
-        </form>
-      </AdminModal>
-
-      <ArticleHeroCropModal
-        open={cropModalOpen}
-        imageSrc={cropImageSrc}
-        onClose={closeCropModal}
-        onCropped={(file) => uploadCroppedHeroFile(file)}
-      />
     </div>
   );
 }

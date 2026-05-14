@@ -1,7 +1,7 @@
 export function TestimonialCardSkeleton() {
   return (
     <article
-      className="flex w-[340px] shrink-0 flex-col gap-4 rounded-2xl bg-[#142218] p-6 animate-pulse md:w-[380px]"
+      className="flex w-[min(340px,calc(100vw-3rem))] shrink-0 snap-start flex-col gap-4 rounded-2xl bg-[#142218] p-6 animate-pulse sm:w-[340px] md:w-[380px]"
       aria-hidden
     >
       <div className="flex gap-1">

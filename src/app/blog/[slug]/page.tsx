@@ -5,25 +5,30 @@ import { Header } from '@/components/sections/Header';
 import { Footer } from '@/components/sections/Footer';
 import { BlogPostView } from '@/components/sections/BlogPostView';
 import { insightArticles } from '@/constants/data';
-import { fetchInsightArticleById } from '@/lib/insights-public';
+import { fetchInsightArticleBySlugParam } from '@/lib/insights-public';
+import { articlePublicPath } from '@/lib/insight-slug';
 import { getPublicSiteOrigin } from '@/lib/public-site-url';
 import { getSiteSettings } from '@/lib/site-settings-server';
 
 type PageProps = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 };
 
-async function resolveArticle(id: string) {
-  const fromApi = await fetchInsightArticleById(id);
+async function resolveArticle(slugParam: string) {
+  const fromApi = await fetchInsightArticleBySlugParam(slugParam);
   if (fromApi) return fromApi;
-  return insightArticles.find((a) => a.id === id) ?? null;
+  return (
+    insightArticles.find(
+      (a) => articlePublicPath(a) === slugParam || a.id === slugParam,
+    ) ?? null
+  );
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const article = await resolveArticle(id);
+  const { slug } = await params;
+  const article = await resolveArticle(slug);
   if (!article) {
     return { title: 'Post not found | Emprinte Readers Hub' };
   }
@@ -37,8 +42,8 @@ export async function generateMetadata({
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
-  const { id } = await params;
-  const article = await resolveArticle(id);
+  const { slug } = await params;
+  const article = await resolveArticle(slug);
 
   if (!article) {
     notFound();
@@ -46,7 +51,8 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const settings = await getSiteSettings();
   const origin = await getPublicSiteOrigin();
-  const articleUrl = `${origin}/blog/${encodeURIComponent(article.id)}`;
+  const pathSeg = articlePublicPath(article);
+  const articleUrl = `${origin}/blog/${encodeURIComponent(pathSeg)}`;
 
   return (
     <main className="relative flex min-h-screen w-full flex-col bg-white">

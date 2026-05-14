@@ -34,23 +34,19 @@ export function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="w-full overflow-x-visible bg-white py-14 lg:py-20"
+      className="w-full overflow-x-visible bg-white px-6 py-14 lg:px-[75px] lg:py-20 xl:px-[120px]"
     >
-      {/* Viewport-wide band so the headline can run to the right edge of the screen (not max-w clipped). */}
-      <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible">
-        <div className="mx-auto max-w-[1200px] px-6 lg:px-[75px] xl:px-[120px]">
+      {/* Same grid rail as Initiatives / BookClub / Newsletter: gutters + max-w-[1200px]. */}
+      <div className="mx-auto w-full max-w-[1200px]">
+        <header className="flex flex-col gap-3 sm:gap-4">
           <Badge>Testimonials</Badge>
-        </div>
-        <div className="pl-6 pr-0 pt-2 lg:pl-[75px] lg:pr-0 lg:pt-3 xl:pl-[120px] xl:pr-0">
-          <h2 className="max-w-none font-lora text-4xl font-bold leading-[1.08] tracking-tight text-[#005D51] md:text-5xl lg:text-6xl xl:text-[clamp(2.75rem,3.2vw+1.25rem,3.75rem)]">
+          <h2 className="max-w-4xl font-lora text-4xl font-bold leading-[1.08] tracking-tight text-[#005D51] md:text-5xl lg:text-6xl xl:text-[clamp(2.75rem,3.2vw+1.25rem,3.75rem)]">
             Here is what our Readers have to say
           </h2>
-        </div>
-      </div>
+        </header>
 
-      <div className="mx-auto mt-6 w-full max-w-[1200px] px-6 sm:mt-8 lg:mt-8 lg:px-[75px] xl:mt-10 xl:px-[120px]">
         <div
-          className="hide-scrollbar -mx-6 flex gap-6 overflow-x-auto overflow-y-hidden px-6 pb-4 xl:mx-0 xl:px-0"
+          className="hide-scrollbar mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden pb-4 sm:mt-8 sm:gap-6 lg:mt-8 xl:mt-10"
           aria-busy={loading}
           aria-label={loading ? 'Loading testimonials' : undefined}
         >
@@ -61,7 +57,7 @@ export function Testimonials() {
             : testimonials.map((testimonial) => (
                 <article
                   key={testimonial.id}
-                  className="flex w-[340px] shrink-0 flex-col gap-4 rounded-2xl bg-[#142218] p-6 md:w-[380px]"
+                  className="flex w-[min(340px,calc(100vw-3rem))] shrink-0 snap-start flex-col items-stretch gap-4 rounded-2xl bg-[#142218] p-6 sm:w-[340px] md:w-[380px]"
                 >
                   <div className="flex gap-1">
                     {Array.from({
@@ -69,18 +65,18 @@ export function Testimonials() {
                     }).map((_, i) => (
                       <IoStar
                         key={i}
-                        className="w-5 h-5 text-yellow-400 fill-yellow-400"
+                        className="h-5 w-5 fill-yellow-400 text-yellow-400"
                       />
                     ))}
                   </div>
-                  <p className="text-white/90 font-poppins text-sm leading-relaxed flex-1">
+                  <p className="flex-1 text-left font-poppins text-sm leading-relaxed text-white/90">
                     {testimonial.text}
                   </p>
-                  <div className="flex flex-col gap-1 mt-2">
-                    <span className="text-white font-semibold font-poppins text-base uppercase">
+                  <div className="mt-auto flex flex-col gap-1 border-t border-white/10 pt-4 text-left">
+                    <span className="font-poppins text-base font-semibold uppercase tracking-wide text-white">
                       {testimonial.name}
                     </span>
-                    <span className="text-white/70 font-poppins text-sm">
+                    <span className="font-poppins text-sm font-medium uppercase tracking-wide text-white/70">
                       {testimonial.title}
                     </span>
                   </div>

@@ -11,5 +11,6 @@ export function createDefaultInsightForm(): InsightFormInput {
     href: '',
     authorName: '',
     authorRole: '',
+    slug: '',
   };
 }

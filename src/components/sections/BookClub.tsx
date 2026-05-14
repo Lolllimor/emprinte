@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { BuildAReaderSlideshow } from '../ui/BuildAReaderSlideshow';
@@ -100,12 +101,12 @@ export function BookClub() {
               >
                 Donate Now
               </button>
-              <button
-                type="button"
-                className="h-10 w-full rounded-xl border border-white bg-transparent font-medium text-white xl:h-16 xl:text-2xl"
+              <Link
+                href="/build-a-reader"
+                className="flex h-10 w-full items-center justify-center rounded-xl border border-white bg-transparent font-medium text-white xl:h-16 xl:text-2xl"
               >
                 Learn More
-              </button>
+              </Link>
             </div>
           </div>
         </div>
