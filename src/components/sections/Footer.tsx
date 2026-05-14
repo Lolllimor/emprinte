@@ -23,7 +23,9 @@ export function Footer({
         <div className="w-full flex flex-col items-end gap-[42px]">
           <div className="flex items-start gap-[38px] md:justify-between w-full">
             <div className="w-[224px] flex flex-col items-start gap-6">
-              <Logo />
+              <Link href="/" className="inline-flex" aria-label="Emprinte home">
+                <Logo />
+              </Link>
 
               <div className="w-full flex flex-col justify-center items-start gap-[30px]">
                 <div className="w-full">
@@ -65,15 +67,15 @@ export function Footer({
                   <Link href="/blog" className={navLinkClass}>
                     Blog
                   </Link>
-                  <a href="#bootcamps" className={navLinkClass}>
+                  <Link href="/#bootcamps" className={navLinkClass}>
                     Bootcamps
-                  </a>
-                  <a href="#initiatives" className={navLinkClass}>
+                  </Link>
+                  <Link href="/#initiatives" className={navLinkClass}>
                     Initiatives
-                  </a>
-                  <a href="#about" className={navLinkClass}>
+                  </Link>
+                  <Link href="/#about" className={navLinkClass}>
                     About Us
-                  </a>
+                  </Link>
                   <Link href="/privacy-policy" className={navLinkClass}>
                     Privacy Policy
                   </Link>

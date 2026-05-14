@@ -254,8 +254,10 @@ export function AdminDashboardShell({
             <AdminHeaderUserMenu />
           </div>
         </header>
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain">
-          <div className="mx-auto max-w-[1300px] px-4 py-8 md:px-8 md:py-10">{children}</div>
+        <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain">
+          <div className="mx-auto max-w-[1300px] min-w-0 px-4 py-8 md:px-8 md:py-10">
+            {children}
+          </div>
         </div>
       </div>
     </div>

@@ -35,6 +35,16 @@ export function getApiUrl(path: string): string {
 }
 
 /**
+ * Always `/api/...` on the current Next origin. Use from Client Components for
+ * Route Handlers defined in this app so reads match admin writes (avoids
+ * `NEXT_PUBLIC_API_URL` pointing at another host).
+ */
+export function getSameOriginApiUrl(path: string): string {
+  const p = path.replace(/^\//, '').replace(/^api\//, '');
+  return `/api/${p}`;
+}
+
+/**
  * Absolute URL for fetch() in Server Components (same-origin API or configured backend).
  */
 export function resolvePublicFetchUrl(path: string): string {

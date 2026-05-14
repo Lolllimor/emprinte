@@ -12,6 +12,7 @@ import type {
 } from '@/types';
 
 export const navigationLinks: NavigationLink[] = [
+  { label: 'Home', href: '/' },
   { label: 'About Us', href: '#about' },
   { label: 'Initiatives', href: '#initiatives' },
   { label: 'Bootcamps', href: '#bootcamps' },
@@ -20,9 +21,9 @@ export const navigationLinks: NavigationLink[] = [
 
 export const footerNavigation: NavigationLink[] = [
   { label: 'Home', href: '/' },
-  { label: 'Bootcamps', href: '#bootcamps' },
-  { label: 'Initiatives', href: '#initiatives' },
-  { label: 'About Us', href: '#about' },
+  { label: 'Bootcamps', href: '/#bootcamps' },
+  { label: 'Initiatives', href: '/#initiatives' },
+  { label: 'About Us', href: '/#about' },
   { label: 'Privacy Policy', href: '/privacy-policy' },
   {
     label: 'Request account deletion',

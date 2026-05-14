@@ -1,16 +1,28 @@
 import { NextResponse } from 'next/server';
 
+import {
+  fetchBuildAReaderRow,
+  upsertBuildAReaderRow,
+} from '@/lib/landing-build-a-reader-db';
 import { requireLandingAdminApiAuth } from '@/lib/supabase-api-auth';
 import { buildAReaderSchema } from '@/lib/validation/admin';
 
-let buildAReader = {
+/** In-process fallback when Supabase is not configured or DB read fails. */
+let buildAReaderMemory = {
   booksCollected: 119,
   totalBooks: 500,
   pricePerBook: 2500,
 };
 
+const noStore = { 'Cache-Control': 'no-store, max-age=0' } as const;
+
 export async function GET() {
-  return NextResponse.json(buildAReader);
+  const fromDb = await fetchBuildAReaderRow();
+  if (fromDb) {
+    buildAReaderMemory = fromDb;
+    return NextResponse.json(fromDb, { headers: noStore });
+  }
+  return NextResponse.json(buildAReaderMemory, { headers: noStore });
 }
 
 async function writeBuildAReader(request: Request) {
@@ -31,9 +43,11 @@ async function writeBuildAReader(request: Request) {
     );
   }
 
-  buildAReader = parsed.data;
+  const data = parsed.data;
+  await upsertBuildAReaderRow(data);
+  buildAReaderMemory = data;
 
-  return NextResponse.json({ ok: true, data: buildAReader });
+  return NextResponse.json({ ok: true, data }, { headers: noStore });
 }
 
 export async function PATCH(request: Request) {

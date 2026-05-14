@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { BuildAReaderImage } from '../ui/BuildAReaderImage';
 import { BookProgressProps } from '@/types';
 import { BookIcon } from './BookIcon';
-import { getApiUrl } from '@/lib/api';
+import { getSameOriginApiUrl } from '@/lib/api';
 import { Badge } from '../ui';
 
 export function BookClub() {
@@ -16,7 +16,9 @@ export function BookClub() {
 
   useEffect(() => {
     const fetchBookProgress = async () => {
-      const res = await fetch(getApiUrl('/build-a-reader'));
+      const res = await fetch(getSameOriginApiUrl('build-a-reader'), {
+        cache: 'no-store',
+      });
       const data = await res.json();
       setBookProgress(data);
     };

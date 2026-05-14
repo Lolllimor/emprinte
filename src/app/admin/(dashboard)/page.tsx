@@ -26,7 +26,7 @@ export default function AdminDashboardPage() {
         open={activeModal === 'buildAReader'}
         onClose={closeModal}
         title="Build a Reader"
-        description="These numbers control the book drive visitors see: how many books you have so far, your overall goal, and the donation amount per book. Save when you are done so the public page stays accurate."
+        description="Set the book count, goal, and donation amount visitors see on the Build a Reader block. Save so the public page stays accurate."
       >
         <AdminBuildAReaderSection embedded />
       </AdminModal>
@@ -35,7 +35,7 @@ export default function AdminDashboardPage() {
         open={activeModal === 'testimonials'}
         onClose={closeModal}
         title="Testimonials"
-        description="These are the reader quotes that rotate on your site. Edit the text or add more, then save. Whatever you save here is exactly what visitors will see."
+        description="Quotes that rotate on the homepage. Edit or add entries, then save—visitors see exactly what you publish here."
       >
         <AdminTestimonialsSection embedded />
       </AdminModal>
@@ -44,7 +44,7 @@ export default function AdminDashboardPage() {
         open={activeModal === 'settings'}
         onClose={closeModal}
         title="Site details"
-        description="Update your menu links, footer links, contact email and phone numbers, social profiles, and the headline numbers (like member counts). Save when you are finished so the whole site stays in sync."
+        description="Navigation, footer, contact details, social links, and headline stats. Save when you are done so menus and numbers match the live site."
         wide
       >
         <AdminSiteSettingsSection embedded />

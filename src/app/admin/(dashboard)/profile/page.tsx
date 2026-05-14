@@ -66,7 +66,7 @@ export default function AdminProfilePage() {
       id="profile-heading"
       eyebrow="Account"
       title="Profile"
-      description="Your name, email, and phone come from your Supabase account. If NEXT_PUBLIC_API_URL is set and your API supports auth/me, we merge extra fields from there."
+      description="What we show for you in admin comes from your login. Update name or email in your account settings if anything changes."
     >
       <div className="rounded-2xl border border-[#005D51]/12 bg-white px-6 py-8 shadow-[0_1px_2px_rgba(20,34,24,0.04)] sm:px-8">
         {loading ? (

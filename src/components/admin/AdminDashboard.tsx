@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 
 import { AdminPageSection } from '@/components/admin/AdminPageSection';
 import { AdminDashboardProps, DashboardTile, Snapshot } from '@/types';
-import { getApiUrl } from '@/lib/api';
+import { getSameOriginApiUrl } from '@/lib/api';
 
 function StatSkeleton() {
   return (
@@ -29,14 +30,16 @@ function MetricPill({
   value,
   sub,
   loading,
+  footer,
 }: {
   label: string;
   value: string;
   sub?: string | null;
   loading: boolean;
+  footer?: ReactNode;
 }) {
   return (
-    <div className="min-w-0 flex-1 rounded-xl border border-[#142218]/08 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(20,34,24,0.04)] sm:px-5 sm:py-3.5">
+    <div className="flex min-h-full min-w-0 flex-col rounded-xl border border-[#142218]/08 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(20,34,24,0.04)] sm:px-5 sm:py-3.5">
       <p className="font-poppins text-[10px] font-bold uppercase tracking-[0.14em] text-[#142218]/45">
         {label}
       </p>
@@ -50,6 +53,7 @@ function MetricPill({
       {sub && !loading ? (
         <p className="mt-0.5 truncate font-poppins text-xs font-medium text-[#5c6b5f]">{sub}</p>
       ) : null}
+      {footer ? <div className="mt-auto min-w-0 pt-3">{footer}</div> : null}
     </div>
   );
 }
@@ -72,10 +76,10 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
     const load = async () => {
       try {
         const [insRes, testRes, barRes, setRes] = await Promise.all([
-          fetch(getApiUrl('insights')),
-          fetch(getApiUrl('testimonials')),
-          fetch(getApiUrl('build-a-reader')),
-          fetch(getApiUrl('settings')),
+          fetch(getSameOriginApiUrl('insights')),
+          fetch(getSameOriginApiUrl('testimonials')),
+          fetch(getSameOriginApiUrl('build-a-reader')),
+          fetch(getSameOriginApiUrl('settings')),
         ]);
 
         const [ins, test, bar, set] = await Promise.all([
@@ -197,15 +201,15 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
         title="Manage what appears on your public site"
         description={
           <>
-            Each tile opens an editor here, except{' '}
+            Control what visitors see on the public site: homepage sections, book drive,
+            quotes, and contact details. Editors below open in a panel except{' '}
             <Link
               href="/admin/blog"
               className="font-medium text-[#005D51] underline decoration-[#005D51]/30 underline-offset-[3px] hover:text-[#004438] hover:decoration-[#005D51]"
             >
               Blog
             </Link>
-            , which has its own page in the sidebar. Saving updates the live
-            site. For newsletter signups and CSV export, go to{' '}
+            , which has its own tab. Newsletter signups and CSV export live under{' '}
             <Link
               href="/admin/newsletter"
               className="font-medium text-[#005D51] underline decoration-[#005D51]/30 underline-offset-[3px] hover:text-[#004438] hover:decoration-[#005D51]"
@@ -238,11 +242,11 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
 
       <section aria-label="Key metrics" className="scroll-mt-4">
         <h2 className="sr-only">Key metrics</h2>
-        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-3 md:gap-4">
+        <div className="grid min-w-0 grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
           <MetricPill
             label="Articles"
             value={snap.loading ? '—' : String(snap.insightCount)}
-            sub="On /blog"
+            sub="Live on /blog"
             loading={snap.loading}
           />
           <MetricPill
@@ -254,32 +258,43 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
             }
             sub={bookProgressPct != null ? `${bookProgressPct}% of goal` : null}
             loading={snap.loading}
+            footer={
+              bookProgressPct != null && !snap.loading ? (
+                <div
+                  className="h-2 w-full overflow-hidden rounded-full bg-[#142218]/10"
+                  role="progressbar"
+                  aria-valuenow={bookProgressPct}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label="Progress toward book collection goal"
+                >
+                  <div
+                    className="h-full rounded-full bg-[#005D51] transition-[width] duration-500"
+                    style={{ width: `${bookProgressPct}%` }}
+                  />
+                </div>
+              ) : null
+            }
           />
           <MetricPill
             label="Quotes"
             value={snap.loading ? '—' : String(snap.testimonialCount)}
-            sub="Homepage"
+            sub="Homepage carousel"
             loading={snap.loading}
           />
           <Link
             href="/admin/newsletter"
-            className="min-w-0 flex-1 rounded-xl border border-[#005D51]/20 bg-linear-to-br from-[#005D51]/08 to-white px-4 py-3 text-left shadow-[0_1px_2px_rgba(20,34,24,0.04)] transition hover:border-[#005D51]/35 hover:shadow-[0_4px_20px_rgba(0,93,81,0.1)] sm:px-5 sm:py-3.5"
+            className="flex min-h-full min-w-0 flex-col rounded-xl border border-[#005D51]/20 bg-linear-to-br from-[#005D51]/08 to-white px-4 py-3 text-left shadow-[0_1px_2px_rgba(20,34,24,0.04)] transition hover:border-[#005D51]/35 hover:shadow-[0_4px_20px_rgba(0,93,81,0.1)] sm:px-5 sm:py-3.5"
           >
             <p className="font-poppins text-[10px] font-bold uppercase tracking-[0.14em] text-[#005D51]">
               Newsletter
             </p>
             <p className="mt-1 font-poppins text-sm font-semibold text-[#142218]">View subscribers</p>
-            <p className="mt-0.5 font-poppins text-xs font-medium text-[#5c6b5f]">Export CSV from list</p>
+            <p className="mt-0.5 font-poppins text-xs font-medium text-[#5c6b5f]">
+              Export CSV anytime
+            </p>
           </Link>
         </div>
-        {bookProgressPct != null ? (
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#142218]/10">
-            <div
-              className="h-full rounded-full bg-[#005D51] transition-[width] duration-500"
-              style={{ width: `${bookProgressPct}%` }}
-            />
-          </div>
-        ) : null}
       </section>
 
       <section className="scroll-mt-4">
@@ -290,8 +305,8 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
           {tiles.map((t) => {
             const accent = tileAccent[t.key] ?? 'border-l-[#005D51] from-[#005D51]/06 to-white';
             const tileClassName = [
-              'group relative flex min-h-[260px] w-full flex-col overflow-hidden rounded-2xl border border-[#142218]/08 bg-linear-to-b text-left shadow-[0_2px_8px_rgba(20,34,24,0.04)] transition duration-200',
-              'border-l-[4px] hover:-translate-y-0.5 hover:border-[#142218]/12 hover:shadow-[0_12px_40px_rgba(0,93,81,0.1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#eef5f2]',
+              'group relative flex min-h-[260px] w-full max-w-full flex-col overflow-hidden rounded-2xl border border-[#142218]/08 bg-linear-to-b text-left shadow-[0_2px_8px_rgba(20,34,24,0.04)] transition duration-200',
+              'border-l-[4px] hover:border-[#142218]/12 hover:shadow-[0_12px_40px_rgba(0,93,81,0.1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#eef5f2]',
               accent,
             ].join(' ');
 
@@ -364,8 +379,8 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
           Quick actions
         </h2>
         <p className="mt-1 max-w-2xl font-poppins text-sm leading-relaxed text-[#5c6b5f]">
-          Shortcuts to the most common admin tasks. Everything here is already in the sidebar —
-          use this row when you want speed.
+          Same destinations as the sidebar—use this row when you already know where
+          you&apos;re headed.
         </p>
         <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {(

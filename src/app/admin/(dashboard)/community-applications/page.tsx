@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
+import { AdminPageSection } from '@/components/admin/AdminPageSection';
 import { getApiUrl } from '@/lib/api';
 
 type ApplicationRow = {
@@ -66,28 +67,21 @@ export default function AdminCommunityApplicationsPage() {
   }, [load]);
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="rounded-2xl border border-[#005D51]/12 bg-white p-5 shadow-sm sm:p-6">
-        <p className="font-poppins text-sm leading-relaxed text-[#4a5c50]">
-          Submissions from the public <strong className="text-[#142218]">Apply</strong> flow
-          (membership form + fee receipt). For full detail and files, open{' '}
-          <strong className="text-[#142218]">Supabase</strong> →{' '}
-          <strong className="text-[#142218]">Table Editor</strong> → schema{' '}
-          <code className="rounded bg-[#142218]/06 px-1.5 py-0.5 text-xs">landing</code> →{' '}
-          <code className="rounded bg-[#142218]/06 px-1.5 py-0.5 text-xs">
-            community_applications
-          </code>{' '}
-          (portrait and receipt paths point to Storage).
-        </p>
+    <AdminPageSection
+      id="membership-applications-heading"
+      eyebrow="People"
+      title="Membership applications"
+      description="A quick read of who applied through the public Apply flow. For every answer, uploads, and receipt paths, use Supabase → Table Editor → schema landing → community_applications (files live in Storage)."
+      actions={
         <button
           type="button"
           onClick={() => void load()}
-          className="mt-4 inline-flex min-h-10 items-center justify-center rounded-xl border-2 border-[#005D51]/20 bg-white px-4 font-poppins text-sm font-semibold text-[#005D51] transition hover:border-[#005D51]/40"
+          className="inline-flex min-h-10 items-center justify-center rounded-xl border-2 border-[#005D51]/20 bg-white px-4 font-poppins text-sm font-semibold text-[#005D51] transition hover:border-[#005D51]/40 hover:bg-[#005D51]/06"
         >
           Refresh
         </button>
-      </div>
-
+      }
+    >
       {error ? (
         <div
           className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 font-poppins text-sm text-red-800"
@@ -97,8 +91,8 @@ export default function AdminCommunityApplicationsPage() {
         </div>
       ) : null}
 
-      <div className="overflow-hidden rounded-2xl border border-[#005D51]/12 bg-white shadow-sm">
-        <div className="overflow-x-auto">
+      <div className="max-w-full overflow-hidden rounded-2xl border border-[#005D51]/12 bg-white shadow-sm">
+        <div className="max-w-full overflow-x-auto">
           <table className="min-w-[720px] w-full border-collapse text-left font-poppins text-sm">
             <thead>
               <tr className="border-b border-[#142218]/10 bg-[#F0FFFD]/80">
@@ -143,6 +137,6 @@ export default function AdminCommunityApplicationsPage() {
           </table>
         </div>
       </div>
-    </div>
+    </AdminPageSection>
   );
 }

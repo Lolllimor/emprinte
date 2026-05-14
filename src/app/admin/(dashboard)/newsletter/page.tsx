@@ -7,7 +7,7 @@ export default function AdminNewsletterPage() {
       id="newsletter-heading"
       eyebrow="Audience"
       title="Newsletter subscribers"
-      description="People who signed up through the form on your site. Export the list as a CSV file when you need it for email tools or backups."
+      description="Everyone who joined through your site&apos;s newsletter form. Review details here, or download a CSV for your email tool or backups."
     >
       <AdminSubscribersPanel />
     </AdminPageSection>

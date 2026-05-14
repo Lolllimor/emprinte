@@ -36,40 +36,44 @@ export default function ApplyThankYouPage() {
             Emprinte Readers Hub
           </p>
 
-          <div className="mt-8 border-t border-black/6 pt-8">
-            <p className="font-poppins text-sm font-semibold text-[#142218]">
+          <div className="mt-8 border-t border-black/6 pt-8 text-left">
+            <p className="text-center font-poppins text-sm font-semibold text-[#142218]">
               Start reading on the app while you wait
             </p>
-            <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5c6b5f]">
+            <p className="mt-2 text-center font-poppins text-sm leading-relaxed text-[#5c6b5f]">
               Download Emprinte Readers Hub on your phone — explore books and your library
               while we follow up on your application.
             </p>
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-center">
+
+            <div className="mx-auto mt-6 flex w-full max-w-sm flex-col gap-3">
               <a
                 href={playUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-2xl bg-[#142218] px-5 font-poppins text-sm font-semibold text-white transition hover:bg-[#0f1a14] sm:max-w-[220px]"
+                className="flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-[#142218] px-5 font-poppins text-sm font-semibold text-white transition hover:bg-[#0f1a14]"
               >
-                Google Play
+                Get it on Google Play
               </a>
               {appStoreUrl ? (
                 <a
                   href={appStoreUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-2xl border-2 border-[#142218]/12 bg-white px-5 font-poppins text-sm font-semibold text-[#142218] transition hover:border-[#005D51]/35 sm:max-w-[220px]"
+                  className="flex min-h-[52px] w-full items-center justify-center rounded-2xl border-2 border-[#142218]/14 bg-white px-5 font-poppins text-sm font-semibold text-[#142218] transition hover:border-[#005D51]/35 hover:bg-[#fafcfb]"
                 >
-                  App Store
+                  Download on the App Store
                 </a>
               ) : (
-                <p className="flex flex-1 items-center justify-center rounded-2xl border border-dashed border-[#142218]/15 bg-[#fafcfb] px-4 py-3 font-poppins text-xs leading-snug text-[#5c6b5f] sm:max-w-[220px]">
-                  App Store link: add{' '}
-                  <code className="mx-1 rounded bg-[#142218]/08 px-1 py-0.5 text-[11px]">
-                    NEXT_PUBLIC_READERS_HUB_APP_STORE_URL
-                  </code>{' '}
-                  in hosting env, then redeploy.
-                </p>
+                <div className="w-full rounded-2xl border border-[#142218]/10 bg-[#f6faf8] px-4 py-4 sm:px-5 sm:py-4">
+                  <p className="font-poppins text-sm font-semibold text-[#142218]">
+                    App Store (iPhone &amp; iPad)
+                  </p>
+                  <p className="mt-2 font-poppins text-xs leading-relaxed text-[#5c6b5f] sm:text-sm">
+                    A direct App Store link will appear here soon. Until then, open the App
+                    Store and search for{' '}
+                    <span className="font-semibold text-[#142218]">Emprinte Readers Hub</span>.
+                  </p>
+                </div>
               )}
             </div>
           </div>

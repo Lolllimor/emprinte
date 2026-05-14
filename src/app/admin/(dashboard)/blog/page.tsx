@@ -11,7 +11,7 @@ export default function AdminBlogPage() {
       id="blog-heading"
       eyebrow="Content"
       title="Blog"
-      description="Posts on /blog and anywhere they are featured. Create drafts, refine copy and imagery, or remove posts you no longer need."
+      description="Stories for /blog and anywhere they appear. Draft, polish copy and images, publish when ready, or remove posts you have outgrown."
       actions={
         <Link
           href="/blog"

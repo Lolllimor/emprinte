@@ -20,7 +20,7 @@ export function AdminPageSection({
   actions?: ReactNode;
 }) {
   return (
-    <section aria-labelledby={id} className={children ? 'space-y-10' : ''}>
+    <section aria-labelledby={id} className={`min-w-0 max-w-full ${children ? 'space-y-10' : ''}`}>
       <header className="border-b border-[#005D51]/15 pb-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl min-w-0">

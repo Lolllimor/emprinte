@@ -5,14 +5,14 @@ import { toast } from 'sonner';
 
 import type { BookProgressProps, FormSubmitStatus } from '@/types';
 import { getApiErrorMessage } from '@/lib/api-errors';
-import { getApiUrl, adminJsonHeaders } from '@/lib/api';
+import { getSameOriginApiUrl, adminJsonHeaders } from '@/lib/api';
 
 export function useAdminBuildAReader() {
   const [data, setData] = useState<BookProgressProps | null>(null);
   const [status, setStatus] = useState<FormSubmitStatus>({ type: 'idle' });
 
   useEffect(() => {
-    fetch(getApiUrl('build-a-reader'))
+    fetch(getSameOriginApiUrl('build-a-reader'), { cache: 'no-store' })
       .then((r) => r.json())
       .then(setData)
       .catch(() => setData(null));
@@ -32,7 +32,7 @@ export function useAdminBuildAReader() {
 
       setStatus({ type: 'loading' });
       try {
-        const res = await fetch(getApiUrl('build-a-reader'), {
+        const res = await fetch(getSameOriginApiUrl('build-a-reader'), {
           method: 'PUT',
           credentials: 'include',
           headers: adminJsonHeaders(),

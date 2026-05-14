@@ -64,7 +64,7 @@ export default function AdminInvitePage() {
       id="invite-heading"
       eyebrow="Team"
       title="Send an invite"
-      description="Invite someone by email (Supabase sends the link). They must already be—or become—an app admin (role admin), or you set landing_admin / LANDING_ADMIN_EMAILS so they can open /admin."
+      description="Send an email invite—Supabase delivers the link. They can sign in here once they have admin access (same rules as the mobile app)."
     >
       <form onSubmit={onSubmit} className="flex max-w-md flex-col gap-5">
         <div className="flex flex-col gap-2">
