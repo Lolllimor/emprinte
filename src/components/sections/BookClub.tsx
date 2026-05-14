@@ -34,70 +34,79 @@ export function BookClub() {
       });
     };
     fetchBookProgress();
-  }, []); 
+  }, []);
+
   return (
     <section
       id="initiatives"
-      className="w-full relative bg-[url(/map-green.png)] bg-cover bg-center flex flex-col items-center  h-full mx-auto"
+      className="w-full bg-[url(/map-green.png)] bg-cover bg-center px-6 py-10 lg:px-[75px] xl:px-[120px]"
     >
-     
-      <div className="flex flex-col items-stretch gap-7.5 z-10 xl:pr-[120px] lg:pr-[75px] pr-6 max-w-[1200px] mx-auto lg:flex-row lg:items-center">
-        <div className="w-full shrink-0 px-4 lg:w-auto lg:max-w-[550px] lg:px-0">
-          <BuildAReaderSlideshow urls={bookProgress?.slideshowUrls} />
+      {/* Match Initiatives / site grid: symmetric gutters + full-width 1200px rail. */}
+      <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 gap-10 lg:grid-cols-[minmax(0,550px)_minmax(0,1fr)] lg:items-stretch lg:gap-x-12 lg:gap-y-0 xl:gap-x-14">
+        <div className="flex min-h-[280px] w-full min-w-0 flex-col lg:min-h-0 lg:h-full">
+          <BuildAReaderSlideshow fillColumn urls={bookProgress?.slideshowUrls} />
         </div>
-        <div className="flex-1 flex flex-col gap-8 py-8 pl-4 lg:py-0 lg:pl-0 ">
-          <Badge>
-            Explore our Initiatives
-          </Badge>
-       
-          <div className="flex flex-col text-white gap-1 ">
-            <span className="xl:text-2xl text-base font-poppins">Ongoing Initiative..</span>
-            <div className="flex items-end">
-              <p className="xl:text-[82px] text-6xl xl:max-w-[351px] max-w-[255px] leading-[0.9] font-bold font-lora">
-                BUILD A READER
-              </p>
-              <span className="font-lora xl:text-5xl text-2xl font-bold">2.0</span>
-            </div>
-          </div>
 
-          <div className="flex flex-col gap-2 w-full max-w-full mt-4 lg:mt-0">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-1">
-                <span className="lg:text-3xl xl:text-5xl font-bold text-white font-poppins">
-                  {bookProgress?.booksCollected ?? "--"}
-                </span>
-                <span className="xl:text-lg text-sm text-white/90 font-poppins font-medium xl:ml-2 ml-1">
-                  of {bookProgress?.totalBooks ?? "--"} Books
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-white">
-                <BookIcon size={24} />
-                <span className="text-base xl:text-[28px] font-medium font-poppins">
-                  N{bookProgress?.pricePerBook?.toLocaleString() ?? "--"}/BOOK
-                </span>
+        <div className="flex min-h-0 min-w-0 flex-col gap-8 lg:h-full lg:justify-start">
+          <div className="flex w-full max-w-[640px] flex-col gap-8 xl:max-w-2xl">
+            <Badge>Explore our Initiatives</Badge>
+
+            <div className="flex flex-col gap-1 text-white">
+              <span className="font-poppins text-base xl:text-2xl">Ongoing Initiative..</span>
+              <div className="flex items-end">
+                <p className="max-w-[255px] font-lora text-6xl font-bold leading-[0.9] xl:max-w-[351px] xl:text-[82px]">
+                  BUILD A READER
+                </p>
+                <span className="font-lora text-2xl font-bold xl:text-5xl">2.0</span>
               </div>
             </div>
-            <div className="relative w-full">
-              <div className="h-6 md:h-8 w-full rounded-full bg-white border-4 border-white overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-[#ed4e32] transition-all"
-                  style={{ width: `${progressPercent ?? 0}%` }}
-                />
+
+            <div className="flex w-full max-w-full flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <span className="font-poppins text-3xl font-bold text-white xl:text-5xl">
+                    {bookProgress?.booksCollected ?? '--'}
+                  </span>
+                  <span className="ml-1 font-poppins text-sm font-medium text-white/90 xl:ml-2 xl:text-lg">
+                    of {bookProgress?.totalBooks ?? '--'} Books
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-white">
+                  <BookIcon size={24} />
+                  <span className="font-poppins text-base font-medium xl:text-[28px]">
+                    N{bookProgress?.pricePerBook?.toLocaleString() ?? '--'}/BOOK
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between mt-1.5 text-sm xl:text-base text-white font-medium font-poppins">
-                {[0, 100, 200, 300, 400, bookProgress?.totalBooks].map((n,idx) => (
-                  <span key={idx}>{n}</span>
-                ))}
+              <div className="relative w-full">
+                <div className="h-6 w-full overflow-hidden rounded-full border-4 border-white bg-white md:h-8">
+                  <div
+                    className="h-full rounded-full bg-[#ed4e32] transition-all"
+                    style={{ width: `${progressPercent ?? 0}%` }}
+                  />
+                </div>
+                <div className="mt-1.5 flex justify-between font-poppins text-sm font-medium text-white xl:text-base">
+                  {[0, 100, 200, 300, 400, bookProgress?.totalBooks].map((n, idx) => (
+                    <span key={idx}>{n}</span>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="w-full bg-[#E63715] xl:h-16 h-10  text-white rounded-xl xl:text-2xl font-medium">
-              Donate Now
-            </button>
-            <button className="w-full bg-transparent border xl:h-16 h-10 text-white rounded-xl xl:text-2xl font-medium">
-              Learn More
-            </button>
+
+            <div className="flex w-full max-w-full flex-col gap-4 sm:flex-row sm:items-center">
+              <button
+                type="button"
+                className="h-10 w-full rounded-xl bg-[#E63715] font-medium text-white xl:h-16 xl:text-2xl"
+              >
+                Donate Now
+              </button>
+              <button
+                type="button"
+                className="h-10 w-full rounded-xl border border-white bg-transparent font-medium text-white xl:h-16 xl:text-2xl"
+              >
+                Learn More
+              </button>
+            </div>
           </div>
         </div>
       </div>

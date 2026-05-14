@@ -1,9 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { useId, useState, type ChangeEvent } from 'react';
+import { useCallback, useId, useState, type ChangeEvent } from 'react';
 import { toast } from 'sonner';
 
+import { BuildReaderSlideCropModal } from './BuildReaderSlideCropModal';
 import { AdminSection } from './AdminSection';
 import { FieldLabel } from './LabeledField';
 import { FormStatusBanner } from './FormStatusBanner';
@@ -38,12 +39,47 @@ export function AdminBuildAReaderSection({ embedded }: AdminBuildAReaderSectionP
     useAdminBuildAReader();
   const [pasteUrl, setPasteUrl] = useState('');
   const [slideUploadPercent, setSlideUploadPercent] = useState<number | null>(null);
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
   const addFileId = useId();
   const addUrlInputId = useId();
 
   const slideUploading = slideUploadPercent !== null;
 
-  const onAddSlideFile = async (e: ChangeEvent<HTMLInputElement>) => {
+  const closeCropModal = useCallback(() => {
+    setCropModalOpen(false);
+    setCropImageSrc((src) => {
+      if (src) URL.revokeObjectURL(src);
+      return null;
+    });
+  }, []);
+
+  const uploadCroppedSlideFile = async (file: File): Promise<boolean> => {
+    if (!data) return false;
+    const sizeErr = validateJpegPngUnder3Mb(file);
+    if (sizeErr) {
+      toast.error(sizeErr);
+      return false;
+    }
+    setSlideUploadPercent(0);
+    try {
+      const r = await uploadImageToCloudinaryWithProgress(file, setSlideUploadPercent);
+      if (!r.ok) {
+        toast.error(r.message);
+        return false;
+      }
+      appendSlideUrl(r.url);
+      toast.success('Slide added.');
+      return true;
+    } catch {
+      toast.error('Upload failed.');
+      return false;
+    } finally {
+      setSlideUploadPercent(null);
+    }
+  };
+
+  const onAddSlideFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file || !data) return;
@@ -56,18 +92,11 @@ export function AdminBuildAReaderSection({ embedded }: AdminBuildAReaderSectionP
       toast.error(err);
       return;
     }
-    setSlideUploadPercent(0);
-    try {
-      const r = await uploadImageToCloudinaryWithProgress(file, setSlideUploadPercent);
-      if (!r.ok) {
-        toast.error(r.message);
-        return;
-      }
-      appendSlideUrl(r.url);
-      toast.success('Slide added.');
-    } finally {
-      setSlideUploadPercent(null);
-    }
+    setCropImageSrc((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return URL.createObjectURL(file);
+    });
+    setCropModalOpen(true);
   };
 
   const handleAddPasteUrl = () => {
@@ -89,7 +118,8 @@ export function AdminBuildAReaderSection({ embedded }: AdminBuildAReaderSectionP
     !data ? (
       <p className="text-gray-600">Loading…</p>
     ) : (
-      <form onSubmit={submit} className={`${adminFormPanel} space-y-8`}>
+      <>
+        <form onSubmit={submit} className={`${adminFormPanel} space-y-8`}>
         <div className="space-y-4">
           <FieldLabel label="Books collected">
             <input
@@ -132,9 +162,9 @@ export function AdminBuildAReaderSection({ embedded }: AdminBuildAReaderSectionP
               Hero slideshow
             </p>
             <p className="font-poppins text-xs leading-relaxed text-[#5c6b5f] sm:text-sm">
-              Up to 5 images for the Build a Reader block. JPG or PNG, max 3 MB — uploads go to
-              Cloudinary. Leave empty to use the default site image. Save when you are done to
-              publish.
+              Up to 5 images for the Build a Reader block. JPG or PNG, max 3 MB — file uploads open
+              a crop step, then go to Cloudinary. You can still paste a full URL without cropping.
+              Save when you are done to publish.
             </p>
             <p className="font-poppins text-[11px] font-medium uppercase tracking-wide text-[#005D51]/80">
               {data.slideshowUrls.length} / 5 in list
@@ -189,11 +219,11 @@ export function AdminBuildAReaderSection({ embedded }: AdminBuildAReaderSectionP
                     type="file"
                     accept="image/jpeg,image/jpg,image/png"
                     className="sr-only"
-                    disabled={slideUploading}
-                    onChange={(e) => void onAddSlideFile(e)}
+                    disabled={slideUploading || cropModalOpen}
+                    onChange={onAddSlideFile}
                   />
                   <span className="font-poppins text-xs text-[#5c6b5f]">
-                    JPG or PNG · max 3 MB
+                    JPG or PNG · max 3 MB · crop before upload
                   </span>
                 </div>
               </div>
@@ -257,7 +287,15 @@ export function AdminBuildAReaderSection({ embedded }: AdminBuildAReaderSectionP
           loadingLabel="Saving…"
         />
         <FormStatusBanner status={status} />
-      </form>
+        </form>
+
+        <BuildReaderSlideCropModal
+          open={cropModalOpen}
+          imageSrc={cropImageSrc}
+          onClose={closeCropModal}
+          onCropped={(file) => uploadCroppedSlideFile(file)}
+        />
+      </>
     );
 
   if (embedded) return inner;

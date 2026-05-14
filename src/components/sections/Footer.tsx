@@ -12,7 +12,7 @@ type FooterProps = {
 };
 
 const navLinkClass =
-  'text-base leading-[28px]  text-[#7B7B7B] font-poppins';
+  'text-sm leading-snug text-[#7B7B7B] font-poppins py-0.5';
 
 export function Footer({
   contactInfo = defaultContactInfo,
@@ -56,11 +56,11 @@ export function Footer({
             </div>
 
             <div className="flex items-start gap-[64px]">
-              <div className="md:flex hidden flex-col items-start gap-6">
+              <div className="md:flex hidden flex-col items-start gap-3">
                 <p className="text-[28px] font-bold font-lora text-black">
                   Navigation
                 </p>
-                <div className="flex flex-col gap-6 font-[20px] text-[#2B2742]">
+                <div className="flex flex-col gap-1">
                   <Link href="/" className={navLinkClass}>
                     Home
                   </Link>

@@ -9,9 +9,14 @@ const INTERVAL_MS = 6000;
 type BuildAReaderSlideshowProps = {
   /** Remote https URLs only; empty uses built-in static hero. */
   urls?: string[];
+  /**
+   * When true (Build a Reader row), the frame grows with the flex row so the image
+   * area lines up from the pill row through the CTA row on large screens.
+   */
+  fillColumn?: boolean;
 };
 
-export function BuildAReaderSlideshow({ urls }: BuildAReaderSlideshowProps) {
+export function BuildAReaderSlideshow({ urls, fillColumn = false }: BuildAReaderSlideshowProps) {
   const remoteList = useMemo(
     () =>
       (urls ?? [])
@@ -24,6 +29,11 @@ export function BuildAReaderSlideshow({ urls }: BuildAReaderSlideshowProps) {
   const slidesKey = remoteList.join('\0');
 
   const [index, setIndex] = useState(0);
+  const [autoPlayEpoch, setAutoPlayEpoch] = useState(0);
+
+  const resetAutoPlay = useCallback(() => {
+    setAutoPlayEpoch((n) => n + 1);
+  }, []);
 
   useEffect(() => {
     setIndex(0);
@@ -40,29 +50,41 @@ export function BuildAReaderSlideshow({ urls }: BuildAReaderSlideshowProps) {
       setIndex((i) => (i + 1) % slides.length);
     }, INTERVAL_MS);
     return () => window.clearInterval(t);
-  }, [slides.length, slidesKey]);
+  }, [slides.length, slidesKey, autoPlayEpoch]);
 
   const go = useCallback(
     (delta: number) => {
       setIndex((i) => (i + delta + slides.length) % slides.length);
+      resetAutoPlay();
     },
-    [slides.length],
+    [slides.length, resetAutoPlay],
   );
 
   const src = slides[index] ?? FALLBACK_SRC;
   const isRemote = /^https?:\/\//i.test(src);
 
   return (
-    <div className="relative w-full max-w-[550px] overflow-hidden rounded-xl bg-[#dfecea] shadow-[0_12px_36px_-20px_rgba(20,34,24,0.28)] ring-1 ring-[#005D51]/10">
-      {/* Fixed max frame keeps layout stable; object-contain preserves each image’s aspect ratio (letterboxing when needed). */}
-      <div className="relative h-[min(680px,78vh)] w-full min-h-[220px] sm:min-h-[280px]">
+    <div
+      className={
+        fillColumn
+          ? 'relative mx-auto flex h-full min-h-[260px] w-full min-w-0 max-w-[550px] flex-col overflow-hidden rounded-xl bg-[#dfecea] shadow-[0_12px_36px_-20px_rgba(20,34,24,0.28)] ring-1 ring-[#005D51]/10 lg:mx-0 lg:min-h-0 lg:max-w-none lg:self-stretch'
+          : 'relative mx-auto w-full min-w-0 max-w-[550px] overflow-hidden rounded-xl bg-[#dfecea] shadow-[0_12px_36px_-20px_rgba(20,34,24,0.28)] ring-1 ring-[#005D51]/10'
+      }
+    >
+      <div
+        className={
+          fillColumn
+            ? 'relative min-h-0 w-full flex-1 lg:min-h-[200px]'
+            : 'relative h-[min(680px,78vh)] w-full min-h-[220px] sm:min-h-[280px]'
+        }
+      >
         <Image
           key={src}
           src={src}
           alt="Build a Reader"
           fill
           sizes="(max-width: 1024px) 100vw, 550px"
-          className="object-contain"
+          className="object-cover"
           priority={index === 0}
           unoptimized={isRemote}
         />
@@ -98,7 +120,10 @@ export function BuildAReaderSlideshow({ urls }: BuildAReaderSlideshowProps) {
                   role="tab"
                   aria-selected={i === index}
                   aria-label={`Go to slide ${i + 1}`}
-                  onClick={() => setIndex(i)}
+                  onClick={() => {
+                    setIndex(i);
+                    resetAutoPlay();
+                  }}
                   className={
                     i === index
                       ? 'h-2 w-6 rounded-full bg-white transition'

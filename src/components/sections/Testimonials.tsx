@@ -34,18 +34,23 @@ export function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="w-full bg-white px-6 py-16 lg:py-24 xl:px-[120px] lg:px-[75px]"
+      className="w-full overflow-x-visible bg-white py-16 lg:py-24"
     >
-      <div className="max-w-[1200px] mx-auto flex flex-col gap-12">
-        <div className="flex flex-col gap-4">
+      {/* Viewport-wide band so the headline can run to the right edge of the screen (not max-w clipped). */}
+      <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible">
+        <div className="mx-auto max-w-[1200px] px-6 lg:px-[75px] xl:px-[120px]">
           <Badge>Testimonials</Badge>
-          <h2 className="text-4xl md:text-6xl font-bold text-[#005D51] font-lora leading-[1.1] max-w-[600px]">
+        </div>
+        <div className="pl-6 pr-0 pt-4 lg:pl-[75px] lg:pr-0 xl:pl-[120px] xl:pr-0">
+          <h2 className="max-w-none font-lora text-4xl font-bold leading-[1.05] tracking-tight text-[#005D51] md:text-6xl lg:text-7xl">
             Here is what our Readers have to say
           </h2>
         </div>
+      </div>
 
+      <div className="mx-auto mt-12 w-full max-w-[1200px] px-6 lg:px-[75px] xl:px-[120px]">
         <div
-          className="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6 xl:mx-0 xl:px-0"
+          className="hide-scrollbar -mx-6 flex gap-6 overflow-x-auto overflow-y-hidden px-6 pb-4 xl:mx-0 xl:px-0"
           aria-busy={loading}
           aria-label={loading ? 'Loading testimonials' : undefined}
         >
@@ -56,7 +61,7 @@ export function Testimonials() {
             : testimonials.map((testimonial) => (
                 <article
                   key={testimonial.id}
-                  className="shrink-0 w-[340px] md:w-[380px] flex flex-col gap-4 p-6 rounded-2xl bg-[#142218]"
+                  className="flex w-[340px] shrink-0 flex-col gap-4 rounded-2xl bg-[#142218] p-6 md:w-[380px]"
                 >
                   <div className="flex gap-1">
                     {Array.from({

@@ -6,6 +6,7 @@ import { Footer } from '@/components/sections/Footer';
 import { BlogPostView } from '@/components/sections/BlogPostView';
 import { insightArticles } from '@/constants/data';
 import { fetchInsightArticleById } from '@/lib/insights-public';
+import { getPublicSiteOrigin } from '@/lib/public-site-url';
 import { getSiteSettings } from '@/lib/site-settings-server';
 
 type PageProps = {
@@ -44,11 +45,13 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   const settings = await getSiteSettings();
+  const origin = await getPublicSiteOrigin();
+  const articleUrl = `${origin}/blog/${encodeURIComponent(article.id)}`;
 
   return (
     <main className="relative flex min-h-screen w-full flex-col bg-white">
       <Header contactEmail={settings.contactInfo.email} />
-      <BlogPostView article={article} />
+      <BlogPostView article={article} articleUrl={articleUrl} />
       <Footer contactInfo={settings.contactInfo} />
     </main>
   );

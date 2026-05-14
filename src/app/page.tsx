@@ -13,8 +13,8 @@ export default async function Home() {
   const settings = await getSiteSettings();
 
   return (
-    <main className="min-h-screen  bg-white flex flex-col items-center relative">
-      <div className="w-full max-w-full md:max-w-7xl lg:max-w-full">
+    <main className="relative flex min-h-screen flex-col items-center overflow-x-visible bg-white">
+      <div className="w-full max-w-full overflow-x-visible md:max-w-7xl lg:max-w-full">
         <Header contactEmail={settings.contactInfo.email} />
         <Hero />
         <Stats />

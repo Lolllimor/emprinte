@@ -18,6 +18,23 @@ body {
   font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
 }
 
+/**
+ * Strip scrollbars while keeping overflow scroll (e.g. horizontal testimonial cards).
+ * Global ::-webkit-scrollbar rules below would otherwise still show a track/thumb here.
+ */
+@utility hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar-track,
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 /* Custom scrollbar for desktop */
 ::-webkit-scrollbar {
   width: 8px;
