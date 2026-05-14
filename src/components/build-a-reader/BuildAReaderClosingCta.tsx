@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { toast } from 'sonner';
 
 const PROJECTS_EMAIL = 'projects@emprintereaders.com';
@@ -66,22 +65,6 @@ export function BuildAReaderClosingCta() {
           >
             Copy email address
           </button>
-        </div>
-
-        <div className="mt-8 flex flex-col gap-4 border-t border-white/10 pt-8 font-poppins text-sm text-white/65 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <p className="max-w-md leading-relaxed">
-            Phone numbers and social links stay in one place—the{' '}
-            <a href="#site-footer" className="font-medium text-white underline-offset-4 hover:underline">
-              site footer
-            </a>
-            —so this page stays about the proposal, not a duplicate contact sheet.
-          </p>
-          <Link
-            href="/#initiatives"
-            className="shrink-0 font-medium text-[#7dccb8] underline-offset-4 transition hover:text-white hover:underline"
-          >
-            Back to Build a Reader on the homepage
-          </Link>
         </div>
       </div>
     </div>
