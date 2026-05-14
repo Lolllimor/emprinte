@@ -6,7 +6,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Logo } from '@/components/ui/Logo';
-import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import { createSupabaseBrowserClient, isSupabaseBrowserConfigured } from '@/lib/supabase/client';
 import type { BookType } from '@/lib/validation/community-application';
 
 const BUCKET = 'community-applications';
@@ -236,6 +236,10 @@ export function CommunityApplicationWizard() {
   }, [router]);
 
   useEffect(() => {
+    if (!isSupabaseBrowserConfigured()) {
+      setSessionEmail(null);
+      return;
+    }
     let cancelled = false;
     (async () => {
       try {
@@ -307,6 +311,12 @@ export function CommunityApplicationWizard() {
 
     setBusy(true);
     try {
+      if (!isSupabaseBrowserConfigured()) {
+        toast.error(
+          'This environment is missing Supabase settings. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local in the emprinte folder, then restart npm run dev.',
+        );
+        return;
+      }
       const supabase = createSupabaseBrowserClient();
       const {
         data: { user },
@@ -388,6 +398,15 @@ export function CommunityApplicationWizard() {
       }
 
       router.replace('/apply/thank-you');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : '';
+      if (msg.includes('Missing NEXT_PUBLIC_SUPABASE')) {
+        toast.error(
+          'This environment is missing Supabase settings. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local in the emprinte folder, then restart npm run dev.',
+        );
+      } else {
+        toast.error('Something went wrong while submitting. Try again.');
+      }
     } finally {
       setBusy(false);
     }
@@ -407,7 +426,7 @@ export function CommunityApplicationWizard() {
     <div className="min-h-screen bg-white pb-28 md:pb-32">
       <main className="mx-auto max-w-2xl px-4 pt-6 md:pt-10">
         <header className="mb-8 flex flex-col items-center text-center">
-          <Link href="/apply" className="mb-5 inline-flex">
+          <Link href="/" className="mb-5 inline-flex" aria-label="Emprinte home">
             <Logo />
           </Link>
           <h1 className="mt-2 font-lora text-2xl font-semibold leading-tight text-[#142218] md:text-3xl">
