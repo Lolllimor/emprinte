@@ -9,23 +9,23 @@ export function Initiatives() {
       <div className="w-full flex flex-col  md:flex-row justify-between md:items-center  max-w-[1200px] mx-auto">
         <div className="flex flex-col gap-4  md:max-w-[500px]">
           <div className="flex h-6 px-4 justify-center items-center gap-2.5 rounded-3xl bg-[#E63715] w-fit">
-            <span className="text-xs md:text-base leading-[150%] font-normal text-white font-campton">
+            <span className="text-[10px] md:text-[14px] leading-[150%] font-normal text-white font-poppins">
               Virtual Bootcamps
             </span>
           </div>
 
-          <div className="text-[32px] lg:text-[45px] xl:text-[64px] leading-[40px] lg:leading-[50px] xl:leading-[64px] font-bold text-[#015B51] font-lora flex flex-col">
+          <div className="text-[32px] lg:text-[45px] xl:text-[64px] leading-[40px] lg:leading-[50px] xl:leading-[64px] font-bold text-[#005D51] font-lora flex flex-col">
             Take Action,
             <span>Make Progress.</span>
           </div>
         </div>
-        <p className="text-[#7B7B7B] font-medium font-campton mt-4 max-w-[328px] md:hidden">
+        <p className="text-[#7B7B7B] font-medium font-poppins mt-4 max-w-[328px] md:hidden">
           Our bootcamps push you to live what you learn. Join a group of
           motivated readers, commit to daily tasks, and holding each other
           accountable.
         </p>
 
-        <p className="text-base lg:text-xl xl:text-2xl leading-[24px] lg:leading-[28px] xl:leading-[32px] font-medium text-[#7B7B7B] font-campton md:max-w-[350px] lg:max-w-[400px] xl:max-w-[574px]">
+        <p className="text-base lg:text-xl xl:text-2xl leading-[24px] lg:leading-[28px] xl:leading-[32px] font-medium text-[#7B7B7B] font-poppins md:max-w-[350px] lg:max-w-[400px] xl:max-w-[574px]">
           Our bootcamps push you to live what you learn. Join a group of
           motivated readers, commit to growth and productivity.
         </p>
@@ -33,11 +33,11 @@ export function Initiatives() {
           <div className="rounded-2xl bg-[#CAE594] xl:p-6 p-4 flex flex-col lg:gap-6 gap-4">
 
             <div className="flex flex-col items-start gap-0">
-              <h3 className="text-[28px] leading-snug md:leading-normal lg:text-4xl xl:text-[40px] font-bold text-black font-campton">
+              <h3 className="text-[28px] leading-snug md:leading-normal lg:text-4xl xl:text-[40px] font-bold text-black font-poppins">
                 5AM Club Bootcamp
               </h3>
 
-              <p className="text-xs md:text-sm lg:text-2xl font-normal text-black font-campton ">
+              <p className="text-xs md:text-sm lg:text-2xl font-normal text-black font-poppins ">
                 Own your morning, elevate your life.
               </p>
             </div>
@@ -51,14 +51,14 @@ export function Initiatives() {
 
               <div className="lg:px-4 px-3 md:h-8 h-6 rounded-lg bg-white border border-[#CAE594] flex items-center gap-2 ">
                 <CalendarIcon />
-                <span className="text-xs md:text-sm lg:text-base font-normal text-black font-campton">
+                <span className="text-xs md:text-sm lg:text-base font-normal text-black font-poppins">
                   30 Days
                 </span>
               </div>
 
               <div className="lg:px-4 px-3 md:h-8 h-6 rounded-lg bg-white border border-[#CAE594] flex items-center gap-2">
                 <CommunityIcon />
-                <span className="text-xs md:text-sm lg:text-base font-normal text-black font-campton">
+                <span className="text-xs md:text-sm lg:text-base font-normal text-black font-poppins">
                   Community
                 </span>
               </div>
@@ -71,7 +71,7 @@ export function Initiatives() {
                   '_blank'
                 )
               }
-              className="w-full md:w-auto px-6 h-10 lg:h-12 rounded-lg bg-white text-black font-normal text-base lg:text-lg font-campton hover:bg-gray-50 transition-colors cursor-pointer"
+              className="w-full md:w-auto px-6 h-10 lg:h-12 rounded-lg bg-white text-black font-normal text-base lg:text-lg font-poppins hover:bg-gray-50 transition-colors cursor-pointer"
             >
               Click here to Join
             </button>

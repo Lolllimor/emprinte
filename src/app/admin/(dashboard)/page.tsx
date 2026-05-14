@@ -1,13 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { AdminBuildAReaderSection } from '@/components/admin/AdminBuildAReaderSection';
 import { AdminSiteSettingsSection } from '@/components/admin/AdminSiteSettingsSection';
 import { AdminTestimonialsSection } from '@/components/admin/AdminTestimonialsSection';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { AdminModal } from '@/components/admin/AdminModal';
-import { getEditTokenForClient } from '@/lib/api';
 import { AdminManageTile } from '@/types';
 
 export default function AdminDashboardPage() {
@@ -17,12 +16,6 @@ export default function AdminDashboardPage() {
   const closeModal = useCallback(() => {
     setActiveModal(null);
     setDashboardKey((k) => k + 1);
-  }, []);
-
-  useEffect(() => {
-    if (!getEditTokenForClient()) {
-      window.location.replace('/admin/login');
-    }
   }, []);
 
   return (

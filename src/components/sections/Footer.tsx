@@ -12,7 +12,7 @@ type FooterProps = {
 };
 
 const navLinkClass =
-  'text-base leading-[28px]  text-[#7B7B7B] font-campton';
+  'text-base leading-[28px]  text-[#7B7B7B] font-poppins';
 
 export function Footer({
   contactInfo = defaultContactInfo,
@@ -30,7 +30,7 @@ export function Footer({
                   <div className="text-base leading-[28px] font-bold text-black mb-1 font-lora">
                     Email
                   </div>
-                  <div className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton">
+                  <div className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-poppins">
                     {contactInfo.email}
                   </div>
                 </div>
@@ -43,7 +43,7 @@ export function Footer({
                     {contactInfo.phone.map((p) => (
                       <div
                         key={`${p.label}-${p.number}`}
-                        className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-campton"
+                        className="text-base leading-[28px] font-semibold text-[#7B7B7B] font-poppins"
                       >
                         {p.label} - {p.number}
                       </div>
@@ -97,14 +97,14 @@ export function Footer({
                     rel="noopener noreferrer"
                     aria-label="Instagram"
                   >
-                    <RiInstagramFill color="#015B51" size={38} />
+                    <RiInstagramFill color="#005D51" size={38} />
                   </a>
 
                   <a
                     href="https://www.linkedin.com/company/emprinte-readers/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 rounded bg-[#015B51] flex items-center justify-center"
+                    className="w-8 h-8 rounded bg-[#005D51] flex items-center justify-center"
                     aria-label="LinkedIn"
                   >
                     <ImLinkedin2 color="#fff" size={24} />
@@ -114,13 +114,13 @@ export function Footer({
                     href="https://x.com/emprintereaders?s=21"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 rounded bg-[#015B51] flex items-center justify-center"
+                    className="w-8 h-8 rounded bg-[#005D51] flex items-center justify-center"
                     aria-label="Twitter"
                   >
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                       <path
                         d="M32 25.5025C32 29.0762 29.0762 32 25.5025 32H6.49746C2.92383 32 0 29.0762 0 25.5025V6.49746C0 2.9239 2.92383 0 6.49746 0H25.5025C29.0762 0 32 2.9239 32 6.49746V25.5025Z"
-                        fill="#015B51"
+                        fill="#005D51"
                       />
                       <path
                         d="M18.3946 14.4043L26.092 4.81055H23.8624L17.2802 13.0151L10.6972 4.81055H3.34766L13.605 17.5952L5.90696 27.1897H8.13653L14.7195 18.9845L21.3031 27.1897H28.6527L18.3946 14.4043ZM6.972 6.54961H9.86244L25.0277 25.4505H22.1372L6.972 6.54961Z"
@@ -134,8 +134,8 @@ export function Footer({
           </div>
 
           <div className="flex flex-col items-start gap-2 w-full">
-            <div className="w-full h-px bg-[#015B51]"></div>
-            <div className="text-xs leading-[28px] font-semibold text-[#7B7B7B] font-campton">
+            <div className="w-full h-px bg-[#005D51]"></div>
+            <div className="text-xs leading-[28px] font-semibold text-[#7B7B7B] font-poppins">
               @2026 Emprinte Readers Hub All Right Reserved
             </div>
           </div>

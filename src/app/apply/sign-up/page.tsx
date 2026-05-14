@@ -12,7 +12,7 @@ import {
 } from '@/lib/supabase/client';
 
 const inputClass =
-  'w-full rounded-xl border border-[#142218]/12 bg-white px-4 py-3.5 text-base text-[#142218] shadow-inner shadow-black/[0.02] outline-none font-poppins transition placeholder:text-[#9aa89e] focus:border-[#005D51] focus:ring-[3px] focus:ring-[#6FE19B]/35 disabled:opacity-60';
+  'w-full rounded-xl border border-[#142218]/12 bg-white px-4 py-3.5 text-base text-[#142218] outline-none font-poppins transition placeholder:text-[#9aa89e] focus:border-[#005D51] focus:ring-[3px] focus:ring-[#6FE19B]/35 disabled:opacity-60';
 
 const labelClass =
   'text-xs font-semibold uppercase tracking-[0.12em] text-[#4a5c50] font-poppins';
@@ -152,29 +152,19 @@ function ApplySignUpForm() {
     <main className="min-h-screen px-4 pb-12 pt-8 md:flex md:items-center md:justify-center md:py-16">
       <div className="mx-auto flex w-full max-w-[440px] flex-col items-stretch gap-8">
         <header className="flex flex-col items-center text-center">
-          <Link
-            href="/apply"
-            className="inline-flex rounded-2xl bg-white/80 px-4 py-3 shadow-sm ring-1 ring-black/[0.04] transition hover:bg-white"
-            aria-label="Application overview"
-          >
+          <Link href="/apply" className="inline-flex" aria-label="Application overview">
             <Logo />
           </Link>
-          <p className="mt-6 font-poppins text-xs font-semibold uppercase tracking-[0.2em] text-[#005D51]/80">
-            Step 1 of 6 · Your account
-          </p>
-          <h1 className="mt-2 font-lora text-2xl font-semibold leading-tight text-[#142218] md:text-3xl">
+          <h1 className="mt-6 font-lora text-2xl font-semibold leading-tight text-[#142218] md:text-3xl">
             Sign up to apply
           </h1>
-          <p className="mt-3 max-w-sm font-poppins text-sm text-[#4a5c50]">
-            Email link or Google — no password.
-          </p>
         </header>
 
-        <div className="rounded-2xl border border-black/[0.06] bg-white/95 p-6 shadow-[0_12px_40px_rgba(0,0,0,0.06)] ring-1 ring-white/80 backdrop-blur-sm md:p-8">
+        <div className="rounded-2xl border border-black/[0.06] bg-white p-6 md:p-8">
           {magicSent ? (
             <div className="text-center">
               <div
-                className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#F0FFFD] text-2xl ring-2 ring-[#005D51]/15"
+                className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-[#005D51]/15 bg-white text-2xl"
                 aria-hidden
               >
                 ✉️
@@ -243,7 +233,7 @@ function ApplySignUpForm() {
                 <button
                   type="submit"
                   disabled={busy}
-                  className="min-h-[52px] w-full rounded-2xl bg-[#005D51] font-poppins text-base font-semibold text-white shadow-[0_4px_14px_rgba(0,93,81,0.22)] transition hover:bg-[#004438] disabled:opacity-55"
+                  className="min-h-[52px] w-full rounded-2xl bg-[#005D51] font-poppins text-base font-semibold text-white transition hover:bg-[#004438] disabled:opacity-55"
                 >
                   {busy ? 'Sending link…' : 'Email me a secure link'}
                 </button>
@@ -261,7 +251,7 @@ function ApplySignUpForm() {
                 type="button"
                 onClick={signInWithGoogle}
                 disabled={busy}
-                className="flex min-h-[52px] w-full items-center justify-center gap-3 rounded-2xl border-2 border-[#142218]/10 bg-white font-poppins text-base font-semibold text-[#142218] shadow-sm transition hover:border-[#005D51]/25 hover:bg-[#FAFFFC] disabled:opacity-55"
+                className="flex min-h-[52px] w-full items-center justify-center gap-3 rounded-2xl border-2 border-[#142218]/10 bg-white font-poppins text-base font-semibold text-[#142218] transition hover:border-[#005D51]/25 hover:bg-white disabled:opacity-55"
               >
                 <span className="text-lg" aria-hidden>
                   G

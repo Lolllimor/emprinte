@@ -15,13 +15,13 @@ export function Newsletter() {
               <h2 className="font-lora text-[1.75rem] font-semibold leading-tight text-white md:text-[2.25rem] md:leading-[1.15] xl:text-[2.5rem]">
                 Stories, initiatives, and what we&apos;re reading next
               </h2>
-              <p className="max-w-[36ch] font-campton text-base font-medium leading-relaxed text-white/88 md:text-lg md:leading-relaxed">
+              <p className="max-w-[36ch] font-poppins text-base font-medium leading-relaxed text-white/88 md:text-lg md:leading-relaxed">
                 Leave your details and we&apos;ll share updates on programmes,
                 events, and the communities we serve—no spam.
               </p>
             </div>
 
-            <p className="font-campton text-sm leading-snug text-white/50">
+            <p className="font-poppins text-sm leading-snug text-white/50">
               We only use this information to stay in touch. You can ask us to
               stop at any time.
             </p>

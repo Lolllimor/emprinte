@@ -1,19 +1,13 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 
 import { AdminPageSection } from '@/components/admin/AdminPageSection';
-import { AUTH_API } from '@/constants/auth-api';
-import {
-  getApiUrl,
-  getEditTokenForClient,
-  isBackendApiConfigured,
-  jsonHeadersWithEditAuth,
-} from '@/lib/api';
+import { adminJsonHeaders } from '@/lib/api';
 import { forgotPasswordEmailSchema } from '@/lib/validation/auth-reset';
 
 const inputClassName =
-  'w-full max-w-md rounded-xl border border-[#015B51]/25 bg-white px-4 py-3.5 text-base text-[#142218] outline-none font-campton font-medium transition focus:border-[#015B51] focus:ring-2 focus:ring-[#6FE19B]/40 disabled:opacity-60';
+  'w-full max-w-md rounded-xl border border-[#005D51]/25 bg-white px-4 py-3.5 text-base text-[#142218] outline-none font-poppins font-medium transition focus:border-[#005D51] focus:ring-2 focus:ring-[#6FE19B]/40 disabled:opacity-60';
 
 export default function AdminInvitePage() {
   const [email, setEmail] = useState('');
@@ -21,21 +15,10 @@ export default function AdminInvitePage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
-    if (!getEditTokenForClient()) {
-      window.location.replace('/admin/login');
-    }
-  }, []);
-
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-
-    if (!isBackendApiConfigured()) {
-      setError('Set NEXT_PUBLIC_API_URL to your API server.');
-      return;
-    }
 
     const parsed = forgotPasswordEmailSchema.safeParse({ email });
     if (!parsed.success) {
@@ -45,17 +28,12 @@ export default function AdminInvitePage() {
       return;
     }
 
-    const token = getEditTokenForClient();
-    if (!token) {
-      window.location.replace('/admin/login');
-      return;
-    }
-
     setBusy(true);
     try {
-      const res = await fetch(getApiUrl(AUTH_API.invites), {
+      const res = await fetch('/api/admin/invite', {
         method: 'POST',
-        headers: jsonHeadersWithEditAuth(),
+        credentials: 'include',
+        headers: adminJsonHeaders(),
         body: JSON.stringify({ email: parsed.data.email.trim().toLowerCase() }),
       });
 
@@ -72,7 +50,7 @@ export default function AdminInvitePage() {
         return;
       }
 
-      setSuccess('Invite sent. They will receive an email with next steps.');
+      setSuccess('Invite sent. They will receive an email from Supabase with next steps.');
       setEmail('');
     } catch {
       setError('Network error. Try again.');
@@ -86,13 +64,13 @@ export default function AdminInvitePage() {
       id="invite-heading"
       eyebrow="Team"
       title="Send an invite"
-      description="Invite someone to the admin workspace. Your API emails them a link; they finish signup on the accept-invite page."
+      description="Invite someone by email (Supabase sends the link). They must already be—or become—an app admin (role admin), or you set landing_admin / LANDING_ADMIN_EMAILS so they can open /admin."
     >
       <form onSubmit={onSubmit} className="flex max-w-md flex-col gap-5">
         <div className="flex flex-col gap-2">
           <label
             htmlFor="invite-email"
-            className="font-campton text-sm font-semibold uppercase tracking-[0.12em] text-[#015B51]"
+            className="font-poppins text-sm font-semibold uppercase tracking-[0.12em] text-[#005D51]"
           >
             Email
           </label>
@@ -110,13 +88,13 @@ export default function AdminInvitePage() {
         </div>
 
         {error ? (
-          <p className="text-sm text-red-700 font-campton" role="alert">
+          <p className="text-sm text-red-700 font-poppins" role="alert">
             {error}
           </p>
         ) : null}
 
         {success ? (
-          <p className="font-campton text-sm font-medium text-[#015B51]" role="status">
+          <p className="font-poppins text-sm font-medium text-[#005D51]" role="status">
             {success}
           </p>
         ) : null}
@@ -124,7 +102,7 @@ export default function AdminInvitePage() {
         <button
           type="submit"
           disabled={busy}
-          className="w-fit rounded-xl bg-[#015B51] px-5 py-3 font-campton text-sm font-medium text-white hover:bg-[#014238] disabled:opacity-60"
+          className="w-fit rounded-xl bg-[#005D51] px-5 py-3 font-poppins text-sm font-medium text-white hover:bg-[#004438] disabled:opacity-60"
         >
           {busy ? 'Sending…' : 'Send invite'}
         </button>

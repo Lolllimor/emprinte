@@ -33,7 +33,7 @@ export function Testimonials() {
       <div className="max-w-[1200px] mx-auto flex flex-col gap-12">
         <div className="flex flex-col gap-4">
           <Badge>Testimonials</Badge>
-          <h2 className="text-4xl md:text-6xl font-bold text-[#015B51] font-lora leading-[1.1] max-w-[600px]">
+          <h2 className="text-4xl md:text-6xl font-bold text-[#005D51] font-lora leading-[1.1] max-w-[600px]">
             Here is what our Readers have to say
           </h2>
         </div>
@@ -62,14 +62,14 @@ export function Testimonials() {
                       />
                     ))}
                   </div>
-                  <p className="text-white/90 font-campton text-sm leading-relaxed flex-1">
+                  <p className="text-white/90 font-poppins text-sm leading-relaxed flex-1">
                     {testimonial.text}
                   </p>
                   <div className="flex flex-col gap-1 mt-2">
-                    <span className="text-white font-semibold font-campton text-base uppercase">
+                    <span className="text-white font-semibold font-poppins text-base uppercase">
                       {testimonial.name}
                     </span>
-                    <span className="text-white/70 font-campton text-sm">
+                    <span className="text-white/70 font-poppins text-sm">
                       {testimonial.title}
                     </span>
                   </div>

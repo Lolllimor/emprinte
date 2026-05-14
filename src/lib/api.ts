@@ -5,66 +5,24 @@
  */
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
-/** Admin auth and content API live on the backend; set NEXT_PUBLIC_API_URL in .env. */
+/** Optional separate API base URL (legacy / other services). */
 export function isBackendApiConfigured(): boolean {
   return Boolean(process.env.NEXT_PUBLIC_API_URL?.trim());
 }
 
-/** sessionStorage key after signing in at `/admin/login`. */
-export const ADMIN_EDIT_TOKEN_SESSION_KEY = 'emprinte_admin_edit_token';
-
-export function getStoredEditToken(): string {
-  if (typeof window === 'undefined') return '';
-  try {
-    return sessionStorage.getItem(ADMIN_EDIT_TOKEN_SESSION_KEY)?.trim() ?? '';
-  } catch {
-    return '';
-  }
+/** Same-origin admin API: Supabase session cookie (no bearer header). */
+export function adminJsonHeaders(): HeadersInit {
+  return { 'Content-Type': 'application/json' };
 }
 
-export function setStoredEditToken(token: string): void {
-  if (typeof window === 'undefined') return;
-  try {
-    sessionStorage.setItem(ADMIN_EDIT_TOKEN_SESSION_KEY, token);
-  } catch {
-    /* private mode / quota */
-  }
-}
-
-export function clearStoredEditToken(): void {
-  if (typeof window === 'undefined') return;
-  try {
-    sessionStorage.removeItem(ADMIN_EDIT_TOKEN_SESSION_KEY);
-  } catch {
-    /* ignore */
-  }
-}
-
-/**
- * Edit token for admin API calls (browser only). Order:
- * 1. sessionStorage (set after `/admin/login`)
- * 2. NEXT_PUBLIC_EDIT_API_TOKEN (or EDIT_API_TOKEN via next.config `env`, e.g. for local tooling)
- */
-export function getEditTokenForClient(): string {
-  if (typeof window !== 'undefined') {
-    const fromSession = getStoredEditToken();
-    if (fromSession) return fromSession;
-  }
-  return process.env.NEXT_PUBLIC_EDIT_API_TOKEN?.trim() ?? '';
-}
-
-export function editApiAuthHeaders(): Record<string, string> {
-  if (typeof window === 'undefined') return {};
-  const token = getEditTokenForClient().trim();
-  if (!token) return {};
-  return { Authorization: `Bearer ${token}` };
-}
-
+/** @deprecated Use adminJsonHeaders — auth is cookie-based. */
 export function jsonHeadersWithEditAuth(): HeadersInit {
-  return {
-    'Content-Type': 'application/json',
-    ...editApiAuthHeaders(),
-  };
+  return adminJsonHeaders();
+}
+
+/** @deprecated No-op — auth is cookie-based. */
+export function editApiAuthHeaders(): Record<string, string> {
+  return {};
 }
 
 export function getApiUrl(path: string): string {
@@ -93,6 +51,16 @@ export function resolvePublicFetchUrl(path: string): string {
   return `http://127.0.0.1:${process.env.PORT || '3000'}${
     rel.startsWith('/') ? rel : `/${rel}`
   }`;
+}
+
+const PUBLIC_API_FETCH_TIMEOUT_MS = 8_000;
+
+/**
+ * Merge into server `fetch` calls that hit `resolvePublicFetchUrl` during static
+ * generation so `next build` does not hang when no server is listening.
+ */
+export function publicApiFetchInit(): Pick<RequestInit, 'signal'> {
+  return { signal: AbortSignal.timeout(PUBLIC_API_FETCH_TIMEOUT_MS) };
 }
 
 /** Same as getApiUrl but with query string (e.g. `?id=…` for DELETE). */

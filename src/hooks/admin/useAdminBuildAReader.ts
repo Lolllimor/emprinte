@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 import type { BookProgressProps, FormSubmitStatus } from '@/types';
 import { getApiErrorMessage } from '@/lib/api-errors';
-import { getApiUrl, jsonHeadersWithEditAuth } from '@/lib/api';
+import { getApiUrl, adminJsonHeaders } from '@/lib/api';
 
 export function useAdminBuildAReader() {
   const [data, setData] = useState<BookProgressProps | null>(null);
@@ -34,7 +34,8 @@ export function useAdminBuildAReader() {
       try {
         const res = await fetch(getApiUrl('build-a-reader'), {
           method: 'PUT',
-          headers: jsonHeadersWithEditAuth(),
+          credentials: 'include',
+          headers: adminJsonHeaders(),
           body: JSON.stringify(data),
         });
         const body = await res.json();

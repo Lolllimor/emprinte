@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import { editApiAuthHeaders, getApiUrl } from '@/lib/api';
+import { getApiUrl } from '@/lib/api';
 import type { NewsletterSubscriber } from '@/types';
 
 function formatSubscribedAt(iso: string | null): string {
@@ -61,7 +61,7 @@ export function AdminSubscribersPanel() {
     setError(null);
     try {
       const res = await fetch(getApiUrl('emails'), {
-        headers: editApiAuthHeaders(),
+        credentials: 'include',
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) {
@@ -103,7 +103,7 @@ export function AdminSubscribersPanel() {
         <button
           type="button"
           onClick={() => load()}
-          className="rounded-lg border border-[#dce5e0] bg-white px-4 py-2 font-campton text-sm font-medium text-[#2a3d32] hover:bg-[#f8faf9]"
+          className="rounded-lg border border-[#dce5e0] bg-white px-4 py-2 font-poppins text-sm font-medium text-[#2a3d32] hover:bg-[#f8faf9]"
         >
           Refresh
         </button>
@@ -111,7 +111,7 @@ export function AdminSubscribersPanel() {
           type="button"
           onClick={handleDownload}
           disabled={list.length === 0 || loading}
-          className="rounded-lg bg-[#015B51] px-4 py-2 font-campton text-sm font-medium text-white hover:bg-[#014238] disabled:opacity-50"
+          className="rounded-lg bg-[#005D51] px-4 py-2 font-poppins text-sm font-medium text-white hover:bg-[#004438] disabled:opacity-50"
         >
           Download CSV
         </button>
@@ -127,13 +127,13 @@ export function AdminSubscribersPanel() {
       ) : null}
 
       {loading ? (
-        <p className="font-campton text-sm text-[#5a6b62]">Loading subscribers…</p>
+        <p className="font-poppins text-sm text-[#5a6b62]">Loading subscribers…</p>
       ) : list.length === 0 ? (
-        <p className="font-campton text-sm text-[#5a6b62]">No subscribers yet.</p>
+        <p className="font-poppins text-sm text-[#5a6b62]">No subscribers yet.</p>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-[#dce5e0] bg-white">
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-[#f8faf9] font-campton text-[#3d4a42]">
+            <thead className="bg-[#f8faf9] font-poppins text-[#3d4a42]">
               <tr>
                 <th className="px-3 py-2.5 font-medium">Name</th>
                 <th className="px-3 py-2.5 font-medium">Email</th>
@@ -148,7 +148,7 @@ export function AdminSubscribersPanel() {
             </thead>
             <tbody>
               {list.map((row) => (
-                <tr key={row.id || row.email} className="border-t border-[#eef3f0] font-campton">
+                <tr key={row.id || row.email} className="border-t border-[#eef3f0] font-poppins">
                   <td className="px-3 py-2 text-[#142218]">{row.fullName || '—'}</td>
                   <td className="px-3 py-2 text-[#142218]">{row.email}</td>
                   <td className="px-3 py-2 whitespace-nowrap text-[#5a6b62]">

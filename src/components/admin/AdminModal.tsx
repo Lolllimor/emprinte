@@ -43,7 +43,7 @@ export function AdminModal({
       onClick={onClose}
     >
       <div
-        className={`w-full rounded-2xl border border-[#142218]/10 bg-white shadow-[0_24px_64px_-12px_rgba(20,34,24,0.25),0_0_0_1px_rgba(1,91,81,0.06)] ${
+        className={`w-full rounded-2xl border border-[#142218]/10 bg-white shadow-[0_24px_64px_-12px_rgba(20,34,24,0.25),0_0_0_1px_rgba(0,93,81,0.06)] ${
           wide ? 'max-w-4xl' : 'max-w-2xl'
         }`}
         onClick={(e) => e.stopPropagation()}
@@ -57,7 +57,7 @@ export function AdminModal({
               {title}
             </h2>
             {description ? (
-              <p className="mt-1.5 font-campton text-sm font-medium leading-relaxed text-[#5a6570]">
+              <p className="mt-1.5 font-poppins text-sm font-medium leading-relaxed text-[#5a6570]">
                 {description}
               </p>
             ) : null}
@@ -65,7 +65,7 @@ export function AdminModal({
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 rounded-lg border border-transparent px-3 py-1.5 font-campton text-sm font-semibold text-[#7B7B7B] transition hover:border-[#142218]/10 hover:bg-[#142218]/04 hover:text-[#142218]"
+            className="shrink-0 rounded-lg border border-transparent px-3 py-1.5 font-poppins text-sm font-semibold text-[#7B7B7B] transition hover:border-[#142218]/10 hover:bg-[#142218]/04 hover:text-[#142218]"
           >
             Close
           </button>

@@ -1,86 +1,72 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import { AUTH_API, jwtFromLoginResponse } from '@/constants/auth-api';
 import { AdminBrandLogo } from '@/components/admin/AdminBrandLogo';
-import {
-  isBackendApiConfigured,
-  setStoredEditToken,
-  getApiUrl,
-} from '@/lib/api';
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 
 const inputClassName =
-  'w-full rounded-xl border border-[#015B51]/25 bg-white px-4 py-3.5 text-base text-[#142218] outline-none font-campton transition-[box-shadow,border-color] focus:border-[#015B51] focus:ring-2 focus:ring-[#6FE19B]/50 disabled:opacity-60';
+  'w-full rounded-xl border border-[#005D51]/25 bg-white px-4 py-3.5 text-base text-[#142218] outline-none font-poppins transition-[box-shadow,border-color] focus:border-[#005D51] focus:ring-2 focus:ring-[#6FE19B]/50 disabled:opacity-60';
 
 const labelClassName =
-  'text-xs font-medium uppercase tracking-[0.08em] text-[#4a5c50] font-campton';
+  'text-xs font-medium uppercase tracking-[0.08em] text-[#4a5c50] font-poppins';
 
-export default function AdminLoginPage() {
+function supabaseConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim(),
+  );
+}
+
+function AdminLoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-
+  useEffect(() => {
+    const q = searchParams.get('error');
+    if (q === 'not_allowed') {
+        setError(
+        'Your account is signed in but cannot use this admin. App admins need role admin on their user (same as the mobile app). Otherwise ask an owner to set landing_admin in App metadata, or add your email to LANDING_ADMIN_EMAILS on the server.',
+      );
+    } else if (q === 'auth') {
+      setError('That sign-in link was invalid or expired. Try again.');
+    }
+  }, [searchParams]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
 
-    if (!isBackendApiConfigured()) {
+    if (!supabaseConfigured()) {
       setError(
-        'Set NEXT_PUBLIC_API_URL in .env to your API server (login returns a JWT).',
+        'Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local.',
       );
       return;
     }
 
     setBusy(true);
     try {
-      const res = await fetch(getApiUrl(AUTH_API.login), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email.trim(),
-          password,
-        }),
+      const supabase = createSupabaseBrowserClient();
+      const { error: signError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
       });
 
-      const data = await res.json().catch(() => ({}));
-
-      if (res.ok) {
-        const jwt = jwtFromLoginResponse(data);
-        if (jwt) {
-          setStoredEditToken(jwt);
-          try {
-            localStorage.removeItem('admin_token');
-          } catch {
-            /* */
-          }
-          router.replace('/admin');
-          return;
-        }
-      }
-
-      if (res.status === 401) {
-        setError(
-          typeof data?.error === 'string'
-            ? data.error
-            : 'Invalid email or password.',
-        );
+      if (signError) {
+        setError(signError.message || 'Could not sign in.');
         return;
       }
 
-      setError(
-        typeof data?.error === 'string'
-          ? data.error
-          : 'Could not sign in. Try again.',
-      );
+      const next = searchParams.get('next')?.trim();
+      router.replace(next && next.startsWith('/') ? next : '/admin');
     } catch {
-      setError('Network error. Check your connection and try again.');
+      setError('Something went wrong. Try again.');
     } finally {
       setBusy(false);
     }
@@ -93,12 +79,13 @@ export default function AdminLoginPage() {
         <h1 className="mt-6 font-lora text-2xl font-semibold tracking-tight text-[#142218] md:text-3xl">
           Admin sign in
         </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-[#4a5c50] font-campton">
-          Enter your email and password. The API returns a JWT stored for this
-          session for admin requests.
+        <p className="mt-3 text-[15px] leading-relaxed text-[#4a5c50] font-poppins">
+          Use the same Supabase account as the app. If you are already an app admin
+          (role <span className="font-medium text-[#142218]">admin</span> on your
+          user), you can sign in here too. Otherwise ask an owner to set that role,
+          or <span className="font-medium text-[#142218]">landing_admin</span> in App
+          metadata for landing-only access.
         </p>
-
-   
 
         <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-5">
           <div className="flex flex-col gap-2">
@@ -137,7 +124,7 @@ export default function AdminLoginPage() {
 
           {error ? (
             <p
-              className="text-sm text-red-700 font-campton leading-snug"
+              className="text-sm text-red-700 font-poppins leading-snug"
               role="alert"
             >
               {error}
@@ -147,30 +134,44 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={busy}
-            className="rounded-xl bg-[#015B51] px-4 py-3 text-base font-medium text-white font-campton transition-opacity hover:opacity-95 disabled:opacity-60"
+            className="rounded-xl bg-[#005D51] px-4 py-3 text-base font-medium text-white font-poppins transition-opacity hover:opacity-95 disabled:opacity-60"
           >
             {busy ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
 
-        <p className="mt-5 text-center text-sm font-campton">
+        <p className="mt-5 text-center text-sm font-poppins">
           <Link
             href="/admin/forgot-password"
-            className="text-[#015B51] underline underline-offset-2 hover:no-underline"
+            className="text-[#005D51] underline underline-offset-2 hover:no-underline"
           >
             Forgot password?
           </Link>
         </p>
 
-        <p className="mt-8 text-center text-sm font-campton">
+        <p className="mt-8 text-center text-sm font-poppins">
           <Link
             href="/"
-            className="text-[#015B51] underline underline-offset-2 hover:no-underline"
+            className="text-[#005D51] underline underline-offset-2 hover:no-underline"
           >
             Back to site
           </Link>
         </p>
       </div>
     </main>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-[#F0FFFD] flex items-center justify-center px-6">
+          <p className="font-poppins text-sm text-[#4a5c50]">Loading…</p>
+        </main>
+      }
+    >
+      <AdminLoginForm />
+    </Suspense>
   );
 }

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 
-import { requireEditApiAuth } from '@/lib/edit-api-auth';
+import { requireLandingAdminApiAuth } from '@/lib/supabase-api-auth';
 
 const MAX_BYTES = 3 * 1024 * 1024;
 
@@ -20,8 +20,8 @@ function detectImageKind(buf: Buffer): 'jpeg' | 'png' | null {
 }
 
 export async function POST(request: Request) {
-  const denied = requireEditApiAuth(request);
-  if (denied) return denied;
+  const denied = await requireLandingAdminApiAuth();
+  if (!denied.ok) return denied.response;
 
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME?.trim();
   const apiKey = process.env.CLOUDINARY_API_KEY?.trim();

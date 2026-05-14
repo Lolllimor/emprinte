@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { requireEditApiAuth } from '@/lib/edit-api-auth';
+import { requireLandingAdminApiAuth } from '@/lib/supabase-api-auth';
 import {
   deleteInsight,
   findInsightById,
@@ -15,8 +15,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const denied = requireEditApiAuth(request);
-  if (denied) return denied;
+  const denied = await requireLandingAdminApiAuth();
+  if (!denied.ok) return denied.response;
 
   const body = await request.json().catch(() => null);
 
@@ -58,8 +58,8 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const denied = requireEditApiAuth(request);
-  if (denied) return denied;
+  const denied = await requireLandingAdminApiAuth();
+  if (!denied.ok) return denied.response;
 
   const body = await request.json().catch(() => null);
 
@@ -105,8 +105,8 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const denied = requireEditApiAuth(request);
-  if (denied) return denied;
+  const denied = await requireLandingAdminApiAuth();
+  if (!denied.ok) return denied.response;
 
   const id = new URL(request.url).searchParams.get('id');
   if (!id?.trim()) {

@@ -7,10 +7,10 @@ import { newsletterSchema } from '@/lib/validation/newsletter';
 import { getApiUrl } from '@/lib/api';
 
 const inputClassName =
-  'w-full rounded-xl border border-white/25 bg-white px-4 py-3.5 text-base font-campton text-[#142218] placeholder:text-[#8a8a8a] outline-none transition-[box-shadow,border-color] focus:border-white focus:ring-2 focus:ring-[#6FE19B]/80 disabled:opacity-60';
+  'w-full rounded-xl border border-white/25 bg-white px-4 py-3.5 text-base font-poppins text-[#142218] placeholder:text-[#8a8a8a] outline-none transition-[box-shadow,border-color] focus:border-white focus:ring-2 focus:ring-[#6FE19B]/80 disabled:opacity-60';
 
 const labelClassName =
-  'text-xs font-medium uppercase tracking-[0.08em] text-white/65 font-campton';
+  'text-xs font-medium uppercase tracking-[0.08em] text-white/65 font-poppins';
 
 export type NewsletterSubscribeFormProps = {
   idPrefix?: string;
@@ -111,7 +111,7 @@ export function NewsletterSubscribeForm({
       onSubmit={handleSubmit}
       noValidate
     >
-      <p className="font-campton text-sm font-medium text-white/90">
+      <p className="font-poppins text-sm font-medium text-white/90">
         Your details
       </p>
 
@@ -178,7 +178,7 @@ export function NewsletterSubscribeForm({
 
       <button
         type="submit"
-        className="mt-1 flex h-14 w-full items-center justify-center rounded-xl bg-[#015B51] font-campton text-lg font-medium text-white shadow-md outline-none transition-colors hover:bg-[#014238] focus-visible:ring-2 focus-visible:ring-[#6FE19B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#182920] disabled:cursor-not-allowed disabled:opacity-65"
+        className="mt-1 flex h-14 w-full items-center justify-center rounded-xl bg-[#005D51] font-poppins text-lg font-medium text-white shadow-md outline-none transition-colors hover:bg-[#004438] focus-visible:ring-2 focus-visible:ring-[#6FE19B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#182920] disabled:cursor-not-allowed disabled:opacity-65"
         disabled={isSubmitting}
       >
         {isSubmitting ? <>Sending…</> : <>Subscribe</>}
@@ -186,7 +186,7 @@ export function NewsletterSubscribeForm({
 
       <p
         id={messageId}
-        className={`min-h-5 font-campton text-sm leading-snug text-[#F5B342] transition-opacity duration-150 ${
+        className={`min-h-5 font-poppins text-sm leading-snug text-[#F5B342] transition-opacity duration-150 ${
           message && status === 'error' ? 'opacity-100' : 'opacity-0'
         }`}
         aria-live="polite"

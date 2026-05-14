@@ -396,7 +396,7 @@ Use these as a guide for your own DB (Postgres, SQLite, MongoDB, etc.).
 
 Colors used in the UI:
 
-- Primary green: `#015B51`
+- Primary green: `#005D51`
 - Dark: `#142218`
 - Accent red: `#E63715`, `#FB1300`
 - Gray: `#7B7B7B`, `#A7A7A7`

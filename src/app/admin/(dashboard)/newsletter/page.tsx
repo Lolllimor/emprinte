@@ -1,18 +1,7 @@
-'use client';
-
-import { useEffect } from 'react';
-
 import { AdminPageSection } from '@/components/admin/AdminPageSection';
 import { AdminSubscribersPanel } from '@/components/admin/AdminSubscribersPanel';
-import { getEditTokenForClient } from '@/lib/api';
 
 export default function AdminNewsletterPage() {
-  useEffect(() => {
-    if (!getEditTokenForClient()) {
-      window.location.replace('/admin/login');
-    }
-  }, []);
-
   return (
     <AdminPageSection
       id="newsletter-heading"

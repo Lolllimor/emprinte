@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Lora, Open_Sans } from 'next/font/google';
+import { Lora, Poppins } from 'next/font/google';
 
 import { AppToaster } from '@/components/AppToaster';
 import './globals.css';
@@ -10,8 +10,8 @@ const lora = Lora({
   weight: ['400', '500', '600', '700'],
 });
 
-const openSans = Open_Sans({
-  variable: '--font-open-sans',
+const poppins = Poppins({
+  variable: '--font-poppins',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
 });
@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${lora.variable} ${openSans.variable} antialiased`}>
+      <body className={`${lora.variable} ${poppins.variable} antialiased`}>
         {children}
         <AppToaster />
       </body>

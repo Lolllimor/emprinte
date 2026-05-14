@@ -21,10 +21,10 @@ export function AdminPageSection({
 }) {
   return (
     <section aria-labelledby={id} className={children ? 'space-y-10' : ''}>
-      <header className="border-b border-[#015B51]/15 pb-8">
+      <header className="border-b border-[#005D51]/15 pb-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl min-w-0">
-            <p className="font-campton text-sm font-semibold uppercase tracking-[0.12em] text-[#015B51]">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.12em] text-[#005D51]">
               {eyebrow}
             </p>
             <h1
@@ -34,7 +34,7 @@ export function AdminPageSection({
               {title}
             </h1>
             {description ? (
-              <div className="mt-4 font-campton text-base font-medium leading-relaxed text-[#7B7B7B] md:text-[17px] md:leading-[150%]">
+              <div className="mt-4 font-poppins text-base font-medium leading-relaxed text-[#7B7B7B] md:text-[17px] md:leading-[150%]">
                 {description}
               </div>
             ) : null}

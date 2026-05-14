@@ -49,16 +49,16 @@ export function Stats() {
           <div className="flex flex-col gap-4">
             <Badge>Emprinte Growth Tracker 2026</Badge>
 
-            <p className="text-4xl xl:text-6xl leading-snug font-bold text-[#015B51]  lg:max-w-[390px] xl:max-w-[469px] font-lora">
+            <p className="text-4xl xl:text-6xl leading-snug font-bold text-[#005D51]  lg:max-w-[390px] xl:max-w-[469px] font-lora">
               Turn Clarity Into Measurable Progress
             </p>
           </div>
           <button
             type="button"
             onClick={() => setDownloadModalOpen(true)}
-            className=" cursor-pointer lg:h-12 h-10 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-[#015B51] lg:max-w-[400px] w-1/2"
+            className=" cursor-pointer lg:h-12 h-10 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-[#005D51] lg:max-w-[400px] w-1/2"
           >
-            <span className="lg:text-xl text-base leading-[150%] font-medium text-white font-campton">
+            <span className="lg:text-xl text-base leading-[150%] font-medium text-white font-poppins">
               Download For Free
             </span>
           </button>
@@ -87,14 +87,14 @@ export function Stats() {
                 >
                   Your free download
                 </h2>
-                <p className="font-campton text-sm leading-relaxed text-white/75 md:text-base">
+                <p className="font-poppins text-sm leading-relaxed text-white/75 md:text-base">
                   Subscribe and get access to The Emprinte Growth Tracker 2026.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setDownloadModalOpen(false)}
-                className="shrink-0 rounded-lg px-2 py-1 font-campton text-sm font-medium text-white/70 outline-none transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#6FE19B]"
+                className="shrink-0 rounded-lg px-2 py-1 font-poppins text-sm font-medium text-white/70 outline-none transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#6FE19B]"
               >
                 Close
               </button>

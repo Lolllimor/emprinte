@@ -1,5 +1,8 @@
+import type { User } from '@supabase/supabase-js';
+
 import { AUTH_API } from '@/constants/auth-api';
-import { getApiUrl, getEditTokenForClient, isBackendApiConfigured } from '@/lib/api';
+import { getApiUrl, isBackendApiConfigured } from '@/lib/api';
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 
 export type AdminProfile = {
   name: string;
@@ -15,21 +18,6 @@ function pickString(obj: Record<string, unknown>, ...keys: string[]): string {
   return '';
 }
 
-function decodeJwtPayload(token: string): Record<string, unknown> | null {
-  const parts = token.split('.');
-  if (parts.length < 2) return null;
-  try {
-    let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-    const pad = base64.length % 4;
-    if (pad) base64 += '='.repeat(4 - pad);
-    const json = atob(base64);
-    const data = JSON.parse(json) as unknown;
-    return data && typeof data === 'object' ? (data as Record<string, unknown>) : null;
-  } catch {
-    return null;
-  }
-}
-
 function displayNameFromEmail(email: string): string {
   const local = email.split('@')[0]?.trim() ?? '';
   if (!local) return 'Admin';
@@ -38,43 +26,25 @@ function displayNameFromEmail(email: string): string {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-/** Readable profile from JWT claims (no verify—token is already yours). */
-export function profileFromJwtToken(token: string): AdminProfile {
-  if (!token.trim()) {
+export function profileFromSupabaseUser(user: User | null): AdminProfile {
+  if (!user) {
     return { name: '', email: '', phone: '' };
   }
-  const payload = decodeJwtPayload(token);
-  if (!payload) {
-    return { name: '', email: '', phone: '' };
-  }
-  const email = pickString(payload, 'email', 'user_email', 'userEmail');
-  const emailGuess =
-    email ||
-    (typeof payload.sub === 'string' && payload.sub.includes('@')
-      ? payload.sub
-      : '');
-  const given = pickString(payload, 'given_name', 'givenName');
-  const family = pickString(payload, 'family_name', 'familyName');
+  const meta =
+    user.user_metadata && typeof user.user_metadata === 'object'
+      ? (user.user_metadata as Record<string, unknown>)
+      : {};
+  const email = user.email?.trim() ?? '';
+  const given = pickString(meta, 'given_name', 'givenName');
+  const family = pickString(meta, 'family_name', 'familyName');
   const combinedName = [given, family].filter(Boolean).join(' ');
   const name =
-    pickString(payload, 'name', 'fullName', 'full_name', 'displayName', 'preferred_username') ||
+    pickString(meta, 'name', 'full_name', 'fullName', 'displayName') ||
     combinedName ||
-    (emailGuess ? displayNameFromEmail(emailGuess) : '');
+    (email ? displayNameFromEmail(email) : '');
+  const phone = pickString(meta, 'phone', 'phone_number', 'phoneNumber', 'mobile');
 
-  const phone = pickString(
-    payload,
-    'phone',
-    'phoneNumber',
-    'phone_number',
-    'mobile',
-    'tel',
-  );
-
-  return {
-    name,
-    email: emailGuess,
-    phone,
-  };
+  return { name, email, phone };
 }
 
 function parseApiProfile(data: unknown): Partial<AdminProfile> {
@@ -102,27 +72,37 @@ function mergeProfile(
   };
 }
 
-/** JWT claims first; optional GET auth/me merges in when the API exists. */
+/** Profile from Supabase user; optional legacy GET auth/me when NEXT_PUBLIC_API_URL is set. */
 export async function loadAdminProfile(): Promise<AdminProfile> {
-  const token = getEditTokenForClient();
-  const base = profileFromJwtToken(token);
-  if (!token.trim() || !isBackendApiConfigured()) {
-    return base;
-  }
   try {
-    const res = await fetch(getApiUrl(AUTH_API.me), {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) return base;
-    const data = await res.json().catch(() => null);
-    return mergeProfile(base, parseApiProfile(data));
+    const supabase = createSupabaseBrowserClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const base = profileFromSupabaseUser(user);
+    if (!isBackendApiConfigured() || !user) {
+      return base;
+    }
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData.session?.access_token;
+    if (!accessToken) return base;
+    try {
+      const res = await fetch(getApiUrl(AUTH_API.me), {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) return base;
+      const data = await res.json().catch(() => null);
+      return mergeProfile(base, parseApiProfile(data));
+    } catch {
+      return base;
+    }
   } catch {
-    return base;
+    return { name: '', email: '', phone: '' };
   }
 }
 
-export function profileInitial(token: string): string {
-  const p = profileFromJwtToken(token);
+export function profileInitial(user: User | null): string {
+  const p = profileFromSupabaseUser(user);
   const source = p.name.trim() || p.email.trim() || '?';
   const letter = source.trim().charAt(0);
   return letter ? letter.toUpperCase() : '?';

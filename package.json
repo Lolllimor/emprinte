@@ -6,10 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "supabase:start": "supabase start",
+    "supabase:db-reset": "supabase db reset"
   },
   "dependencies": {
     "@react-icons/all-files": "^4.1.0",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.105.4",
     "cloudinary": "^2.9.0",
     "jose": "^6.2.2",
     "next": "16.0.10",

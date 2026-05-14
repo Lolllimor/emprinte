@@ -11,7 +11,7 @@ export function Insights() {
       <div className="max-w-[1200px] mx-auto flex flex-col gap-8 sm:gap-10 md:gap-12">
         <div className="flex flex-col gap-3 sm:gap-4">
           <Badge>Emprinte Insider</Badge>
-          <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-5xl font-bold text-[#015B51] font-lora leading-tight max-w-[600px]">
+          <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-5xl font-bold text-[#005D51] font-lora leading-tight max-w-[600px]">
             Explore Insights from Emprinte Readers
           </h2>
         </div>
@@ -25,7 +25,7 @@ export function Insights() {
               <div className="shrink-0 w-full md:w-auto md:min-w-[85px] lg:min-w-[140px] order-2 md:order-1">
                 <time
                   dateTime={article.date}
-                  className="text-base sm:text-lg md:text-sm lg:text-xl font-semibold text-[#151515] font-campton block whitespace-pre-line"
+                  className="text-base sm:text-lg md:text-sm lg:text-xl font-semibold text-[#151515] font-poppins block whitespace-pre-line"
                 >
                   {article.date.replace(/, (\d{4})$/, '\n$1')}
                 </time>
@@ -43,10 +43,10 @@ export function Insights() {
 
               <div className="flex flex-col justify-between gap-3 md:gap-4 min-w-0 flex-1 order-3">
                 <div className="flex flex-col gap-2 md:gap-3 lg:gap-4">
-                  <h3 className="text-xl sm:text-2xl md:text-lg lg:text-3xl font-semibold text-gray-900 font-campton leading-tight">
+                  <h3 className="text-xl sm:text-2xl md:text-lg lg:text-3xl font-semibold text-gray-900 font-poppins leading-tight">
                     {article.title}
                   </h3>
-                  <p className="text-base sm:text-lg md:text-sm lg:text-xl text-[#7B7B7B] font-campton leading-tight font-medium">
+                  <p className="text-base sm:text-lg md:text-sm lg:text-xl text-[#7B7B7B] font-poppins leading-tight font-medium">
                     {article.description}
                   </p>
                 </div>

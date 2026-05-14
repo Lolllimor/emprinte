@@ -11,22 +11,42 @@ import type { BookType } from '@/lib/validation/community-application';
 
 const BUCKET = 'community-applications';
 
+/** Local calendar YYYY-MM-DD for HTML date inputs (avoids UTC off-by-one from toISOString). */
+function toIsoDateLocal(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 const inputClass =
-  'w-full rounded-xl border border-[#142218]/10 bg-white px-4 py-3 text-base text-[#142218] shadow-inner shadow-black/[0.02] outline-none font-poppins transition placeholder:text-[#9aa89e] focus:border-[#005D51] focus:ring-[3px] focus:ring-[#6FE19B]/35 disabled:opacity-60';
+  'w-full rounded-xl border border-[#142218]/10 bg-white px-4 py-3 text-base text-[#142218] outline-none font-poppins transition placeholder:text-[#9aa89e] focus:border-[#005D51] focus:ring-[3px] focus:ring-[#6FE19B]/35 disabled:opacity-60';
 
 const labelClass =
   'text-xs font-semibold uppercase tracking-[0.1em] text-[#4a5c50] font-poppins';
 
+/** Sentence-case label for fields where all-caps hurts scanability (e.g. dates). */
+const labelSentenceClass =
+  'text-sm font-semibold tracking-tight text-[#142218] font-poppins';
+
 const cardShell =
-  'rounded-2xl border border-black/[0.06] bg-white/95 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-white/70 backdrop-blur-sm md:p-8';
+  'rounded-2xl border border-black/6 bg-white p-6 md:p-8';
 
 const WIZARD_STEPS = [
-  { short: 'You', title: 'About you', subtitle: 'How we reach you and a snapshot of your background.' },
+  { short: 'You', title: 'About You', subtitle: 'How we reach you and a snapshot of your background.' },
   { short: 'Plan', title: 'Membership', subtitle: 'Choose the plan you are aiming for after admission.' },
-  { short: 'Read', title: 'Your reading journey', subtitle: 'Help us understand your habits and interests.' },
-  { short: 'Goals', title: 'Commitment & goals', subtitle: 'Your focus for the year and a clear photo of you.' },
-  { short: 'Pay', title: 'Application fee', subtitle: 'Bank details and upload your payment receipt.' },
+  { short: 'Read', title: 'Your Reading Journey', subtitle: 'Help us understand your habits and interests.' },
+  { short: 'Goals', title: 'Commitment & Goals', subtitle: 'Your focus for the year and a clear photo of you.' },
+  { short: 'Pay', title: 'Application Fee', subtitle: 'Bank details and upload your payment receipt.' },
 ] as const;
+
+/** Full journey: account (done before this screen) + five wizard sections — six steps total. */
+const APPLICATION_STEPS = [
+  { key: 'account', short: 'Account', title: 'Account' },
+  ...WIZARD_STEPS.map((s) => ({ key: s.short, short: s.short, title: s.title })),
+] as const;
+
+const TOTAL_APPLICATION_STEPS = APPLICATION_STEPS.length;
 
 const BOOK_OPTIONS: { value: BookType; label: string }[] = [
   { value: 'finance', label: 'Finance' },
@@ -38,11 +58,57 @@ const BOOK_OPTIONS: { value: BookType; label: string }[] = [
   { value: 'other', label: 'Other' },
 ];
 
+const MEMBERSHIP_PLANS = [
+  {
+    id: 'quarterly' as const,
+    name: 'Quarterly',
+    subtitle: 'Structured in three-month sprints with the fullest perks.',
+    priceAmount: '20,000',
+    pricePeriod: '/ quarter',
+    highlight: false,
+    badge: null as string | null,
+    bullets: [
+      'Bootcamps, growth coach, discounts',
+      'Book votes, priority mentorship, vault',
+      'Three-month focused sprints',
+    ],
+    footnote: 'New members joining the community pay ₦25,000 / quarter.',
+  },
+  {
+    id: 'monthly' as const,
+    name: 'Monthly',
+    subtitle: 'Start month-to-month and stay as long as it works for you.',
+    priceAmount: '7,000',
+    pricePeriod: '/ month',
+    highlight: true,
+    badge: 'Suggested',
+    bullets: [
+      'Reading rooms, weekly reviews, recordings',
+      'eBooks, structures, bootcamps in that month',
+    ],
+    footnote: null as string | null,
+  },
+  {
+    id: 'student' as const,
+    name: 'Student & transition',
+    subtitle: 'Reduced rate while you study, serve, or get back on your feet.',
+    priceAmount: '5,000',
+    pricePeriod: '/ month',
+    highlight: false,
+    badge: null as string | null,
+    bullets: [
+      'For undergraduates, corps members, or temporarily unemployed',
+      'Subsidised core access',
+    ],
+    footnote: 'Valid ID or proof of status after admission.',
+  },
+] as const;
+
 type FormState = {
   firstName: string;
   lastName: string;
   phone: string;
-  gender: '' | 'male' | 'female' | 'prefer_not_to_say';
+  gender: '' | 'male' | 'female';
   dateOfBirth: string;
   location: string;
   professionalStatus: '' | 'student_nysc' | 'employed' | 'entrepreneur' | 'unemployed';
@@ -138,10 +204,12 @@ function validateStep(step: number, f: FormState, portrait: File | null, receipt
 
 function choiceCardClass(active: boolean) {
   return [
-    'flex min-h-[48px] cursor-pointer items-start gap-3 rounded-xl border-2 px-4 py-3 font-poppins text-sm leading-snug transition',
+    'grid min-h-[48px] cursor-pointer grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-0 rounded-xl border-2 px-4 py-3 font-poppins text-sm leading-snug transition',
+    '[&>input[type=radio]]:m-0 [&>input[type=radio]]:h-4 [&>input[type=radio]]:w-4 [&>input[type=radio]]:shrink-0 [&>input[type=radio]]:accent-[#005D51]',
+    '[&>span]:min-w-0 [&>span]:self-center',
     active
-      ? 'border-[#005D51] bg-[#F0FFFD] text-[#142218] shadow-sm'
-      : 'border-[#142218]/10 bg-white text-[#142218] hover:border-[#005D51]/25 hover:bg-[#FAFFFC]',
+      ? 'border-[#005D51] bg-white text-[#142218]'
+      : 'border-[#142218]/10 bg-white text-[#142218] hover:border-[#005D51]/25 hover:bg-white',
   ].join(' ');
 }
 
@@ -187,10 +255,16 @@ export function CommunityApplicationWizard() {
     };
   }, [loadStatus]);
 
-  const progressPct = useMemo(
-    () => Math.round(((step + 1) / totalSteps) * 100),
-    [step, totalSteps],
-  );
+  const currentApplicationStep = step + 2;
+
+  const dobInputBounds = useMemo(() => {
+    const today = new Date();
+    const max = toIsoDateLocal(today);
+    const oldest = new Date(today);
+    oldest.setFullYear(oldest.getFullYear() - 120);
+    const min = toIsoDateLocal(oldest);
+    return { min, max };
+  }, []);
 
   function nextStep() {
     const err = validateStep(step, form, portrait, receipt);
@@ -203,6 +277,20 @@ export function CommunityApplicationWizard() {
 
   function prevStep() {
     setStep((s) => Math.max(s - 1, 0));
+  }
+
+  function goToStepperIndex(listIndex: number) {
+    if (busy) return;
+    if (listIndex === 0) return;
+    const wizardIdx = listIndex - 1;
+    if (wizardIdx > step) {
+      toast.message('Finish this step before skipping ahead.');
+      return;
+    }
+    if (wizardIdx !== step) {
+      setStep(wizardIdx);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   async function onSubmit(e: FormEvent) {
@@ -316,18 +404,12 @@ export function CommunityApplicationWizard() {
   const meta = WIZARD_STEPS[step]!;
 
   return (
-    <div className="pb-28 md:pb-32">
+    <div className="min-h-screen bg-white pb-28 md:pb-32">
       <main className="mx-auto max-w-2xl px-4 pt-6 md:pt-10">
         <header className="mb-8 flex flex-col items-center text-center">
-          <Link
-            href="/apply"
-            className="mb-5 inline-flex rounded-2xl bg-white/80 px-4 py-3 shadow-sm ring-1 ring-black/[0.04] transition hover:bg-white"
-          >
+          <Link href="/apply" className="mb-5 inline-flex">
             <Logo />
           </Link>
-          <p className="font-poppins text-xs font-semibold uppercase tracking-[0.18em] text-[#005D51]/85">
-            Application · Step {step + 2} of 6
-          </p>
           <h1 className="mt-2 font-lora text-2xl font-semibold leading-tight text-[#142218] md:text-3xl">
             {meta.title}
           </h1>
@@ -342,40 +424,103 @@ export function CommunityApplicationWizard() {
           ) : null}
         </header>
 
-        <nav
-          className="mb-8 flex gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          aria-label="Steps"
+        <nav className="mb-2 w-full" aria-label="Application steps">
+          <ol className="m-0 grid w-full list-none grid-cols-6 gap-2 p-0">
+            {APPLICATION_STEPS.map((s, i) => {
+              const stepNum = i + 1;
+              const done = stepNum < currentApplicationStep;
+              const current = stepNum === currentApplicationStep;
+              const primary = done ? '✓' : s.short;
+              const isAccount = i === 0;
+              const wizardIdx = i - 1;
+              const isFuture = !isAccount && wizardIdx > step;
+              const stateClasses = current
+                ? 'border border-[#004438] bg-[#005D51] text-white'
+                : done
+                  ? 'border border-[#005D51]/28 bg-white text-[#005D51]'
+                  : 'border border-[#142218]/10 bg-white text-[#142218]';
+              const interactive =
+                !isAccount && !isFuture
+                  ? 'cursor-pointer hover:border-[#005D51]/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005D51]'
+                  : isFuture
+                    ? 'cursor-not-allowed opacity-55'
+                    : 'cursor-default';
+
+              const inner = (
+                <>
+                  <span className="font-poppins text-[10px] font-semibold uppercase leading-none tracking-[0.05em] sm:text-[11px]">
+                    {primary}
+                  </span>
+                  <span
+                    className={`mt-1 font-poppins text-[9px] font-medium tabular-nums leading-none sm:text-[10px] ${
+                      current ? 'text-white/90' : done ? 'text-[#005D51]/75' : 'text-[#5c6b5f]'
+                    }`}
+                  >
+                    {stepNum}/{TOTAL_APPLICATION_STEPS}
+                  </span>
+                </>
+              );
+
+              if (isAccount) {
+                return (
+                  <li key={s.key} className="min-w-0">
+                    <div
+                      className={`flex min-h-12 w-full flex-col items-center justify-center rounded-xl px-1 py-2 text-center transition-colors duration-200 sm:px-2 ${stateClasses}`}
+                      title={s.title}
+                      aria-label={`${s.title}, completed`}
+                    >
+                      {inner}
+                    </div>
+                  </li>
+                );
+              }
+
+              return (
+                <li
+                  key={s.key}
+                  className="min-w-0"
+                  aria-current={current ? 'step' : undefined}
+                >
+                  <button
+                    type="button"
+                    disabled={isFuture || busy}
+                    onClick={() => goToStepperIndex(i)}
+                    title={
+                      isFuture
+                        ? 'Complete earlier steps first'
+                        : `Go to ${s.title}`
+                    }
+                    className={`flex min-h-12 w-full flex-col items-center justify-center rounded-xl px-1 py-2 text-center transition-colors duration-200 sm:px-2 ${stateClasses} ${interactive}`}
+                  >
+                    {inner}
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+
+        <div
+          className="mb-8 flex w-full gap-1"
+          role="group"
+          aria-label={`Application progress, step ${currentApplicationStep} of ${TOTAL_APPLICATION_STEPS}`}
         >
-          {WIZARD_STEPS.map((s, i) => {
-            const done = i < step;
-            const current = i === step;
+          {APPLICATION_STEPS.map((s, i) => {
+            const stepNum = i + 1;
+            const filled = stepNum <= currentApplicationStep;
             return (
               <div
-                key={s.short}
-                className={`flex min-w-[4.75rem] flex-col items-center rounded-xl px-2 py-2 text-center transition ${
-                  current
-                    ? 'bg-[#005D51] text-white shadow-md'
-                    : done
-                      ? 'bg-white/90 text-[#005D51] ring-1 ring-[#005D51]/20'
-                      : 'bg-white/50 text-[#9aa89e] ring-1 ring-black/[0.04]'
-                }`}
+                key={`progress-${s.key}`}
+                className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-[#142218]/8"
               >
-                <span className="font-poppins text-[10px] font-bold uppercase tracking-wide">
-                  {done ? '✓' : s.short}
-                </span>
-                <span className="mt-0.5 font-poppins text-[10px] leading-tight opacity-90">
-                  {i + 2}/6
-                </span>
+                <div
+                  className={`h-full rounded-full bg-[#005D51] transition-[width] duration-500 ease-out ${
+                    filled ? 'w-full' : 'w-0'
+                  }`}
+                />
               </div>
             );
           })}
-        </nav>
-
-        <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-black/[0.06]">
-          <div
-            className="h-full rounded-full bg-[#005D51] transition-[width] duration-500 ease-out"
-            style={{ width: `${progressPct}%` }}
-          />
         </div>
 
         <form
@@ -412,33 +557,49 @@ export function CommunityApplicationWizard() {
                     />
                   </div>
                 </div>
-                <div>
-                  <label className={labelClass} htmlFor="phone">
-                    Phone (WhatsApp-friendly)
-                  </label>
-                  <input
-                    id="phone"
-                    className={`${inputClass} mt-1.5`}
-                    value={form.phone}
-                    onChange={(e) => setForm((s) => ({ ...s, phone: e.target.value }))}
-                    autoComplete="tel"
-                  />
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-end sm:gap-5">
+                  <div className="min-w-0">
+                    <label className={labelClass} htmlFor="phone">
+                      Phone (WhatsApp-friendly)
+                    </label>
+                    <input
+                      id="phone"
+                      className={`${inputClass} mt-1.5`}
+                      value={form.phone}
+                      onChange={(e) => setForm((s) => ({ ...s, phone: e.target.value }))}
+                      autoComplete="tel"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <label className={labelClass} htmlFor="dob">
+                      Date of birth
+                    </label>
+                    <input
+                      id="dob"
+                      type="date"
+                      name="birthday"
+                      min={dobInputBounds.min}
+                      max={dobInputBounds.max}
+                      autoComplete="bday"
+                      className={`${inputClass} mt-1.5 block min-h-12 w-full scheme-light`}
+                      value={form.dateOfBirth}
+                      onChange={(e) => setForm((s) => ({ ...s, dateOfBirth: e.target.value }))}
+                    />
+                  </div>
                 </div>
                 <fieldset>
                   <legend className={labelClass}>Gender</legend>
-                  <div className="mt-3 flex flex-col gap-2">
+                  <div className="mt-3 grid grid-cols-2 gap-3">
                     {(
                       [
                         ['male', 'Male'],
                         ['female', 'Female'],
-                        ['prefer_not_to_say', 'Prefer not to say'],
                       ] as const
                     ).map(([value, label]) => (
                       <label key={value} className={choiceCardClass(form.gender === value)}>
                         <input
                           type="radio"
                           name="gender"
-                          className="mt-1 size-4 shrink-0 accent-[#005D51]"
                           checked={form.gender === value}
                           onChange={() => setForm((s) => ({ ...s, gender: value }))}
                         />
@@ -447,18 +608,6 @@ export function CommunityApplicationWizard() {
                     ))}
                   </div>
                 </fieldset>
-                <div>
-                  <label className={labelClass} htmlFor="dob">
-                    Date of birth
-                  </label>
-                  <input
-                    id="dob"
-                    type="date"
-                    className={`${inputClass} mt-1.5 max-w-full sm:max-w-[240px]`}
-                    value={form.dateOfBirth}
-                    onChange={(e) => setForm((s) => ({ ...s, dateOfBirth: e.target.value }))}
-                  />
-                </div>
                 <div>
                   <label className={labelClass} htmlFor="location">
                     Where you live
@@ -473,7 +622,7 @@ export function CommunityApplicationWizard() {
                 </div>
                 <fieldset>
                   <legend className={labelClass}>Professional status</legend>
-                  <div className="mt-3 flex flex-col gap-2">
+                  <div className="mt-3 grid grid-cols-2 gap-2 sm:gap-3">
                     {(
                       [
                         ['student_nysc', 'Student / NYSC'],
@@ -484,12 +633,11 @@ export function CommunityApplicationWizard() {
                     ).map(([value, label]) => (
                       <label
                         key={value}
-                        className={choiceCardClass(form.professionalStatus === value)}
+                        className={`min-w-0 ${choiceCardClass(form.professionalStatus === value)}`}
                       >
                         <input
                           type="radio"
                           name="pro"
-                          className="mt-1 size-4 shrink-0 accent-[#005D51]"
                           checked={form.professionalStatus === value}
                           onChange={() =>
                             setForm((s) => ({ ...s, professionalStatus: value }))
@@ -505,85 +653,173 @@ export function CommunityApplicationWizard() {
           ) : null}
 
           {step === 1 ? (
-            <section className={cardShell}>
-              <p className="font-poppins text-sm leading-relaxed text-[#4a5c50]">
-                Pricing below is what we publish for members after you are admitted. On
-                this step you are only indicating interest—not paying membership yet.
-              </p>
-              <div className="mt-6 flex flex-col gap-3">
-                {(
-                  [
-                    {
-                      id: 'quarterly' as const,
-                      name: 'Quarterly',
-                      price: '₦20,000 / quarter',
-                      note: '₦25,000 / quarter for new members joining the community',
-                      bullets: [
-                        'Bootcamps, growth coach, discounts',
-                        'Book votes, priority mentorship, vault',
-                        'Three-month focused sprints',
-                      ],
-                    },
-                    {
-                      id: 'monthly' as const,
-                      name: 'Monthly',
-                      price: '₦7,000 / month',
-                      note: null,
-                      bullets: [
-                        'Reading rooms, weekly reviews, recordings',
-                        'eBooks, structures, bootcamps in that month',
-                      ],
-                    },
-                    {
-                      id: 'student' as const,
-                      name: 'Student & transition',
-                      price: '₦5,000 / mo · ₦12,000 / quarter',
-                      note: 'Valid ID required',
-                      bullets: [
-                        'For undergraduates, corps members, or temporarily unemployed',
-                        'Subsidised core access',
-                      ],
-                    },
-                  ] as const
-                ).map((plan) => (
-                  <label
-                    key={plan.id}
-                    className={`cursor-pointer rounded-2xl border-2 p-4 transition md:p-5 ${
-                      form.planChoice === plan.id
-                        ? 'border-[#005D51] bg-[#F0FFFD] shadow-md ring-1 ring-[#005D51]/10'
-                        : 'border-[#142218]/10 bg-white hover:border-[#005D51]/20'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="radio"
-                        name="plan"
-                        className="mt-1 size-4 accent-[#005D51]"
-                        checked={form.planChoice === plan.id}
-                        onChange={() => setForm((s) => ({ ...s, planChoice: plan.id }))}
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-baseline justify-between gap-2">
-                          <span className="font-lora text-lg font-semibold text-[#142218]">
-                            {plan.name}
-                          </span>
-                          <span className="font-poppins text-sm font-semibold text-[#005D51]">
-                            {plan.price}
-                          </span>
-                        </div>
-                        {plan.note ? (
-                          <p className="mt-1 font-poppins text-xs text-[#4a5c50]">{plan.note}</p>
-                        ) : null}
-                        <ul className="mt-3 list-disc space-y-1 pl-4 font-poppins text-xs leading-relaxed text-[#4a5c50] marker:text-[#005D51]">
-                          {plan.bullets.map((b) => (
-                            <li key={b}>{b}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </label>
-                ))}
-              </div>
+            <section className="rounded-2xl border border-black/6 bg-white p-5 sm:p-6 md:p-7">
+              <fieldset className="m-0 min-w-0 border-0 p-0">
+                <legend className={labelSentenceClass}>Membership plan</legend>
+                <div className="mt-2 max-w-[58ch] space-y-1.5 font-poppins text-[13px] leading-snug text-[#4a5c50] sm:text-sm sm:leading-relaxed">
+                  <p>
+                    Choose the member plan you are aiming for after admission. These are
+                    ongoing member prices — not the application fee on the next step.
+                  </p>
+                  <p className="text-[11px] leading-snug text-[#7B7B7B] sm:text-xs">
+                    Tap a card to select. You can change your mind before you submit.
+                  </p>
+                </div>
+                <div className="mt-5 flex flex-col gap-3 sm:gap-3.5">
+                  {MEMBERSHIP_PLANS.map((plan) => {
+                    const selected = form.planChoice === plan.id;
+                    const hi = plan.highlight;
+                    const ariaLabel = `${plan.name}, ₦${plan.priceAmount} ${plan.pricePeriod.replace('/', 'per ')}. ${plan.subtitle}`;
+                    return (
+                        <label
+                          key={plan.id}
+                          className="group relative flex min-h-0 min-w-0 cursor-pointer flex-col outline-none focus-within:outline-none"
+                        >
+                          <input
+                            type="radio"
+                            name="plan"
+                            className="peer sr-only"
+                            checked={selected}
+                            aria-label={ariaLabel}
+                            onChange={() =>
+                              setForm((s) => ({ ...s, planChoice: plan.id }))
+                            }
+                          />
+                          <div
+                            className={[
+                              'relative flex min-h-0 flex-col overflow-hidden rounded-xl border-2 font-poppins text-[13px] transition duration-200 will-change-transform sm:text-sm',
+                              'group-active:scale-[0.995]',
+                              hi
+                                ? 'border-transparent bg-[#101010] text-white group-hover:brightness-[1.04] peer-focus-visible:ring-2 peer-focus-visible:ring-[#6FE19B] peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-white peer-checked:ring-2 peer-checked:ring-[#6FE19B] peer-checked:ring-offset-2 peer-checked:ring-offset-white'
+                                : 'border-[#d8dcd8] bg-white group-hover:border-[#142218]/20 peer-focus-visible:ring-2 peer-focus-visible:ring-[#005D51]/40 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-white peer-checked:border-[#005D51] peer-checked:ring-2 peer-checked:ring-[#005D51]/30 peer-checked:ring-offset-2 peer-checked:ring-offset-white',
+                            ].join(' ')}
+                          >
+                            {hi && plan.badge ? (
+                              <span className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-full border border-[#005D51]/40 bg-[#0f1f16] px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#8ef4b8]">
+                                {plan.badge}
+                              </span>
+                            ) : null}
+                            <div className="relative flex min-h-0 flex-col">
+                              <div
+                                className={
+                                  hi
+                                    ? 'flex-none px-4 pb-0 pt-10 sm:px-5 sm:pt-11'
+                                    : 'flex-none px-4 pb-0 pt-5 sm:px-5 sm:pt-5'
+                                }
+                              >
+                                <span
+                                  className={
+                                    hi
+                                      ? 'block text-lg font-bold tracking-tight text-white sm:text-xl'
+                                      : 'block text-lg font-bold tracking-tight text-[#142218] sm:text-xl'
+                                  }
+                                >
+                                  {plan.name}
+                                </span>
+                                <span
+                                  className={
+                                    hi
+                                      ? 'mt-1.5 block text-[13px] leading-snug text-white/72 sm:text-sm'
+                                      : 'mt-1.5 block text-[13px] leading-snug text-[#5c6b5f] sm:text-sm'
+                                  }
+                                >
+                                  {plan.subtitle}
+                                </span>
+                                {plan.footnote ? (
+                                  <p
+                                    className={
+                                      hi
+                                        ? 'mt-1.5 text-[11px] leading-snug text-white/70 sm:text-xs'
+                                        : 'mt-1.5 text-[11px] leading-snug text-[#5c6b5f] sm:text-xs'
+                                    }
+                                  >
+                                    {plan.footnote}
+                                  </p>
+                                ) : null}
+                                <div className="mt-4 flex min-w-0 flex-wrap items-baseline gap-x-1 gap-y-0">
+                                  <span
+                                    className={
+                                      hi
+                                        ? 'text-base font-semibold leading-none text-[#6FE19B] sm:text-lg'
+                                        : 'text-base font-semibold leading-none text-[#005D51] sm:text-lg'
+                                    }
+                                  >
+                                    ₦
+                                  </span>
+                                  <span
+                                    className={
+                                      hi
+                                        ? 'text-[1.75rem] font-bold tabular-nums leading-none tracking-tight text-white sm:text-[2rem] md:text-4xl'
+                                        : 'text-[1.75rem] font-bold tabular-nums leading-none tracking-tight text-[#142218] sm:text-[2rem] md:text-4xl'
+                                    }
+                                  >
+                                    {plan.priceAmount}
+                                  </span>
+                                  <span
+                                    className={
+                                      hi
+                                        ? 'pb-0.5 text-xs font-medium leading-none text-white/78 sm:text-sm'
+                                        : 'pb-0.5 text-xs font-medium leading-none text-[#142218]/72 sm:text-sm'
+                                    }
+                                  >
+                                    {plan.pricePeriod.trim()}
+                                  </span>
+                                </div>
+                                <div
+                                  className={[
+                                    'mt-4 flex min-h-[44px] w-full items-center justify-center rounded-full px-3 text-center text-xs font-semibold transition sm:text-sm',
+                                    hi
+                                      ? selected
+                                        ? 'bg-[#5ad896] text-[#0a1f14] ring-2 ring-white/35'
+                                        : 'bg-[#6FE19B] text-[#142218] group-hover:bg-[#7ef0aa]'
+                                      : selected
+                                        ? 'border-2 border-[#005D51] bg-[#f0fffa] text-[#005D51]'
+                                        : 'border border-[#142218]/14 bg-white text-[#142218] group-hover:border-[#005D51]/35 group-hover:bg-[#fafdfb]',
+                                  ].join(' ')}
+                                >
+                                  {selected ? 'Selected' : 'Select plan'}
+                                </div>
+                              </div>
+                              <div
+                                className={
+                                  hi
+                                    ? 'mx-2.5 mb-4 mt-3 min-w-0 rounded-lg border border-[#142218]/10 bg-white px-4 py-3 sm:mx-3 sm:px-5'
+                                    : 'mx-2.5 mb-4 mt-3 min-w-0 rounded-lg border border-black/6 bg-[#f6f7f6] px-4 py-3 sm:mx-3 sm:px-5'
+                                }
+                              >
+                                <p className="m-0 mb-1.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-[#5c6b5f] sm:text-[10px]">
+                                  {"What's included"}
+                                </p>
+                                <ul
+                                  className="m-0 min-w-0 list-none space-y-1 p-0 text-[13px] leading-snug text-[#142218] sm:text-sm"
+                                  aria-label={`${plan.name} includes`}
+                                >
+                                  {plan.bullets.map((b) => (
+                                    <li key={b} className="flex items-start gap-2 sm:gap-2.5">
+                                      <svg
+                                        className="mt-[0.15em] h-3.5 w-3.5 shrink-0 text-[#005D51] sm:h-4 sm:w-4"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                        aria-hidden
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                          clipRule="evenodd"
+                                        />
+                                      </svg>
+                                      <span className="min-w-0 flex-1 wrap-break-word">{b}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </label>
+                    );
+                  })}
+                </div>
+              </fieldset>
             </section>
           ) : null}
 
@@ -595,7 +831,7 @@ export function CommunityApplicationWizard() {
                   <p className="mt-1 font-poppins text-xs text-[#7B7B7B]">
                     There is no wrong answer—honesty helps us support you.
                   </p>
-                  <div className="mt-3 flex flex-col gap-2">
+                  <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3">
                     {(
                       [
                         ['yes', 'Yes'],
@@ -605,12 +841,11 @@ export function CommunityApplicationWizard() {
                     ).map(([value, label]) => (
                       <label
                         key={value}
-                        className={choiceCardClass(form.consistentReader === value)}
+                        className={`min-w-0 ${choiceCardClass(form.consistentReader === value)}`}
                       >
                         <input
                           type="radio"
                           name="cons"
-                          className="mt-1 size-4 accent-[#005D51]"
                           checked={form.consistentReader === value}
                           onChange={() =>
                             setForm((s) => ({ ...s, consistentReader: value }))
@@ -637,7 +872,7 @@ export function CommunityApplicationWizard() {
                         key={value}
                         className={`flex min-h-[48px] cursor-pointer items-center justify-center rounded-xl border-2 px-2 text-center font-poppins text-sm font-medium transition ${
                           form.booksLast12Months === value
-                            ? 'border-[#005D51] bg-[#F0FFFD] text-[#142218]'
+                            ? 'border-[#005D51] bg-white text-[#142218]'
                             : 'border-[#142218]/10 bg-white text-[#4a5c50] hover:border-[#005D51]/25'
                         }`}
                       >
@@ -716,7 +951,6 @@ export function CommunityApplicationWizard() {
                         <input
                           type="radio"
                           name="wknd"
-                          className="mt-1 size-4 accent-[#005D51]"
                           checked={form.weekendCommitment === value}
                           onChange={() =>
                             setForm((s) => ({ ...s, weekendCommitment: value }))
@@ -734,39 +968,58 @@ export function CommunityApplicationWizard() {
           {step === 3 ? (
             <section className={cardShell}>
               <div className="flex flex-col gap-8">
-                <div>
-                  <div className="flex items-end justify-between gap-3">
-                    <label className={labelClass} htmlFor="commit-range">
-                      How committed can you be?
-                    </label>
-                    <span className="font-lora text-2xl font-semibold text-[#005D51]">
-                      {form.commitmentScale}
-                      <span className="font-poppins text-sm font-normal text-[#4a5c50]">/10</span>
-                    </span>
+                <fieldset className="m-0 min-w-0 border-0 p-0">
+                  <legend id="commit-legend" className={labelClass}>
+                    How committed can you be?
+                  </legend>
+                  <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+                    <p className="min-w-0 max-w-full flex-1 font-poppins text-xs leading-relaxed text-[#5c6b5f] sm:pr-2">
+                      1 = still exploring · 10 = ready to protect this habit on your
+                      calendar. Tap a number to set your answer.
+                    </p>
+                    <output className="flex shrink-0 items-baseline gap-0.5 tabular-nums sm:ml-auto" aria-live="polite">
+                      <span className="font-poppins text-3xl font-semibold leading-none text-[#005D51]">
+                        {form.commitmentScale}
+                      </span>
+                      <span className="font-poppins text-sm font-medium text-[#5c6b5f]">/10</span>
+                    </output>
                   </div>
-                  <p className="mt-1 font-poppins text-xs text-[#7B7B7B]">
-                    1 = still exploring · 10 = ready to protect this habit on your calendar.
-                  </p>
-                  <input
-                    id="commit-range"
-                    type="range"
-                    min={1}
-                    max={10}
-                    step={1}
-                    value={form.commitmentScale}
-                    onChange={(e) =>
-                      setForm((s) => ({
-                        ...s,
-                        commitmentScale: Number(e.target.value),
-                      }))
-                    }
-                    className="mt-4 h-2 w-full cursor-pointer appearance-none rounded-full bg-black/[0.08] accent-[#005D51] [&::-webkit-slider-thumb]:size-5 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#005D51] [&::-webkit-slider-thumb]:shadow-md"
-                  />
-                  <div className="mt-2 flex justify-between font-poppins text-[10px] font-medium uppercase tracking-wide text-[#9aa89e]">
-                    <span>Exploring</span>
-                    <span>All in</span>
+                  <div
+                    id="commit-scale"
+                    role="radiogroup"
+                    aria-labelledby="commit-legend"
+                    className="mt-5 grid grid-cols-5 gap-2 sm:flex sm:overflow-hidden sm:rounded-xl sm:border sm:border-[#142218]/12 sm:divide-x sm:divide-[#142218]/10"
+                  >
+                    {(
+                      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
+                    ).map((n) => {
+                      const on = form.commitmentScale === n;
+                      return (
+                        <button
+                          key={n}
+                          type="button"
+                          role="radio"
+                          aria-checked={on}
+                          aria-label={`${n} out of 10`}
+                          onClick={() =>
+                            setForm((s) => ({ ...s, commitmentScale: n }))
+                          }
+                          className={`min-h-[44px] rounded-lg border font-poppins text-sm font-semibold tabular-nums transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005D51] sm:min-h-[48px] sm:flex-1 sm:rounded-none sm:border-0 ${
+                            on
+                              ? 'border-[#005D51] bg-[#005D51] text-white sm:border-0'
+                              : 'border-[#142218]/12 bg-white text-[#4a5c50] hover:border-[#005D51]/35 hover:bg-[#FAFCFB] sm:hover:bg-[#FAFCFB]'
+                          }`}
+                        >
+                          {n}
+                        </button>
+                      );
+                    })}
                   </div>
-                </div>
+                  <div className="mt-3 flex justify-between gap-4 font-poppins text-xs font-semibold uppercase tracking-[0.08em] text-[#4a5c50]">
+                    <span>1 · Exploring</span>
+                    <span>10 · All in</span>
+                  </div>
+                </fieldset>
                 <div>
                   <label className={labelClass} htmlFor="goals">
                     Reading goals · next 12 months
@@ -791,7 +1044,7 @@ export function CommunityApplicationWizard() {
                   </p>
                   <label
                     htmlFor="portrait"
-                    className="mt-3 flex min-h-[120px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#142218]/15 bg-[#FAFAFA] px-4 py-6 text-center transition hover:border-[#005D51]/35 hover:bg-[#F0FFFD]/40"
+                    className="mt-3 flex min-h-[120px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#142218]/15 bg-white px-4 py-6 text-center outline-none transition hover:border-[#005D51]/35 focus-within:border-[#005D51]/35 focus-within:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/30 focus-visible:ring-offset-2 active:border-[#005D51]/35"
                   >
                     <span className="font-poppins text-sm font-semibold text-[#005D51]">
                       {portrait ? 'Replace file' : 'Tap to choose a file'}
@@ -809,35 +1062,47 @@ export function CommunityApplicationWizard() {
                       id="portrait"
                       type="file"
                       accept="image/*,.pdf,application/pdf"
-                      className="sr-only"
+                      className="sr-only focus:outline-none focus-visible:outline-none"
                       onChange={(e) => setPortrait(e.target.files?.[0] ?? null)}
                     />
                   </label>
                 </div>
                 <fieldset>
                   <legend className={labelClass}>How did you find Emprinte?</legend>
-                  <div className="mt-3 flex flex-col gap-2">
+                  <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3">
                     {(
                       [
                         ['facebook', 'Facebook'],
                         ['twitter', 'X (Twitter)'],
                         ['instagram', 'Instagram'],
                         ['linkedin', 'LinkedIn'],
-                        ['community_member', 'Someone in the community'],
+                        ['community_member', 'Emprinte Member'],
                         ['other', 'Other'],
                       ] as const
                     ).map(([value, label]) => (
-                      <label key={value} className={choiceCardClass(form.referralSource === value)}>
+                      <label
+                        key={value}
+                        className={`min-w-0 ${choiceCardClass(form.referralSource === value)}${
+                          value === 'community_member' ? ' col-span-2 md:col-span-1' : ''
+                        }`}
+                      >
                         <input
                           type="radio"
                           name="ref"
-                          className="mt-1 size-4 accent-[#005D51]"
                           checked={form.referralSource === value}
                           onChange={() =>
                             setForm((s) => ({ ...s, referralSource: value }))
                           }
                         />
-                        <span>{label}</span>
+                        <span
+                          className={
+                            value === 'community_member'
+                              ? 'min-w-0 whitespace-nowrap leading-snug'
+                              : 'min-w-0 leading-snug'
+                          }
+                        >
+                          {label}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -858,11 +1123,14 @@ export function CommunityApplicationWizard() {
 
           {step === 4 ? (
             <section className={cardShell}>
-              <div className="rounded-xl bg-[#FFF7ED] px-4 py-3 font-poppins text-sm leading-relaxed text-[#7c2d12] ring-1 ring-[#E85D04]/20">
+              <div className="rounded-xl border border-[#E85D04]/25 bg-white px-4 py-3 font-poppins text-sm leading-relaxed text-[#7c2d12]">
                 Pay <strong>₦3,000</strong> only, then upload the receipt below. Use your
                 full name in the transfer narration so we can match payment to you.
               </div>
-              <ul className="mt-6 space-y-2 rounded-2xl border border-[#005D51]/12 bg-[#F0FFFD]/80 p-5 font-poppins text-sm text-[#142218]">
+              <ul
+                className="mt-6 space-y-2.5 rounded-2xl border-2 border-[#005D51]/35 bg-[#F0FFFD] p-5 sm:space-y-3 sm:p-6 font-poppins text-sm text-[#142218]"
+                aria-label="Bank account for application fee"
+              >
                 <li>
                   <span className="text-[#4a5c50]">Bank · </span>
                   <strong>Zenith Bank</strong>
@@ -887,9 +1155,9 @@ export function CommunityApplicationWizard() {
                 </p>
                 <label
                   htmlFor="receipt"
-                  className="mt-3 flex min-h-[120px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#142218]/15 bg-[#FAFAFA] px-4 py-6 text-center transition hover:border-[#E85D04]/40 hover:bg-[#FFF7ED]/30"
+                  className="mt-3 flex min-h-[120px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#142218]/15 bg-white px-4 py-6 text-center outline-none transition hover:border-[#005D51]/40 focus-within:border-[#005D51]/40 focus-within:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/30 focus-visible:ring-offset-2 active:border-[#005D51]/35"
                 >
-                  <span className="font-poppins text-sm font-semibold text-[#E85D04]">
+                  <span className="font-poppins text-sm font-semibold text-[#005D51]">
                     {receipt ? 'Replace receipt' : 'Upload receipt'}
                   </span>
                   {receipt ? (
@@ -905,7 +1173,7 @@ export function CommunityApplicationWizard() {
                     id="receipt"
                     type="file"
                     accept="image/*,.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    className="sr-only"
+                    className="sr-only focus:outline-none focus-visible:outline-none"
                     onChange={(e) => setReceipt(e.target.files?.[0] ?? null)}
                   />
                 </label>
@@ -925,13 +1193,13 @@ export function CommunityApplicationWizard() {
         </form>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-black/[0.06] bg-[#FFFCFD]/95 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] backdrop-blur-md supports-[padding:max(0px)]:pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-black/6 bg-white px-4 py-3 supports-[padding:max(0px)]:pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
           <button
             type="button"
             onClick={prevStep}
             disabled={step === 0 || busy}
-            className="min-h-[48px] min-w-[96px] rounded-xl border-2 border-[#142218]/10 bg-white px-4 font-poppins text-sm font-semibold text-[#142218] transition hover:border-[#005D51]/25 disabled:opacity-35"
+            className="min-h-[48px] min-w-[96px] rounded-xl border-2 border-[#142218]/10 bg-white px-4 font-poppins text-sm font-semibold text-[#142218] outline-none transition hover:border-[#005D51]/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/35 focus-visible:ring-offset-2 disabled:opacity-35"
           >
             Back
           </button>
@@ -940,7 +1208,7 @@ export function CommunityApplicationWizard() {
               type="button"
               onClick={nextStep}
               disabled={busy}
-              className="min-h-[48px] flex-1 rounded-xl bg-[#005D51] px-6 font-poppins text-sm font-semibold text-white shadow-md transition hover:bg-[#004438] disabled:opacity-55 sm:max-w-[220px] sm:flex-none"
+              className="min-h-[48px] flex-1 rounded-xl bg-[#005D51] px-6 font-poppins text-sm font-semibold text-white outline-none transition hover:bg-[#004438] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/50 focus-visible:ring-offset-2 disabled:opacity-55 sm:max-w-[220px] sm:flex-none"
             >
               Continue
             </button>
@@ -949,7 +1217,7 @@ export function CommunityApplicationWizard() {
               type="submit"
               form="apply-wizard-form"
               disabled={busy}
-              className="min-h-[48px] flex-1 rounded-xl bg-[#E85D04] px-6 font-poppins text-sm font-semibold text-white shadow-md transition hover:opacity-95 disabled:opacity-55 sm:max-w-[260px] sm:flex-none"
+              className="min-h-[48px] flex-1 rounded-xl bg-[#005D51] px-6 font-poppins text-sm font-semibold text-white outline-none transition hover:bg-[#004438] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/50 focus-visible:ring-offset-2 disabled:opacity-55 sm:max-w-[260px] sm:flex-none"
             >
               {busy ? 'Sending…' : 'Submit application'}
             </button>

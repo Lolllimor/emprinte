@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { requireEditApiAuth } from '@/lib/edit-api-auth';
+import { requireLandingAdminApiAuth } from '@/lib/supabase-api-auth';
 import { patchStatsById, siteSettings } from '@/lib/site-settings-store';
 import { settingsWriteSchema } from '@/lib/validation/admin';
 
@@ -9,8 +9,8 @@ export async function GET() {
 }
 
 async function writeSettings(request: Request) {
-  const denied = requireEditApiAuth(request);
-  if (denied) return denied;
+  const denied = await requireLandingAdminApiAuth();
+  if (!denied.ok) return denied.response;
 
   const body = await request.json().catch(() => null);
 

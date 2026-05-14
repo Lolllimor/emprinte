@@ -5,11 +5,11 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 const steps = [
   { label: 'Account', detail: 'Email or Google' },
-  { label: 'About you', detail: 'Contact & background' },
+  { label: 'About You', detail: 'Contact & background' },
   { label: 'Membership', detail: 'Choose a plan' },
   { label: 'Reading', detail: 'Habits & interests' },
   { label: 'Commitment', detail: 'Goals & photo' },
-  { label: 'Fee & send', detail: 'Receipt & submit' },
+  { label: 'Fee & Send', detail: 'Receipt & submit' },
 ];
 
 export default async function ApplyLandingPage() {
@@ -20,11 +20,7 @@ export default async function ApplyLandingPage() {
     <main className="min-h-screen px-4 pb-16 pt-8 md:pt-12">
       <div className="mx-auto max-w-lg md:max-w-2xl">
         <header className="mb-10 flex flex-col items-center text-center">
-          <Link
-            href="/"
-            className="mb-6 inline-flex rounded-2xl bg-white/80 px-4 py-3 shadow-sm ring-1 ring-black/[0.04] transition hover:bg-white"
-            aria-label="Emprinte home"
-          >
+          <Link href="/" className="mb-6 inline-flex" aria-label="Emprinte home">
             <Logo />
           </Link>
           <p className="font-poppins text-xs font-semibold uppercase tracking-[0.2em] text-[#005D51]/80">
@@ -40,7 +36,7 @@ export default async function ApplyLandingPage() {
         </header>
 
         {user ? (
-          <div className="mb-8 rounded-2xl border border-[#005D51]/20 bg-[#F0FFFD] px-5 py-4 text-left shadow-sm">
+          <div className="mb-8 rounded-2xl border border-[#005D51]/20 bg-white px-5 py-4 text-left">
             <p className="font-poppins text-sm font-medium text-[#142218]">
               You&apos;re signed in
             </p>
@@ -53,7 +49,7 @@ export default async function ApplyLandingPage() {
 
         <section
           aria-labelledby="apply-steps-heading"
-          className="mb-10 rounded-2xl border border-black/[0.06] bg-white/90 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-white/60 backdrop-blur-sm md:p-8"
+          className="mb-10 rounded-2xl border border-black/[0.06] bg-white p-6 md:p-8"
         >
           <h2
             id="apply-steps-heading"
@@ -83,7 +79,7 @@ export default async function ApplyLandingPage() {
           </ol>
         </section>
 
-        <section className="mb-10 rounded-2xl border border-black/[0.06] bg-white/70 p-6 md:p-8">
+        <section className="mb-10 rounded-2xl border border-black/[0.06] bg-white p-6 md:p-8">
           <h2 className="font-lora text-lg font-semibold text-[#142218]">
             Before you begin
           </h2>
@@ -101,7 +97,7 @@ export default async function ApplyLandingPage() {
               membership is confirmed.
             </li>
           </ul>
-          <div className="mt-6 rounded-xl border border-[#005D51]/10 bg-[#F0FFFD]/50 px-4 py-3">
+          <div className="mt-6 rounded-xl border border-[#005D51]/10 bg-white px-4 py-3">
             <p className="font-poppins text-xs leading-relaxed text-[#4a5c50]">
               <span className="font-semibold text-[#142218]">Privacy.</span> We use your
               account email and your answers only for admissions and Emprinte-related
@@ -114,21 +110,21 @@ export default async function ApplyLandingPage() {
           {user ? (
             <Link
               href="/apply/form"
-              className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-2xl bg-[#005D51] px-8 font-poppins text-base font-semibold text-white shadow-[0_4px_14px_rgba(0,93,81,0.25)] transition hover:bg-[#004438] hover:shadow-md sm:flex-initial sm:min-w-[220px]"
+              className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-2xl bg-[#005D51] px-8 font-poppins text-base font-semibold text-white transition hover:bg-[#004438] sm:flex-initial sm:min-w-[220px]"
             >
               Continue application
             </Link>
           ) : (
             <Link
               href="/apply/sign-up?next=/apply/form"
-              className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-2xl bg-[#005D51] px-8 font-poppins text-base font-semibold text-white shadow-[0_4px_14px_rgba(0,93,81,0.25)] transition hover:bg-[#004438] hover:shadow-md sm:flex-initial sm:min-w-[220px]"
+              className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-2xl bg-[#005D51] px-8 font-poppins text-base font-semibold text-white transition hover:bg-[#004438] sm:flex-initial sm:min-w-[220px]"
             >
               Sign up to apply
             </Link>
           )}
           <Link
             href="/"
-            className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-2xl border-2 border-[#005D51]/20 bg-white/80 px-8 font-poppins text-base font-medium text-[#005D51] transition hover:border-[#005D51]/35 hover:bg-white sm:flex-initial sm:min-w-[180px]"
+            className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-2xl border-2 border-[#005D51]/20 bg-white px-8 font-poppins text-base font-medium text-[#005D51] transition hover:border-[#005D51]/35 hover:bg-white sm:flex-initial sm:min-w-[180px]"
           >
             Back to site
           </Link>

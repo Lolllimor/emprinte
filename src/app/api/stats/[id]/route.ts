@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { requireEditApiAuth } from '@/lib/edit-api-auth';
+import { requireLandingAdminApiAuth } from '@/lib/supabase-api-auth';
 import { updateStatAtIndex } from '@/lib/site-settings-store';
 import { statUpdateSchema } from '@/lib/validation/admin';
 
@@ -14,8 +14,8 @@ export async function PUT(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const denied = requireEditApiAuth(request);
-  if (denied) return denied;
+  const denied = await requireLandingAdminApiAuth();
+  if (!denied.ok) return denied.response;
 
   const { id } = await context.params;
   const index = parseStatIndex(id?.trim() ?? '');

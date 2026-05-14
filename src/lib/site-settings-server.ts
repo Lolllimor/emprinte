@@ -1,7 +1,7 @@
 import { cache } from 'react';
 
 import { getDefaultSiteSettings } from '@/constants/data';
-import { resolvePublicFetchUrl } from '@/lib/api';
+import { publicApiFetchInit, resolvePublicFetchUrl } from '@/lib/api';
 import type { SiteSettings } from '@/types';
 
 /**
@@ -13,6 +13,7 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
   try {
     const res = await fetch(resolvePublicFetchUrl('settings'), {
       next: { revalidate: 60 },
+      ...publicApiFetchInit(),
     });
     if (!res.ok) return defaults;
     const raw: unknown = await res.json();

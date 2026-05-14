@@ -34,7 +34,7 @@ export function AdminBrandLogo({
     return (
       <Link
         href={href}
-        className="inline-block shrink-0 rounded outline-none focus-visible:ring-2 focus-visible:ring-[#015B51]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        className="inline-block shrink-0 rounded outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
       >
         {image}
       </Link>

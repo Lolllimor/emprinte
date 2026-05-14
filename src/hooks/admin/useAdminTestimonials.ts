@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 import type { FormSubmitStatus, Testimonial } from '@/types';
 import { getApiErrorMessage } from '@/lib/api-errors';
-import { getApiUrl, jsonHeadersWithEditAuth } from '@/lib/api';
+import { getApiUrl, adminJsonHeaders } from '@/lib/api';
 
 export function useAdminTestimonials() {
   const [items, setItems] = useState<Testimonial[]>([]);
@@ -45,7 +45,8 @@ export function useAdminTestimonials() {
       try {
         const res = await fetch(getApiUrl('testimonials'), {
           method: 'PUT',
-          headers: jsonHeadersWithEditAuth(),
+          credentials: 'include',
+          headers: adminJsonHeaders(),
           body: JSON.stringify(items),
         });
         const body = await res.json();

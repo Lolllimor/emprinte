@@ -39,7 +39,7 @@ export function BookClub() {
           </Badge>
        
           <div className="flex flex-col text-white gap-1 ">
-            <span className="xl:text-2xl text-base font-campton">Ongoing Initiative..</span>
+            <span className="xl:text-2xl text-base font-poppins">Ongoing Initiative..</span>
             <div className="flex items-end">
               <p className="xl:text-[82px] text-6xl xl:max-w-[351px] max-w-[255px] leading-[0.9] font-bold font-lora">
                 BUILD A READER
@@ -51,16 +51,16 @@ export function BookClub() {
           <div className="flex flex-col gap-2 w-full max-w-full mt-4 lg:mt-0">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-1">
-                <span className="lg:text-3xl xl:text-5xl font-bold text-white font-campton">
+                <span className="lg:text-3xl xl:text-5xl font-bold text-white font-poppins">
                   {bookProgress?.booksCollected ?? "--"}
                 </span>
-                <span className="xl:text-lg text-sm text-white/90 font-campton font-medium xl:ml-2 ml-1">
+                <span className="xl:text-lg text-sm text-white/90 font-poppins font-medium xl:ml-2 ml-1">
                   of {bookProgress?.totalBooks ?? "--"} Books
                 </span>
               </div>
               <div className="flex items-center gap-2 text-white">
                 <BookIcon size={24} />
-                <span className="text-base xl:text-[28px] font-medium font-campton">
+                <span className="text-base xl:text-[28px] font-medium font-poppins">
                   N{bookProgress?.pricePerBook?.toLocaleString() ?? "--"}/BOOK
                 </span>
               </div>
@@ -72,7 +72,7 @@ export function BookClub() {
                   style={{ width: `${progressPercent ?? 0}%` }}
                 />
               </div>
-              <div className="flex justify-between mt-1.5 text-sm xl:text-base text-white font-medium font-campton">
+              <div className="flex justify-between mt-1.5 text-sm xl:text-base text-white font-medium font-poppins">
                 {[0, 100, 200, 300, 400, bookProgress?.totalBooks].map((n,idx) => (
                   <span key={idx}>{n}</span>
                 ))}

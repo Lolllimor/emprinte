@@ -25,7 +25,7 @@ export function NavigationLinkItem({
     <a
       href={link.href}
       onClick={handleClick}
-      className={`text-gray-800 hover:text-green-800 transition-colors font-semibold font-campton ${className}`}
+      className={`text-gray-800 hover:text-[#005D51] transition-colors font-semibold font-poppins ${className}`}
     >
       {link.label}
     </a>

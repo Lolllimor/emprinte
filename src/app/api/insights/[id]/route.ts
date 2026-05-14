@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { findInsightById, replaceInsight } from '@/lib/insights-store';
-import { requireEditApiAuth } from '@/lib/edit-api-auth';
+import { requireLandingAdminApiAuth } from '@/lib/supabase-api-auth';
 import { insightSchema } from '@/lib/validation/admin';
 
 export async function GET(
@@ -25,8 +25,8 @@ export async function PATCH(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const denied = requireEditApiAuth(request);
-  if (denied) return denied;
+  const denied = await requireLandingAdminApiAuth();
+  if (!denied.ok) return denied.response;
 
   const { id } = await context.params;
   const idTrimmed = id?.trim();

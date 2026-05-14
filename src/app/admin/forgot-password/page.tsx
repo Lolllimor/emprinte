@@ -1,36 +1,33 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 
 import { AdminBrandLogo } from '@/components/admin/AdminBrandLogo';
-import { AUTH_API, SESSION_PW_RESET_EMAIL_KEY } from '@/constants/auth-api';
-import { getApiUrl, isBackendApiConfigured } from '@/lib/api';
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { forgotPasswordEmailSchema } from '@/lib/validation/auth-reset';
 
 const inputClassName =
-  'w-full rounded-xl border border-[#015B51]/25 bg-white px-4 py-3.5 text-base text-[#142218] outline-none font-campton transition-[box-shadow,border-color] focus:border-[#015B51] focus:ring-2 focus:ring-[#6FE19B]/50 disabled:opacity-60';
+  'w-full rounded-xl border border-[#005D51]/25 bg-white px-4 py-3.5 text-base text-[#142218] outline-none font-poppins transition-[box-shadow,border-color] focus:border-[#005D51] focus:ring-2 focus:ring-[#6FE19B]/50 disabled:opacity-60';
 
 const labelClassName =
-  'text-xs font-medium uppercase tracking-[0.08em] text-[#4a5c50] font-campton';
+  'text-xs font-medium uppercase tracking-[0.08em] text-[#4a5c50] font-poppins';
+
+function originForRedirect(): string {
+  if (typeof window === 'undefined') return '';
+  return window.location.origin;
+}
 
 export default function AdminForgotPasswordPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-
-    if (!isBackendApiConfigured()) {
-      setError(
-        'Set NEXT_PUBLIC_API_URL to your API server so it can send the reset code.',
-      );
-      return;
-    }
+    setInfo(null);
 
     const parsed = forgotPasswordEmailSchema.safeParse({ email });
     if (!parsed.success) {
@@ -42,32 +39,20 @@ export default function AdminForgotPasswordPage() {
 
     setBusy(true);
     try {
-      const res = await fetch(getApiUrl(AUTH_API.forgotPassword), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: parsed.data.email.trim() }),
-      });
+      const supabase = createSupabaseBrowserClient();
+      const redirectTo = `${originForRedirect()}/admin/update-password`;
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        parsed.data.email.trim(),
+        { redirectTo },
+      );
 
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        setError(
-          typeof data?.error === 'string'
-            ? data.error
-            : 'Could not start reset. Try again later.',
-        );
+      if (resetError) {
+        setError(resetError.message || 'Could not start reset.');
         return;
       }
 
-      try {
-        sessionStorage.setItem(
-          SESSION_PW_RESET_EMAIL_KEY,
-          parsed.data.email.trim().toLowerCase(),
-        );
-      } catch {
-        /* quota */
-      }
-      router.push('/admin/otp');
+      setInfo('If an account exists for that email, we sent a reset link. Check your inbox.');
+      setEmail('');
     } catch {
       setError('Network error. Check your connection.');
     } finally {
@@ -80,31 +65,21 @@ export default function AdminForgotPasswordPage() {
       <div className="w-full max-w-[440px]">
         <AdminBrandLogo href="/" priority />
         <h1 className="mt-6 font-lora text-2xl font-semibold tracking-tight text-[#142218] md:text-3xl">
-          Forgot your password?
+          Reset password
         </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-[#4a5c50] font-campton">
-          Enter the email for your admin account. Your API will send a 4-digit
-          code (valid 5 minutes). Codes are created and checked on the server, not
-          in this app.
+        <p className="mt-3 text-[15px] leading-relaxed text-[#4a5c50] font-poppins">
+          We will email you a link to choose a new password. Add this site URL and
+          /admin/update-password to your Supabase Auth redirect allow list if you
+          have not already.
         </p>
-
-        {!isBackendApiConfigured() ? (
-          <p
-            className="mt-4 text-sm text-amber-900/90 bg-amber-50 border border-amber-200/80 rounded-xl px-4 py-3 font-campton"
-            role="status"
-          >
-            Set <code className="text-[13px]">NEXT_PUBLIC_API_URL</code> in{' '}
-            <code className="text-[13px]">.env</code> to your backend.
-          </p>
-        ) : null}
 
         <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-5">
           <div className="flex flex-col gap-2">
-            <label htmlFor="reset-email" className={labelClassName}>
+            <label htmlFor="forgot-email" className={labelClassName}>
               Email
             </label>
             <input
-              id="reset-email"
+              id="forgot-email"
               name="email"
               type="email"
               autoComplete="email"
@@ -117,34 +92,33 @@ export default function AdminForgotPasswordPage() {
           </div>
 
           {error ? (
-            <p className="text-sm text-red-700 font-campton" role="alert">
+            <p className="text-sm text-red-700 font-poppins" role="alert">
               {error}
+            </p>
+          ) : null}
+          {info ? (
+            <p className="text-sm font-medium text-[#005D51] font-poppins" role="status">
+              {info}
             </p>
           ) : null}
 
           <button
             type="submit"
             disabled={busy}
-            className="rounded-xl bg-[#015B51] px-4 py-3 text-base font-medium text-white font-campton disabled:opacity-60"
+            className="rounded-xl bg-[#005D51] px-4 py-3 text-base font-medium text-white font-poppins transition-opacity hover:opacity-95 disabled:opacity-60"
           >
-            {busy ? 'Sending…' : 'Send code'}
+            {busy ? 'Sending…' : 'Send reset link'}
           </button>
         </form>
 
-        <div className="mt-10 flex flex-col gap-4 text-sm font-campton sm:flex-row sm:justify-between">
+        <p className="mt-6 text-center text-sm font-poppins">
           <Link
             href="/admin/login"
-            className="text-[#015B51] underline underline-offset-2 hover:no-underline"
+            className="text-[#005D51] underline underline-offset-2 hover:no-underline"
           >
-            ← Back to sign in
+            Back to sign in
           </Link>
-          <Link
-            href="/"
-            className="text-[#4a5c50] underline underline-offset-2 hover:text-[#142218]"
-          >
-            Back to site
-          </Link>
-        </div>
+        </p>
       </div>
     </main>
   );

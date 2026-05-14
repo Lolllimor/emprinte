@@ -10,12 +10,11 @@ import { PrimarySubmitButton } from './PrimarySubmitButton';
 import { AdminModal } from '@/components/admin/AdminModal';
 import { getApiErrorMessage } from '@/lib/api-errors';
 import { FormStatusBanner } from './FormStatusBanner';
-import { editApiAuthHeaders } from '@/lib/api';
 import type { InsightArticle } from '@/types';
 
 /** Matches `BlogArticleList` grid card shell (public blog). */
 const adminBlogCardShell =
-  'flex h-full min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-[0_1px_0_rgba(1,91,81,0.05),0_8px_28px_-16px_rgba(20,34,24,0.12)] ring-1 ring-[#015B51]/[0.06] transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_40px_-20px_rgba(20,34,24,0.16)] hover:ring-[#015B51]/15';
+  'flex h-full min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-[0_1px_0_rgba(0,93,81,0.05),0_8px_28px_-16px_rgba(20,34,24,0.12)] ring-1 ring-[#005D51]/[0.06] transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_40px_-20px_rgba(20,34,24,0.16)] hover:ring-[#005D51]/15';
 
 function CardGridSkeleton() {
   return (
@@ -30,12 +29,12 @@ function CardGridSkeleton() {
           >
             <div className="aspect-5/3 w-full bg-[#dfecea]" />
             <div className="flex flex-col gap-3 p-5">
-              <div className="h-3 w-20 rounded bg-[#015B51]/15" />
+              <div className="h-3 w-20 rounded bg-[#005D51]/15" />
               <div className="h-5 w-full max-w-[90%] rounded bg-[#142218]/10" />
               <div className="h-3 w-full rounded bg-[#142218]/08" />
               <div className="h-3 w-full rounded bg-[#142218]/08" />
-              <div className="mt-4 flex gap-2 border-t border-[#015B51]/08 pt-4">
-                <div className="h-9 flex-1 rounded-lg bg-[#015B51]/12" />
+              <div className="mt-4 flex gap-2 border-t border-[#005D51]/08 pt-4">
+                <div className="h-9 flex-1 rounded-lg bg-[#005D51]/12" />
                 <div className="h-9 flex-1 rounded-lg bg-[#142218]/08" />
               </div>
             </div>
@@ -61,7 +60,7 @@ function AdminBlogPostCard({
     <article
       className={`${adminBlogCardShell} ${
         isEditing
-          ? 'ring-2 ring-[#015B51] ring-offset-2 ring-offset-[#f4faf8]'
+          ? 'ring-2 ring-[#005D51] ring-offset-2 ring-offset-[#f4faf8]'
           : ''
       }`}
     >
@@ -77,32 +76,32 @@ function AdminBlogPostCard({
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-2 p-4 md:gap-2.5 md:p-5">
-        <p className="font-campton text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#015B51]">
+        <p className="font-poppins text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#005D51]">
           <time dateTime={article.date}>{article.date}</time>
         </p>
         <h2 className="line-clamp-2 font-lora text-base font-bold leading-snug text-[#142218] md:text-lg">
           {article.title}
         </h2>
-        <p className="line-clamp-3 font-campton text-xs leading-relaxed text-[#5a6570] md:text-sm">
+        <p className="line-clamp-3 font-poppins text-xs leading-relaxed text-[#5a6570] md:text-sm">
           {article.description}
         </p>
         <p className="font-mono text-[10px] leading-tight text-[#8a9399]">
           id · {article.id}
         </p>
 
-        <div className="mt-auto flex flex-col gap-3 border-t border-[#015B51]/08 pt-4">
+        <div className="mt-auto flex flex-col gap-3 border-t border-[#005D51]/08 pt-4">
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={onEdit}
-              className="inline-flex min-w-22 flex-1 items-center justify-center rounded-lg bg-[#015B51] px-3 py-2.5 font-campton text-xs font-semibold text-white transition hover:bg-[#014238] sm:flex-none sm:px-4"
+              className="inline-flex min-w-22 flex-1 items-center justify-center rounded-lg bg-[#005D51] px-3 py-2.5 font-poppins text-xs font-semibold text-white transition hover:bg-[#004438] sm:flex-none sm:px-4"
             >
               Edit
             </button>
             <button
               type="button"
               onClick={onDelete}
-              className="inline-flex min-w-22 flex-1 items-center justify-center rounded-lg border border-red-200/90 bg-white px-3 py-2.5 font-campton text-xs font-semibold text-red-700 transition hover:bg-red-50 sm:flex-none sm:px-4"
+              className="inline-flex min-w-22 flex-1 items-center justify-center rounded-lg border border-red-200/90 bg-white px-3 py-2.5 font-poppins text-xs font-semibold text-red-700 transition hover:bg-red-50 sm:flex-none sm:px-4"
             >
               Delete
             </button>
@@ -111,7 +110,7 @@ function AdminBlogPostCard({
             href={`/blog/${article.id}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#015B51]/20 bg-[#F0FFFD]/80 px-3 py-2 font-campton text-xs font-semibold text-[#015B51] transition hover:border-[#015B51]/35 hover:bg-[#015B51]/08"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#005D51]/20 bg-[#F0FFFD]/80 px-3 py-2 font-poppins text-xs font-semibold text-[#005D51] transition hover:border-[#005D51]/35 hover:bg-[#005D51]/08"
           >
             View live post
             <span aria-hidden className="text-sm leading-none">
@@ -203,7 +202,7 @@ export function AdminInsightsPanel() {
       body.append('file', file);
       const res = await fetch('/api/upload/cloudinary', {
         method: 'POST',
-        headers: editApiAuthHeaders(),
+        credentials: 'include',
         body,
       });
       const data = (await res.json().catch(() => ({}))) as { url?: string };
@@ -227,9 +226,9 @@ export function AdminInsightsPanel() {
     <div className="space-y-10">
       <section
         aria-labelledby="blog-posts-list-heading"
-        className="overflow-hidden rounded-2xl border border-[#015B51]/12 bg-white shadow-[0_1px_2px_rgba(20,34,24,0.04)]"
+        className="overflow-hidden rounded-2xl border border-[#005D51]/12 bg-white shadow-[0_1px_2px_rgba(20,34,24,0.04)]"
       >
-        <div className="flex flex-col gap-4 border-b border-[#015B51]/10 bg-[#F0FFFD]/80 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="flex flex-col gap-4 border-b border-[#005D51]/10 bg-[#F0FFFD]/80 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div className="min-w-0">
             <h2
               id="blog-posts-list-heading"
@@ -237,7 +236,7 @@ export function AdminInsightsPanel() {
             >
               All posts
             </h2>
-            <p className="mt-1 font-campton text-sm font-medium text-[#7B7B7B]">
+            <p className="mt-1 font-poppins text-sm font-medium text-[#7B7B7B]">
               Same card layout as the public blog. Use the button to add a post,
               or edit from a card.
             </p>
@@ -245,7 +244,7 @@ export function AdminInsightsPanel() {
           <button
             type="button"
             onClick={openNewArticleModal}
-            className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#015B51] px-5 py-2.5 font-campton text-sm font-semibold text-white shadow-[0_1px_2px_rgba(20,34,24,0.08)] transition hover:bg-[#014238] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#015B51]/40 focus-visible:ring-offset-2"
+            className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#005D51] px-5 py-2.5 font-poppins text-sm font-semibold text-white shadow-[0_1px_2px_rgba(20,34,24,0.08)] transition hover:bg-[#004438] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/40 focus-visible:ring-offset-2"
           >
             New post
           </button>
@@ -256,7 +255,7 @@ export function AdminInsightsPanel() {
             <CardGridSkeleton />
           ) : list.length === 0 ? (
             <div className="px-5 py-12 text-center sm:px-8">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-dashed border-[#015B51]/20 bg-[#F0FFFD] text-[#015B51]">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-dashed border-[#005D51]/20 bg-[#F0FFFD] text-[#005D51]">
                 <svg
                   className="h-7 w-7 opacity-90"
                   fill="none"
@@ -275,7 +274,7 @@ export function AdminInsightsPanel() {
               <p className="font-lora text-base font-semibold text-[#142218]">
                 No posts yet
               </p>
-              <p className="mx-auto mt-2 max-w-md font-campton text-sm font-medium leading-relaxed text-[#7B7B7B]">
+              <p className="mx-auto mt-2 max-w-md font-poppins text-sm font-medium leading-relaxed text-[#7B7B7B]">
                 Click{' '}
                 <span className="font-semibold text-[#142218]">New post</span>{' '}
                 above to create your first article.
@@ -311,7 +310,7 @@ export function AdminInsightsPanel() {
       >
         <form onSubmit={handleFormSubmit} className="flex flex-col gap-6">
           {editingId ? (
-            <p className="rounded-xl border border-[#015B51]/15 bg-white/80 px-4 py-3 font-campton text-sm font-medium text-[#142218]">
+            <p className="rounded-xl border border-[#005D51]/15 bg-white/80 px-4 py-3 font-poppins text-sm font-medium text-[#142218]">
               Editing an existing post.{' '}
               <button
                 type="button"
@@ -319,7 +318,7 @@ export function AdminInsightsPanel() {
                   cancelEdit();
                   setArticleModalOpen(true);
                 }}
-                className="font-semibold text-[#015B51] underline decoration-[#015B51]/35 underline-offset-2 hover:text-[#014238]"
+                className="font-semibold text-[#005D51] underline decoration-[#005D51]/35 underline-offset-2 hover:text-[#004438]"
               >
                 Switch to new post
               </button>
@@ -370,23 +369,23 @@ export function AdminInsightsPanel() {
                   type="button"
                   disabled={uploadingImage}
                   onClick={() => imageFileInputRef.current?.click()}
-                  className="inline-flex items-center justify-center rounded-xl border-2 border-[#015B51] bg-white px-4 py-2.5 font-campton text-sm font-semibold text-[#015B51] shadow-[0_1px_2px_rgba(20,34,24,0.04)] transition hover:border-[#014238] hover:bg-[#015B51]/08 hover:text-[#014238] disabled:pointer-events-none disabled:opacity-50"
+                  className="inline-flex items-center justify-center rounded-xl border-2 border-[#005D51] bg-white px-4 py-2.5 font-poppins text-sm font-semibold text-[#005D51] shadow-[0_1px_2px_rgba(20,34,24,0.04)] transition hover:border-[#004438] hover:bg-[#005D51]/08 hover:text-[#004438] disabled:pointer-events-none disabled:opacity-50"
                 >
                   {uploadingImage ? 'Uploading…' : 'Upload image'}
                 </button>
                 {form.image ? (
-                  <span className="font-campton text-xs font-medium text-[#5a6570]">
+                  <span className="font-poppins text-xs font-medium text-[#5a6570]">
                     URL filled — you can replace by uploading again or edit the
                     field below.
                   </span>
                 ) : (
-                  <span className="font-campton text-xs font-medium text-[#5a6570]">
+                  <span className="font-poppins text-xs font-medium text-[#5a6570]">
                     JPG or PNG, up to 3 MB. Or paste a URL below.
                   </span>
                 )}
               </div>
               {form.image ? (
-                <div className="relative mt-2 aspect-video w-full max-w-md overflow-hidden rounded-xl border border-[#015B51]/12 bg-[#dfecea]">
+                <div className="relative mt-2 aspect-video w-full max-w-md overflow-hidden rounded-xl border border-[#005D51]/12 bg-[#dfecea]">
                   <img
                     src={form.image}
                     alt=""
@@ -396,7 +395,7 @@ export function AdminInsightsPanel() {
               ) : null}
               {uploadError ? (
                 <p
-                  className="font-campton text-sm font-medium text-red-700"
+                  className="font-poppins text-sm font-medium text-red-700"
                   role="alert"
                 >
                   {uploadError}

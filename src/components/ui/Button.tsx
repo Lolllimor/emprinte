@@ -12,11 +12,11 @@ export function Button({
 
   const variantStyles = {
     primary:
-      'bg-[#015B51] text-white hover:bg-[#014238] text-base lg:text-xl leading-[150%] font-campton',
+      'bg-[#005D51] text-white hover:bg-[#004438] text-base lg:text-xl leading-[150%] font-poppins',
     secondary:
-      'bg-white text-[#015B51] hover:bg-gray-50 text-xl leading-[150%] font-campton',
+      'bg-white text-[#005D51] hover:bg-gray-50 text-xl leading-[150%] font-poppins',
     outline:
-      'bg-white text-[#015B51] border-2 border-[#015B51] hover:bg-gray-50 text-xl leading-[150%] font-campton',
+      'bg-white text-[#005D51] border-2 border-[#005D51] hover:bg-gray-50 text-xl leading-[150%] font-poppins',
   };
 
   return (

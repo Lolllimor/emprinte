@@ -12,7 +12,7 @@ export default function ApplyLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FCE4EC] via-[#FFF5F7] to-[#F0FFFD] text-[#142218] antialiased">
+    <div className="min-h-screen bg-white text-[#142218] antialiased">
       {children}
     </div>
   );

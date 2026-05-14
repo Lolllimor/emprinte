@@ -14,11 +14,11 @@ import { AdminBrandLogo } from '@/components/admin/AdminBrandLogo';
 import { AdminHeaderUserMenu } from '@/components/admin/AdminHeaderUserMenu';
 
 const navClass =
-  'flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-campton transition-colors';
+  'flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-poppins transition-colors';
 const navIconClass = 'size-[1.125rem] shrink-0 text-[#142218]/45';
 const navInactive =
-  'font-medium text-[#142218]/80 hover:bg-[#015B51]/08 hover:text-[#142218]';
-const navActive = 'bg-[#015B51]/12 font-semibold text-[#015B51]';
+  'font-medium text-[#142218]/80 hover:bg-[#005D51]/08 hover:text-[#142218]';
+const navActive = 'bg-[#005D51]/12 font-semibold text-[#005D51]';
 
 export function AdminDashboardShell({
   children,
@@ -45,10 +45,10 @@ export function AdminDashboardShell({
 
   return (
     <div className="flex h-[100dvh] min-h-0 overflow-hidden bg-[#F0FFFD] text-[#142218]">
-      <aside className="flex h-full w-56 shrink-0 flex-col overflow-y-auto rounded-r-2xl border-r border-[#015B51]/15 bg-white">
-        <div className="border-b border-[#015B51]/10 p-5">
+      <aside className="flex h-full w-56 shrink-0 flex-col overflow-y-auto rounded-r-2xl border-r border-[#005D51]/15 bg-white">
+        <div className="border-b border-[#005D51]/10 p-5">
           <AdminBrandLogo href="/admin" width={120} height={50} priority />
-          <p className="mt-3 font-campton text-[11px] font-semibold uppercase tracking-[0.14em] text-[#015B51]">
+          <p className="mt-3 font-poppins text-[11px] font-semibold uppercase tracking-[0.14em] text-[#005D51]">
             Admin
           </p>
         </div>
@@ -58,7 +58,7 @@ export function AdminDashboardShell({
             className={`${navClass} ${siteInfoActive ? navActive : navInactive}`}
           >
             <HiOutlineSquares2X2
-              className={`${navIconClass} ${siteInfoActive ? 'text-[#015B51]' : ''}`}
+              className={`${navIconClass} ${siteInfoActive ? 'text-[#005D51]' : ''}`}
               aria-hidden
             />
             <span>Site info</span>
@@ -68,7 +68,7 @@ export function AdminDashboardShell({
             className={`${navClass} ${blogActive ? navActive : navInactive}`}
           >
             <HiOutlineDocumentText
-              className={`${navIconClass} ${blogActive ? 'text-[#015B51]' : ''}`}
+              className={`${navIconClass} ${blogActive ? 'text-[#005D51]' : ''}`}
               aria-hidden
             />
             <span>Blog</span>
@@ -78,7 +78,7 @@ export function AdminDashboardShell({
             className={`${navClass} ${newsletterActive ? navActive : navInactive}`}
           >
             <HiOutlineEnvelope
-              className={`${navIconClass} ${newsletterActive ? 'text-[#015B51]' : ''}`}
+              className={`${navIconClass} ${newsletterActive ? 'text-[#005D51]' : ''}`}
               aria-hidden
             />
             <span>Newsletter subscribers</span>
@@ -88,7 +88,7 @@ export function AdminDashboardShell({
             className={`${navClass} ${profileActive ? navActive : navInactive}`}
           >
             <HiOutlineUserCircle
-              className={`${navIconClass} ${profileActive ? 'text-[#015B51]' : ''}`}
+              className={`${navIconClass} ${profileActive ? 'text-[#005D51]' : ''}`}
               aria-hidden
             />
             <span>Profile</span>
@@ -98,7 +98,7 @@ export function AdminDashboardShell({
             className={`${navClass} ${inviteActive ? navActive : navInactive}`}
           >
             <HiOutlineUserPlus
-              className={`${navIconClass} ${inviteActive ? 'text-[#015B51]' : ''}`}
+              className={`${navIconClass} ${inviteActive ? 'text-[#005D51]' : ''}`}
               aria-hidden
             />
             <span>Send invite</span>
@@ -107,20 +107,20 @@ export function AdminDashboardShell({
       </aside>
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-[#015B51]/10 bg-white px-5 sm:px-6">
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-[#005D51]/10 bg-white px-5 sm:px-6">
           <p className="min-w-0 truncate font-lora text-xl font-semibold tracking-tight text-[#142218] md:text-2xl md:leading-snug">
             {headerTitle}
           </p>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <Link
               href="/"
-              className="hidden rounded-lg border-2 border-[#015B51] bg-white px-3 py-2 font-campton text-sm font-medium text-[#015B51] transition-colors duration-200 hover:border-[#014238] hover:bg-[#015B51]/10 hover:text-[#014238] sm:inline-flex"
+              className="hidden rounded-lg border-2 border-[#005D51] bg-white px-3 py-2 font-poppins text-sm font-medium text-[#005D51] transition-colors duration-200 hover:border-[#004438] hover:bg-[#005D51]/10 hover:text-[#004438] sm:inline-flex"
             >
               View site
             </Link>
             <Link
               href="/"
-              className="inline-flex rounded-lg border-2 border-[#015B51] bg-white p-2 text-[#015B51] transition-colors duration-200 hover:border-[#014238] hover:bg-[#015B51]/10 hover:text-[#014238] sm:hidden"
+              className="inline-flex rounded-lg border-2 border-[#005D51] bg-white p-2 text-[#005D51] transition-colors duration-200 hover:border-[#004438] hover:bg-[#005D51]/10 hover:text-[#004438] sm:hidden"
               aria-label="View public site"
             >
               <svg

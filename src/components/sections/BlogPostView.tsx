@@ -25,7 +25,7 @@ function ArticleParagraphs({ text, isLead }: { text: string; isLead?: boolean })
             className={
               lead
                 ? 'font-lora text-base leading-relaxed text-[#142218] sm:text-lg'
-                : 'font-campton text-sm leading-[1.75] text-[#2d3640] sm:text-base sm:leading-[1.72]'
+                : 'font-poppins text-sm leading-[1.75] text-[#2d3640] sm:text-base sm:leading-[1.72]'
             }
           >
             {block}
@@ -56,21 +56,21 @@ export function BlogPostView({ article }: BlogPostViewProps) {
         <div className={`${articleShell} pt-7 pb-9 md:pt-9 md:pb-10`}>
           <Link
             href="/blog"
-            className="inline-flex items-center gap-1 font-campton text-xs font-semibold text-[#015B51] transition-colors hover:text-[#014238]"
+            className="inline-flex items-center gap-1 font-poppins text-xs font-semibold text-[#005D51] transition-colors hover:text-[#004438]"
           >
             <span aria-hidden>←</span>
             <span>All posts</span>
           </Link>
 
           <header className="mt-6 flex w-full flex-col gap-3 sm:gap-4 lg:mt-8">
-            <p className="font-campton text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#015B51]">
+            <p className="font-poppins text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#005D51]">
               <time dateTime={article.date}>{article.date}</time>
             </p>
             <h1 className="max-w-4xl font-lora text-xl font-bold leading-snug tracking-tight text-[#142218] sm:text-2xl md:text-3xl lg:text-[2rem]">
               {article.title}
             </h1>
             {hasBody && article.description.trim() ? (
-              <p className="max-w-3xl border-l-2 border-[#015B51]/35 pl-4 font-lora text-sm italic leading-snug text-[#4d575f] sm:text-base lg:text-lg">
+              <p className="max-w-3xl border-l-2 border-[#005D51]/35 pl-4 font-lora text-sm italic leading-snug text-[#4d575f] sm:text-base lg:text-lg">
                 {article.description}
               </p>
             ) : null}
@@ -79,7 +79,7 @@ export function BlogPostView({ article }: BlogPostViewProps) {
       </div>
 
       <div className={`${articleShell} pb-14 pt-7 md:pb-16 md:pt-9`}>
-        <figure className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-[#dfecea] shadow-[0_12px_36px_-20px_rgba(20,34,24,0.28)] ring-1 ring-[#015B51]/10 sm:aspect-[2/1] lg:max-h-[min(480px,52vh)] lg:min-h-[260px]">
+        <figure className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-[#dfecea] shadow-[0_12px_36px_-20px_rgba(20,34,24,0.28)] ring-1 ring-[#005D51]/10 sm:aspect-[2/1] lg:max-h-[min(480px,52vh)] lg:min-h-[260px]">
           <Image
             src={article.image}
             alt={article.title}
@@ -95,8 +95,8 @@ export function BlogPostView({ article }: BlogPostViewProps) {
           <ArticleParagraphs text={proseText} isLead={hasBody} />
 
           {showExternal && !hasBody ? (
-            <div className="mt-10 rounded-xl border border-[#015B51]/12 bg-white/90 px-4 py-6">
-              <p className="font-campton text-xs leading-relaxed text-[#5a6570] sm:text-sm">
+            <div className="mt-10 rounded-xl border border-[#005D51]/12 bg-white/90 px-4 py-6">
+              <p className="font-poppins text-xs leading-relaxed text-[#5a6570] sm:text-sm">
                 The full story lives on an external site. After you finish
                 here, you can continue there.
               </p>
@@ -104,7 +104,7 @@ export function BlogPostView({ article }: BlogPostViewProps) {
                 href={article.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center rounded-lg bg-[#015B51] px-4 py-2.5 font-campton text-xs font-semibold text-white transition-colors hover:bg-[#014238] sm:text-sm"
+                className="mt-4 inline-flex items-center rounded-lg bg-[#005D51] px-4 py-2.5 font-poppins text-xs font-semibold text-white transition-colors hover:bg-[#004438] sm:text-sm"
               >
                 Open full article
               </a>

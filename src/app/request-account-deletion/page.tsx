@@ -15,7 +15,7 @@ const shell =
   'mx-auto w-full max-w-[1200px] px-5 sm:px-8 lg:px-[75px] xl:max-w-[1320px] xl:px-[120px]';
 
 const p =
-  'font-campton text-sm leading-[1.75] text-[#2d3640] sm:text-base sm:leading-[1.72]';
+  'font-poppins text-sm leading-[1.75] text-[#2d3640] sm:text-base sm:leading-[1.72]';
 
 const deletionMailto =
   'mailto:hello@emprintereaders.com?subject=Delete%20my%20account%20and%20data';
@@ -29,7 +29,7 @@ export default async function RequestAccountDeletionPage() {
 
       <article className="w-full flex-1 bg-[#f4faf8] pb-14 pt-8 md:pb-16 md:pt-10">
         <div className={shell}>
-          <header className="border-b border-[#015B51]/15 pb-8">
+          <header className="border-b border-[#005D51]/15 pb-8">
             <h1 className="font-lora text-2xl font-bold leading-snug text-[#142218] sm:text-3xl">
               Request account deletion
             </h1>
@@ -49,7 +49,7 @@ export default async function RequestAccountDeletionPage() {
               Send your message to{' '}
               <a
                 href={deletionMailto}
-                className="font-semibold text-[#015B51] underline-offset-2 hover:underline"
+                className="font-semibold text-[#005D51] underline-offset-2 hover:underline"
               >
                 hello@emprintereaders.com
               </a>{' '}
@@ -61,7 +61,7 @@ export default async function RequestAccountDeletionPage() {
               deleted. We will process your request in line with our{' '}
               <Link
                 href="/privacy-policy"
-                className="font-semibold text-[#015B51] underline-offset-2 hover:underline"
+                className="font-semibold text-[#005D51] underline-offset-2 hover:underline"
               >
                 Privacy Policy
               </Link>{' '}

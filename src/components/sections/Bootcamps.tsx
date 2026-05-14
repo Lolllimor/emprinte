@@ -64,7 +64,7 @@ export function Bootcamps() {
                 <div className="text-xl lg:text-2xl leading-tight font-medium uppercase text-black font-lora">
                   EMPRINTE
                 </div>
-                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-[40px] font-bold text-black font-campton">
+                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-[40px] font-bold text-black font-poppins">
                   READING ROOM
                 </div>
               </div>
@@ -83,14 +83,14 @@ export function Bootcamps() {
                   >
                     <path
                       d="M7.82658 7.76206C8.67626 7.5563 9.33811 7.0734 9.79377 6.32654C10.2493 5.57982 10.376 4.77044 10.1702 3.92067C9.96446 3.07119 9.48157 2.40933 8.73468 1.95358C7.98786 1.49812 7.17841 1.37153 6.32883 1.57727C5.47905 1.78306 4.81729 2.26593 4.36171 3.01267C3.90613 3.75941 3.77944 4.56889 3.98518 5.41847C4.19097 6.26824 4.67396 6.93008 5.4207 7.38566C6.16762 7.84109 6.9771 7.96778 7.82658 7.76206Z"
-                      fill="#015B51"
+                      fill="#005D51"
                     />
                     <path
                       d="M14.1297 10.1398C14.0518 9.89379 13.9506 9.62937 13.8292 9.35368C13.7068 9.07596 13.5732 8.81774 13.4321 8.58632C13.2863 8.34715 13.1115 8.11839 12.9125 7.90681C12.7061 7.68716 12.4824 7.50657 12.2474 7.37029C12.0016 7.22769 11.7201 7.13335 11.4105 7.0898C11.102 7.0466 10.7763 7.06574 10.4426 7.14656C10.3115 7.1783 10.1978 7.26277 9.9916 7.48143C9.86473 7.61616 9.71602 7.77247 9.54976 7.94578C9.40752 8.09367 9.20399 8.24926 8.94457 8.40831C8.69151 8.56365 8.42364 8.67623 8.14838 8.74288C7.87332 8.8095 7.58362 8.83195 7.28734 8.80964C6.98421 8.78692 6.73195 8.74171 6.5381 8.67521C6.31311 8.59789 6.10927 8.52696 5.93224 8.46436C5.64904 8.36422 5.50926 8.34114 5.3782 8.37288C5.04436 8.45372 4.74615 8.58578 4.49172 8.7654C4.23647 8.94554 4.02924 9.15822 3.87579 9.39771C3.72919 9.62651 3.61282 9.88936 3.52989 10.179C3.44992 10.4581 3.39906 10.7414 3.37883 11.021C3.35935 11.2913 3.3587 11.5819 3.37689 11.8849C3.39487 12.1852 3.42601 12.4667 3.4694 12.7216C3.51173 12.971 3.56491 13.2282 3.62734 13.486C3.78965 14.1563 4.1341 14.6473 4.65114 14.9457C5.16171 15.24 5.75915 15.3073 6.42692 15.1456L12.6092 13.6485C13.2768 13.4868 13.7772 13.1537 14.0966 12.6583C14.42 12.1567 14.5017 11.5623 14.3393 10.8919C14.2766 10.6332 14.206 10.3801 14.1297 10.1398Z"
-                      fill="#015B51"
+                      fill="#005D51"
                     />
                   </svg>
-                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#015B51] font-campton">
+                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#005D51] font-poppins">
                     23+
                   </span>
                 </div>
@@ -109,7 +109,7 @@ export function Bootcamps() {
                 <div className="text-xl lg:text-2xl leading-tight font-medium uppercase text-black font-lora">
                   EMPRINTE
                 </div>
-                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-[40px] font-bold text-black font-campton">
+                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-[40px] font-bold text-black font-poppins">
                   SYMPHONE
                 </div>
               </div>
@@ -121,8 +121,8 @@ export function Bootcamps() {
                   </span>
                 </div>
                 <div className="h-7 px-3 py-2 flex justify-center items-center gap-1 rounded-[7px] bg-white">
-                  <IoPersonOutline size={13} color="#015B51" />
-                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#015B51] font-campton">
+                  <IoPersonOutline size={13} color="#005D51" />
+                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#005D51] font-poppins">
                     20+
                   </span>
                 </div>
@@ -138,7 +138,7 @@ export function Bootcamps() {
               </div>
 
               <div className="flex flex-col items-start gap-1">
-                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-[40px] font-bold text-black font-campton">
+                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-[40px] font-bold text-black font-poppins">
                   SHOW YOUR WORK
                 </div>
                 <div className="text-xl lg:text-2xl leading-tight font-medium uppercase text-black font-lora">
@@ -153,8 +153,8 @@ export function Bootcamps() {
                   </span>
                 </div>
                 <div className="h-7 px-3 py-2 flex justify-center items-center gap-1 rounded-[7px] bg-white">
-                  <IoPersonOutline size={13} color="#015B51" />
-                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#015B51] font-campton">
+                  <IoPersonOutline size={13} color="#005D51" />
+                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#005D51] font-poppins">
                     25+
                   </span>
                 </div>
@@ -169,7 +169,7 @@ export function Bootcamps() {
               </div>
 
               <div className="flex flex-col items-start gap-1">
-                <div className="text-[23px] xl:text-[30px] lg:text-[28px] leading-tight font-bold text-white font-campton">
+                <div className="text-[23px] xl:text-[30px] lg:text-[28px] leading-tight font-bold text-white font-poppins">
                   PRODUCTIVITY
                 </div>
                 <div className="text-[17px] lg:text-2xl leading-tight font-medium uppercase text-white font-lora">
@@ -184,8 +184,8 @@ export function Bootcamps() {
                   </span>
                 </div>
                 <div className="h-7 px-3 py-2 flex justify-center items-center gap-1 rounded-[7px] bg-white">
-                  <IoPersonOutline size={13} color="#015B51" />
-                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#015B51] font-campton">
+                  <IoPersonOutline size={13} color="#005D51" />
+                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#005D51] font-poppins">
                     34+
                   </span>
                 </div>
@@ -200,7 +200,7 @@ export function Bootcamps() {
               </div>
 
               <div className="flex flex-col items-start gap-1">
-                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-[40px] font-bold text-black font-campton">
+                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-[40px] font-bold text-black font-poppins">
                   FINANCIAL TRACKER
                 </div>
                 <div className="text-xl lg:text-2xl leading-tight font-medium uppercase text-black font-lora">
@@ -215,8 +215,8 @@ export function Bootcamps() {
                   </span>
                 </div>
                 <div className="h-7 px-3 py-2 flex justify-center items-center gap-1 rounded-[7px] bg-white">
-                  <IoPersonOutline size={13} color="#015B51" />
-                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#015B51] font-campton">
+                  <IoPersonOutline size={13} color="#005D51" />
+                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#005D51] font-poppins">
                     20+
                   </span>
                 </div>
@@ -231,7 +231,7 @@ export function Bootcamps() {
               </div>
 
               <div className="flex flex-col items-start gap-1">
-                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-tight font-bold text-black font-campton">
+                <div className="text-[33px] xl:text-[40px] lg:text-[36px] leading-tight font-bold text-black font-poppins">
                   5AM CLUB
                 </div>
                 <div className="text-xl lg:text-2xl leading-tight font-medium uppercase text-black font-lora">
@@ -246,8 +246,8 @@ export function Bootcamps() {
                   </span>
                 </div>
                 <div className="h-7 px-3 py-2 flex justify-center items-center gap-1 rounded-[7px] bg-white">
-                  <IoPersonOutline size={13} color="#015B51" />
-                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#015B51] font-campton">
+                  <IoPersonOutline size={13} color="#005D51" />
+                  <span className="text-[16px] md:text-xl leading-[20px] font-normal text-center text-[#005D51] font-poppins">
                     40+
                   </span>
                 </div>

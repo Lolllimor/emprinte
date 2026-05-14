@@ -10,10 +10,10 @@ import { getApiUrl, getApiUrlWithQuery } from '@/lib/api';
 import { acceptInviteFormSchema } from '@/lib/validation/accept-invite';
 
 const inputClassName =
-  'w-full rounded-xl border border-[#015B51]/25 bg-white px-4 py-3.5 text-base text-[#142218] outline-none font-campton focus:border-[#015B51] focus:ring-2 focus:ring-[#6FE19B]/50 disabled:opacity-60';
+  'w-full rounded-xl border border-[#005D51]/25 bg-white px-4 py-3.5 text-base text-[#142218] outline-none font-poppins focus:border-[#005D51] focus:ring-2 focus:ring-[#6FE19B]/50 disabled:opacity-60';
 
 const labelClassName =
-  'text-xs font-medium uppercase tracking-[0.08em] text-[#4a5c50] font-campton';
+  'text-xs font-medium uppercase tracking-[0.08em] text-[#4a5c50] font-poppins';
 
 function AcceptInviteForm() {
   const router = useRouter();
@@ -141,30 +141,30 @@ function AcceptInviteForm() {
         <h1 className="mt-6 font-lora text-2xl font-semibold tracking-tight text-[#142218] md:text-3xl">
           Accept invite
         </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-[#4a5c50] font-campton">
+        <p className="mt-3 text-[15px] leading-relaxed text-[#4a5c50] font-poppins">
           Set your password to finish joining the admin workspace.
         </p>
 
         {previewLoading ? (
-          <p className="mt-6 text-sm text-[#4a5c50] font-campton">
+          <p className="mt-6 text-sm text-[#4a5c50] font-poppins">
             Checking invite…
           </p>
         ) : null}
 
         {!previewLoading && previewError ? (
-          <p className="mt-6 text-sm text-red-700 font-campton" role="alert">
+          <p className="mt-6 text-sm text-red-700 font-poppins" role="alert">
             {previewError}
           </p>
         ) : null}
 
         {!previewLoading && previewLabel && !previewError ? (
-          <p className="mt-6 text-sm text-[#015B51] font-campton">
+          <p className="mt-6 text-sm text-[#005D51] font-poppins">
             {previewLabel}
           </p>
         ) : null}
 
         {success ? (
-          <p className="mt-6 text-sm text-[#015B51] font-campton" role="status">
+          <p className="mt-6 text-sm text-[#005D51] font-poppins" role="status">
             Account ready. Redirecting to sign in…
           </p>
         ) : (
@@ -223,7 +223,7 @@ function AcceptInviteForm() {
             </div>
 
             {error ? (
-              <p className="text-sm text-red-700 font-campton" role="alert">
+              <p className="text-sm text-red-700 font-poppins" role="alert">
                 {error}
               </p>
             ) : null}
@@ -231,17 +231,17 @@ function AcceptInviteForm() {
             <button
               type="submit"
               disabled={busy || !!previewError || previewLoading}
-              className="rounded-xl bg-[#015B51] px-4 py-3 text-base font-medium text-white font-campton disabled:opacity-60"
+              className="rounded-xl bg-[#005D51] px-4 py-3 text-base font-medium text-white font-poppins disabled:opacity-60"
             >
               {busy ? 'Saving…' : 'Create account'}
             </button>
           </form>
         )}
 
-        <p className="mt-10 text-center text-sm font-campton">
+        <p className="mt-10 text-center text-sm font-poppins">
           <Link
             href="/admin/login"
-            className="text-[#015B51] underline underline-offset-2"
+            className="text-[#005D51] underline underline-offset-2"
           >
             Back to sign in
           </Link>
@@ -256,7 +256,7 @@ export default function AdminAcceptInvitePage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-[#F0FFFD] flex items-center justify-center">
-          <p className="text-sm text-[#4a5c50] font-campton">Loading…</p>
+          <p className="text-sm text-[#4a5c50] font-poppins">Loading…</p>
         </div>
       }
     >

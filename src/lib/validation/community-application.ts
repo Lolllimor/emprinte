@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const genderSchema = z.enum(['male', 'female', 'prefer_not_to_say']);
+export const genderSchema = z.enum(['male', 'female']);
 
 export const professionalStatusSchema = z.enum([
   'student_nysc',

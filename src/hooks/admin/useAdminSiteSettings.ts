@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
 import { getDefaultSiteSettings, stats as homepageStats } from '@/constants/data';
-import { getApiUrl, jsonHeadersWithEditAuth } from '@/lib/api';
+import { getApiUrl, adminJsonHeaders } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-errors';
 import type {
   FormSubmitStatus,
@@ -55,7 +55,8 @@ export function useAdminSiteSettings() {
       try {
         const res = await fetch(getApiUrl('settings'), {
           method: 'PUT',
-          headers: jsonHeadersWithEditAuth(),
+          credentials: 'include',
+          headers: adminJsonHeaders(),
           body: JSON.stringify(settings),
         });
         const body = await res.json();

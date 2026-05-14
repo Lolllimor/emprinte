@@ -10,9 +10,9 @@ import { getApiUrl } from '@/lib/api';
 function StatSkeleton() {
   return (
     <div className="space-y-2" aria-hidden>
-      <div className="h-3 w-16 max-w-full rounded bg-[#015B51]/12" />
-      <div className="h-9 w-24 max-w-[80%] animate-pulse rounded-md bg-[#015B51]/12" />
-      <div className="h-4 w-32 max-w-full rounded bg-[#015B51]/08" />
+      <div className="h-3 w-16 max-w-full rounded bg-[#005D51]/12" />
+      <div className="h-9 w-24 max-w-[80%] animate-pulse rounded-md bg-[#005D51]/12" />
+      <div className="h-4 w-32 max-w-full rounded bg-[#005D51]/08" />
     </div>
   );
 }
@@ -155,7 +155,7 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
             Each tile opens an editor here, except{' '}
             <Link
               href="/admin/blog"
-              className="font-medium text-[#015B51] underline decoration-[#015B51]/30 underline-offset-[3px] hover:text-[#014238] hover:decoration-[#015B51]"
+              className="font-medium text-[#005D51] underline decoration-[#005D51]/30 underline-offset-[3px] hover:text-[#004438] hover:decoration-[#005D51]"
             >
               Blog
             </Link>
@@ -163,7 +163,7 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
             site. For newsletter signups and CSV export, go to{' '}
             <Link
               href="/admin/newsletter"
-              className="font-medium text-[#015B51] underline decoration-[#015B51]/30 underline-offset-[3px] hover:text-[#014238] hover:decoration-[#015B51]"
+              className="font-medium text-[#005D51] underline decoration-[#005D51]/30 underline-offset-[3px] hover:text-[#004438] hover:decoration-[#005D51]"
             >
               Newsletter subscribers
             </Link>
@@ -195,19 +195,19 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
         <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6">
           {tiles.map((t) => {
             const tileClassName =
-              'group flex min-h-[280px] w-full flex-col rounded-2xl border border-[#015B51]/12 bg-white p-6 text-left shadow-[0_1px_2px_rgba(20,34,24,0.04)] transition duration-200 hover:border-[#015B51]/30 hover:shadow-[0_10px_32px_rgba(1,91,81,0.08)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#015B51]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0FFFD] sm:min-h-[300px] md:p-7';
+              'group flex min-h-[280px] w-full flex-col rounded-2xl border border-[#005D51]/12 bg-white p-6 text-left shadow-[0_1px_2px_rgba(20,34,24,0.04)] transition duration-200 hover:border-[#005D51]/30 hover:shadow-[0_10px_32px_rgba(0,93,81,0.08)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#005D51]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0FFFD] sm:min-h-[300px] md:p-7';
 
             const body = (
               <>
                 <span
-                  className="mb-4 block h-0.5 w-10 rounded-full bg-[#015B51]/35 transition group-hover:w-14 group-hover:bg-[#015B51]/55"
+                  className="mb-4 block h-0.5 w-10 rounded-full bg-[#005D51]/35 transition group-hover:w-14 group-hover:bg-[#005D51]/55"
                   aria-hidden
                 />
 
-                <h3 className="font-lora text-lg font-semibold text-[#015B51]">
+                <h3 className="font-lora text-lg font-semibold text-[#005D51]">
                   {t.title}
                 </h3>
-                <p className="mt-2 font-campton text-sm font-medium leading-relaxed text-[#7B7B7B]">
+                <p className="mt-2 font-poppins text-sm font-medium leading-relaxed text-[#7B7B7B]">
                   {t.blurb}
                 </p>
 
@@ -216,14 +216,14 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
                     <StatSkeleton />
                   ) : (
                     <>
-                      <p className="font-campton text-[11px] font-semibold uppercase tracking-[0.12em] text-[#015B51]/80">
+                      <p className="font-poppins text-[11px] font-semibold uppercase tracking-[0.12em] text-[#005D51]/80">
                         {t.statLabel}
                       </p>
-                      <p className="mt-1.5 font-campton text-xl font-bold tabular-nums tracking-tight text-[#142218] wrap-anywhere">
+                      <p className="mt-1.5 font-poppins text-xl font-bold tabular-nums tracking-tight text-[#142218] wrap-anywhere">
                         {t.highlight}
                       </p>
                       {t.detail ? (
-                        <p className="mt-1 font-campton text-sm font-medium leading-snug text-[#7B7B7B]">
+                        <p className="mt-1 font-poppins text-sm font-medium leading-snug text-[#7B7B7B]">
                           {t.detail}
                         </p>
                       ) : null}
@@ -231,7 +231,7 @@ export function AdminDashboard({ refreshKey, onManage }: AdminDashboardProps) {
                   )}
                 </div>
 
-                <span className="mt-5 inline-flex items-center font-campton text-sm font-medium text-[#015B51] transition group-hover:text-[#014238]">
+                <span className="mt-5 inline-flex items-center font-poppins text-sm font-medium text-[#005D51] transition group-hover:text-[#004438]">
                   {'href' in t ? 'Open blog' : 'Open editor'}
                   <span
                     className="ml-1 translate-x-0 transition-transform duration-200 group-hover:translate-x-0.5"

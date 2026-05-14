@@ -8,8 +8,7 @@ import { getApiErrorMessage } from '@/lib/api-errors';
 import {
   getApiUrl,
   getApiUrlWithQuery,
-  jsonHeadersWithEditAuth,
-  editApiAuthHeaders,
+  adminJsonHeaders,
 } from '@/lib/api';
 import {
   insightDateFromInputValue,
@@ -102,7 +101,8 @@ export function useAdminInsights() {
             getApiUrl(`insights/${editingId}`),
             {
               method: 'PATCH',
-              headers: jsonHeadersWithEditAuth(),
+              credentials: 'include',
+              headers: adminJsonHeaders(),
               body: JSON.stringify(payload),
             },
           );
@@ -117,7 +117,8 @@ export function useAdminInsights() {
         } else {
           const res = await fetch(getApiUrl('insights'), {
             method: 'POST',
-            headers: jsonHeadersWithEditAuth(),
+            credentials: 'include',
+            headers: adminJsonHeaders(),
             body: JSON.stringify(payload),
           });
           const data = await res.json();
@@ -154,7 +155,8 @@ export function useAdminInsights() {
           getApiUrlWithQuery('insights', { id }),
           {
             method: 'DELETE',
-            headers: editApiAuthHeaders(),
+            credentials: 'include',
+            headers: adminJsonHeaders(),
           },
         );
         const data = await res.json().catch(() => ({}));

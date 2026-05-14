@@ -15,11 +15,11 @@ const shell =
   'mx-auto w-full max-w-[1200px] px-5 sm:px-8 lg:px-[75px] xl:max-w-[1320px] xl:px-[120px]';
 
 const p =
-  'font-campton text-sm leading-[1.75] text-[#2d3640] sm:text-base sm:leading-[1.72]';
+  'font-poppins text-sm leading-[1.75] text-[#2d3640] sm:text-base sm:leading-[1.72]';
 const h2 =
   'mt-10 font-lora text-lg font-bold text-[#142218] first:mt-0 sm:text-xl';
 const h3 = 'mt-6 font-lora text-base font-bold text-[#142218] sm:text-lg';
-const ul = 'mt-3 list-disc space-y-2 pl-5 font-campton text-sm text-[#2d3640] sm:text-base';
+const ul = 'mt-3 list-disc space-y-2 pl-5 font-poppins text-sm text-[#2d3640] sm:text-base';
 
 export default async function PrivacyPolicyPage() {
   const settings = await getSiteSettings();
@@ -30,7 +30,7 @@ export default async function PrivacyPolicyPage() {
 
       <article className="w-full flex-1 bg-[#f4faf8] pb-14 pt-8 md:pb-16 md:pt-10">
         <div className={shell}>
-          <header className="border-b border-[#015B51]/15 pb-8">
+          <header className="border-b border-[#005D51]/15 pb-8">
             <h1 className="font-lora text-2xl font-bold leading-snug text-[#142218] sm:text-3xl">
               Privacy Policy for Emprinte
             </h1>
@@ -49,7 +49,7 @@ export default async function PrivacyPolicyPage() {
               Contact:{' '}
               <a
                 href="mailto:hello@emprintereaders.com"
-                className="font-semibold text-[#015B51] underline-offset-2 hover:underline"
+                className="font-semibold text-[#005D51] underline-offset-2 hover:underline"
               >
                 hello@emprintereaders.com
               </a>
@@ -237,7 +237,7 @@ export default async function PrivacyPolicyPage() {
               information may be retained where the law requires. See{' '}
               <Link
                 href="/request-account-deletion"
-                className="font-semibold text-[#015B51] underline-offset-2 hover:underline"
+                className="font-semibold text-[#005D51] underline-offset-2 hover:underline"
               >
                 Request account deletion
               </Link>{' '}
@@ -259,14 +259,14 @@ export default async function PrivacyPolicyPage() {
               consent-based. To exercise these rights, contact{' '}
               <a
                 href="mailto:hello@emprintereaders.com"
-                className="font-semibold text-[#015B51] underline-offset-2 hover:underline"
+                className="font-semibold text-[#005D51] underline-offset-2 hover:underline"
               >
                 hello@emprintereaders.com
               </a>
               . For account and data deletion specifically, follow the steps on{' '}
               <Link
                 href="/request-account-deletion"
-                className="font-semibold text-[#015B51] underline-offset-2 hover:underline"
+                className="font-semibold text-[#005D51] underline-offset-2 hover:underline"
               >
                 Request account deletion
               </Link>
@@ -286,7 +286,7 @@ export default async function PrivacyPolicyPage() {
               or on{' '}
               <a
                 href="https://www.emprintereaders.com/privacy-policy"
-                className="font-semibold text-[#015B51] underline-offset-2 hover:underline"
+                className="font-semibold text-[#005D51] underline-offset-2 hover:underline"
               >
                 https://www.emprintereaders.com/privacy-policy
               </a>{' '}
@@ -299,7 +299,7 @@ export default async function PrivacyPolicyPage() {
               Questions about this policy:{' '}
               <a
                 href="mailto:hello@emprintereaders.com"
-                className="font-semibold text-[#015B51] underline-offset-2 hover:underline"
+                className="font-semibold text-[#005D51] underline-offset-2 hover:underline"
               >
                 hello@emprintereaders.com
               </a>

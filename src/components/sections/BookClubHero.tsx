@@ -17,7 +17,7 @@ export function BookClubHero({
   return (
     <div className="absolute md:relative left-7 top-12 md:left-0 md:top-0 w-[337px] lg:w-[464px] xl:w-[564px] flex flex-col items-start gap-6 md:mr-10 lg:mr-14 xl:mr-[120px]">
       <div className="flex h-6 px-4 justify-center items-center gap-2.5 rounded-3xl bg-[#E63715]">
-        <span className="text-xs md:text-base leading-[150%] font-normal text-white font-campton">
+        <span className="text-[10px] md:text-[14px] leading-[150%] font-normal text-white font-poppins">
           {badge}
         </span>
       </div>
@@ -27,7 +27,7 @@ export function BookClubHero({
           {title}
         </h2>
 
-        <p className="text-base md:text-lg xl:text-2xl leading-[150%] font-normal text-white font-campton">
+        <p className="text-base md:text-lg xl:text-2xl leading-[150%] font-normal text-white font-poppins">
           {description}
         </p>
       </div>
@@ -36,7 +36,7 @@ export function BookClubHero({
         onClick={onButtonClick}
         className="w-full cursor-pointer h-12 px-2.5 flex justify-center items-center gap-2.5 rounded-lg bg-white"
       >
-        <span className="text-xl leading-[150%] font-medium text-[#015B51] font-campton">
+        <span className="text-xl leading-[150%] font-medium text-[#005D51] font-poppins">
           {buttonText}
         </span>
       </button>

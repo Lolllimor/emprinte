@@ -40,7 +40,7 @@ export function MenuPanel({
               key={link.href}
               href={link.href}
               onClick={(event) => handleLinkClick(event, link)}
-              className="text-gray-800 hover:text-[#015B51] transition-colors font-medium text-lg py-3 border-b border-gray-100"
+              className="text-gray-800 hover:text-[#005D51] transition-colors font-medium text-lg py-3 border-b border-gray-100"
             >
               {link.label}
             </a>
