@@ -34,21 +34,21 @@ export function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="w-full overflow-x-visible bg-white py-16 lg:py-24"
+      className="w-full overflow-x-visible bg-white py-14 lg:py-20"
     >
       {/* Viewport-wide band so the headline can run to the right edge of the screen (not max-w clipped). */}
       <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-[75px] xl:px-[120px]">
           <Badge>Testimonials</Badge>
         </div>
-        <div className="pl-6 pr-0 pt-4 lg:pl-[75px] lg:pr-0 xl:pl-[120px] xl:pr-0">
-          <h2 className="max-w-none font-lora text-4xl font-bold leading-[1.05] tracking-tight text-[#005D51] md:text-6xl lg:text-7xl">
+        <div className="pl-6 pr-0 pt-2 lg:pl-[75px] lg:pr-0 lg:pt-3 xl:pl-[120px] xl:pr-0">
+          <h2 className="max-w-none font-lora text-4xl font-bold leading-[1.08] tracking-tight text-[#005D51] md:text-5xl lg:text-6xl xl:text-[clamp(2.75rem,3.2vw+1.25rem,3.75rem)]">
             Here is what our Readers have to say
           </h2>
         </div>
       </div>
 
-      <div className="mx-auto mt-12 w-full max-w-[1200px] px-6 lg:px-[75px] xl:px-[120px]">
+      <div className="mx-auto mt-6 w-full max-w-[1200px] px-6 sm:mt-8 lg:mt-8 lg:px-[75px] xl:mt-10 xl:px-[120px]">
         <div
           className="hide-scrollbar -mx-6 flex gap-6 overflow-x-auto overflow-y-hidden px-6 pb-4 xl:mx-0 xl:px-0"
           aria-busy={loading}

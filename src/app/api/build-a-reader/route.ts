@@ -61,7 +61,13 @@ async function writeBuildAReader(request: Request) {
   }
 
   const data = normalizeResponse(parsed.data);
-  await upsertBuildAReaderRow(data);
+  const ok = await upsertBuildAReaderRow(data);
+  if (!ok) {
+    return NextResponse.json(
+      { error: 'Failed to save Build a Reader to the database.' },
+      { status: 500 },
+    );
+  }
   buildAReaderMemory = data;
 
   return NextResponse.json({ ok: true, data }, { headers: noStore });

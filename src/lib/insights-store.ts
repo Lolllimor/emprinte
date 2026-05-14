@@ -1,5 +1,10 @@
 import type { InsightArticle } from '@/types';
 
+/**
+ * In-memory insights (blog posts). Used only when `SUPABASE_SERVICE_ROLE_KEY` is
+ * not set (e.g. local dev). Production uses `landing_insights` via
+ * `landing-insights-db.ts` — that data survives deploys.
+ */
 let adminInsights: InsightArticle[] = [];
 
 export function getAllInsights(): InsightArticle[] {

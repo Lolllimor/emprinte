@@ -33,7 +33,11 @@ export async function fetchBuildAReaderRow(): Promise<BuildAReaderPayload | null
     .eq('id', 1)
     .maybeSingle<Row>();
 
-  if (error || !data) return null;
+  if (error) {
+    console.error('[landing_build_a_reader] select failed', error);
+    return null;
+  }
+  if (!data) return null;
 
   return {
     booksCollected: data.books_collected,
@@ -63,5 +67,9 @@ export async function upsertBuildAReaderRow(
     { onConflict: 'id' },
   );
 
-  return !error;
+  if (error) {
+    console.error('[landing_build_a_reader] upsert failed', error);
+    return false;
+  }
+  return true;
 }

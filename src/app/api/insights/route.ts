@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 
-import { requireLandingAdminApiAuth } from '@/lib/supabase-api-auth';
+import {
+  deleteLandingInsightFromDb,
+  fetchAllLandingInsightsFromDb,
+  insertLandingInsightInDb,
+  updateLandingInsightInDb,
+} from '@/lib/landing-insights-db';
 import {
   deleteInsight,
   findInsightById,
@@ -8,9 +13,14 @@ import {
   prependInsight,
   replaceInsight,
 } from '@/lib/insights-store';
+import { requireLandingAdminApiAuth } from '@/lib/supabase-api-auth';
 import { insightSchema, insightUpdateSchema } from '@/lib/validation/admin';
 
 export async function GET() {
+  const fromDb = await fetchAllLandingInsightsFromDb();
+  if (fromDb !== null) {
+    return NextResponse.json(fromDb);
+  }
   return NextResponse.json(getAllInsights());
 }
 
@@ -56,6 +66,18 @@ export async function POST(request: Request) {
     ...(authorRole ? { authorRole } : {}),
   };
 
+  const dbList = await fetchAllLandingInsightsFromDb();
+  if (dbList !== null) {
+    const ok = await insertLandingInsightInDb(item);
+    if (!ok) {
+      return NextResponse.json(
+        { error: 'Failed to save article to the database.' },
+        { status: 500 },
+      );
+    }
+    return NextResponse.json({ ok: true, data: item }, { status: 201 });
+  }
+
   prependInsight(item);
 
   return NextResponse.json({ ok: true, data: item }, { status: 201 });
@@ -91,10 +113,6 @@ export async function PATCH(request: Request) {
     authorRole,
   } = parsed.data;
 
-  if (!findInsightById(id)) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  }
-
   const item = {
     id,
     title,
@@ -106,6 +124,25 @@ export async function PATCH(request: Request) {
     ...(authorName ? { authorName } : {}),
     ...(authorRole ? { authorRole } : {}),
   };
+
+  const dbList = await fetchAllLandingInsightsFromDb();
+  if (dbList !== null) {
+    if (!dbList.some((r) => r.id === id)) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+    const ok = await updateLandingInsightInDb(item);
+    if (!ok) {
+      return NextResponse.json(
+        { error: 'Failed to update article in the database.' },
+        { status: 500 },
+      );
+    }
+    return NextResponse.json({ ok: true, data: item });
+  }
+
+  if (!findInsightById(id)) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
 
   replaceInsight(item);
 
@@ -119,6 +156,15 @@ export async function DELETE(request: Request) {
   const id = new URL(request.url).searchParams.get('id');
   if (!id?.trim()) {
     return NextResponse.json({ error: 'id query required' }, { status: 400 });
+  }
+
+  const dbList = await fetchAllLandingInsightsFromDb();
+  if (dbList !== null) {
+    const ok = await deleteLandingInsightFromDb(id.trim());
+    if (!ok) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+    return NextResponse.json({ ok: true });
   }
 
   if (!deleteInsight(id)) {
