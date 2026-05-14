@@ -27,11 +27,7 @@ export function Newsletter() {
             </p>
           </header>
 
-          <div className="relative lg:pt-1">
-            <div
-              className="pointer-events-none absolute -inset-px rounded-2xl bg-linear-to-br from-white/12 to-white/5 opacity-80 blur-sm lg:block"
-              aria-hidden
-            />
+          <div className="lg:pt-1">
             <NewsletterSubscribeForm idPrefix="newsletter" />
           </div>
         </div>

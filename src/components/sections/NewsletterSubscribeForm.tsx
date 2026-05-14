@@ -107,7 +107,7 @@ export function NewsletterSubscribeForm({
 
   return (
     <form
-      className="relative flex flex-col gap-5 rounded-2xl border border-white/15 bg-[#182920]/90 p-6 shadow-[0_24px_48px_rgba(0,0,0,0.35)] md:p-8"
+      className="relative flex flex-col gap-5 rounded-2xl border border-white/15 bg-[#182920]/90 p-6 md:p-8"
       onSubmit={handleSubmit}
       noValidate
     >
@@ -178,7 +178,7 @@ export function NewsletterSubscribeForm({
 
       <button
         type="submit"
-        className="mt-1 flex h-14 w-full items-center justify-center rounded-xl bg-[#005D51] font-poppins text-lg font-medium text-white shadow-md outline-none transition-colors hover:bg-[#004438] focus-visible:ring-2 focus-visible:ring-[#6FE19B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#182920] disabled:cursor-not-allowed disabled:opacity-65"
+        className="mt-1 flex h-14 w-full items-center justify-center rounded-xl bg-[#005D51] font-poppins text-lg font-medium text-white outline-none transition-colors hover:bg-[#004438] focus-visible:ring-2 focus-visible:ring-[#6FE19B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#182920] disabled:cursor-not-allowed disabled:opacity-65"
         disabled={isSubmitting}
       >
         {isSubmitting ? <>Sending…</> : <>Subscribe</>}
