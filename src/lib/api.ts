@@ -1,7 +1,12 @@
 /**
  * API client for Emprinte backend.
- * Set NEXT_PUBLIC_API_URL in .env (e.g. http://localhost:3001).
- * When empty, falls back to same-origin /api (Next.js routes).
+ *
+ * **Route Handlers in this Next app** (stats, testimonials, settings, …): use
+ * `getSameOriginApiUrl` from Client Components so local dev works even when
+ * `NEXT_PUBLIC_API_URL` points at another host (e.g. legacy auth on :3001).
+ *
+ * **Separate backend only:** set `NEXT_PUBLIC_API_URL` (e.g. http://localhost:3001)
+ * for flows that truly live on that server (see `constants/auth-api.ts`).
  */
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 

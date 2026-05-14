@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
 import { getDefaultSiteSettings, stats as homepageStats } from '@/constants/data';
-import { getApiUrl, adminJsonHeaders } from '@/lib/api';
+import { getSameOriginApiUrl, adminJsonHeaders } from '@/lib/api';
 import { getApiErrorMessage } from '@/lib/api-errors';
 import type {
   FormSubmitStatus,
@@ -31,7 +31,7 @@ export function useAdminSiteSettings() {
   const [status, setStatus] = useState<FormSubmitStatus>({ type: 'idle' });
 
   useEffect(() => {
-    fetch(getApiUrl('settings'))
+    fetch(getSameOriginApiUrl('settings'))
       .then((r) => r.json())
       .then((raw: unknown) => {
         if (!raw || typeof raw !== 'object') return;
@@ -53,7 +53,7 @@ export function useAdminSiteSettings() {
 
       setStatus({ type: 'loading' });
       try {
-        const res = await fetch(getApiUrl('settings'), {
+        const res = await fetch(getSameOriginApiUrl('settings'), {
           method: 'PUT',
           credentials: 'include',
           headers: adminJsonHeaders(),

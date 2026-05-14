@@ -3,7 +3,7 @@ import { useEffect, useId, useState } from 'react';
 
 import { NewsletterSubscribeForm } from '@/components/sections/NewsletterSubscribeForm';
 import { StatsList } from './StatsList';
-import { getApiUrl } from '@/lib/api';
+import { getSameOriginApiUrl } from '@/lib/api';
 import { StatsProps } from '@/types';
 import { Badge } from '../ui';
 
@@ -19,9 +19,15 @@ export function Stats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(getApiUrl('stats'));
-        const data = await res.json();
-        setStats(data);
+        const res = await fetch(getSameOriginApiUrl('stats'));
+        if (!res.ok) {
+          setStats([]);
+          return;
+        }
+        const data = await res.json().catch(() => []);
+        setStats(Array.isArray(data) ? data : []);
+      } catch {
+        setStats([]);
       } finally {
         setStatsLoading(false);
       }
@@ -39,7 +45,7 @@ export function Stats() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [downloadModalOpen]);
-  console.log(stats);
+
   return (
     <section id="about" className="w-full relative">
       <StatsList stats={stats} loading={statsLoading} />

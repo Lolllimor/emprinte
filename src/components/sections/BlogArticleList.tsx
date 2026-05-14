@@ -34,8 +34,8 @@ function ArticleCard({
         <div
           className={
             isFeatured
-              ? 'relative aspect-[5/3] w-full shrink-0 overflow-hidden rounded-xl bg-[#e4f2ef] md:aspect-auto md:h-auto md:w-[54%] md:min-h-[220px] lg:min-h-[260px]'
-              : 'relative aspect-[5/3] w-full shrink-0 overflow-hidden bg-[#e4f2ef]'
+              ? 'relative aspect-2/1 w-full shrink-0 overflow-hidden rounded-xl bg-[#e4f2ef] md:aspect-auto md:h-auto md:w-[54%] md:min-h-[220px] lg:min-h-[260px]'
+              : 'relative aspect-2/1 w-full shrink-0 overflow-hidden bg-[#e4f2ef]'
           }
         >
           <Image

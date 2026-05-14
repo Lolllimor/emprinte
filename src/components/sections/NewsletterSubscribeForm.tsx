@@ -4,7 +4,7 @@ import { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
 
 import { newsletterSchema } from '@/lib/validation/newsletter';
-import { getApiUrl } from '@/lib/api';
+import { getSameOriginApiUrl } from '@/lib/api';
 
 const inputClassName =
   'w-full rounded-xl border border-white/25 bg-white px-4 py-3.5 text-base font-poppins text-[#142218] placeholder:text-[#8a8a8a] outline-none transition-[box-shadow,border-color] focus:border-white focus:ring-2 focus:ring-[#6FE19B]/80 disabled:opacity-60';
@@ -54,7 +54,7 @@ export function NewsletterSubscribeForm({
     }
 
     try {
-      const response = await fetch(getApiUrl('emails'), {
+      const response = await fetch(getSameOriginApiUrl('emails'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

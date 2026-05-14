@@ -98,7 +98,7 @@ export function BlogPostView({ article }: BlogPostViewProps) {
       </div>
 
       <div className={`${articleShell} pb-14 pt-7 md:pb-16 md:pt-9`}>
-        <figure className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-[#dfecea] shadow-[0_12px_36px_-20px_rgba(20,34,24,0.28)] ring-1 ring-[#005D51]/10 sm:aspect-[2/1] lg:max-h-[min(480px,52vh)] lg:min-h-[260px]">
+        <figure className="relative aspect-2/1 w-full overflow-hidden rounded-xl bg-[#dfecea] shadow-[0_12px_36px_-20px_rgba(20,34,24,0.28)] ring-1 ring-[#005D51]/10 lg:max-h-[min(480px,52vh)] lg:min-h-[260px]">
           <Image
             src={article.image}
             alt={article.title}

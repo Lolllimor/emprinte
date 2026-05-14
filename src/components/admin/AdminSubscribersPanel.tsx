@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import { getApiUrl } from '@/lib/api';
+import { getSameOriginApiUrl } from '@/lib/api';
 import type { NewsletterSubscriber } from '@/types';
 
 function formatSubscribedAt(iso: string | null): string {
@@ -60,7 +60,7 @@ export function AdminSubscribersPanel() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(getApiUrl('emails'), {
+      const res = await fetch(getSameOriginApiUrl('emails'), {
         credentials: 'include',
       });
       const data = await res.json().catch(() => null);

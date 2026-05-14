@@ -8,7 +8,11 @@ import { FieldLabel, LabeledInput, LabeledTextarea } from './LabeledField';
 import { useAdminInsights } from '@/hooks/admin/useAdminInsights';
 import { PrimarySubmitButton } from './PrimarySubmitButton';
 import { AdminModal } from '@/components/admin/AdminModal';
-import { getApiErrorMessage } from '@/lib/api-errors';
+import { ArticleHeroCropModal } from '@/components/admin/ArticleHeroCropModal';
+import {
+  uploadImageToCloudinary,
+  validateJpegPngUnder3Mb,
+} from '@/lib/client-cloudinary-upload';
 import { FormStatusBanner } from './FormStatusBanner';
 import type { InsightArticle } from '@/types';
 
@@ -27,7 +31,7 @@ function CardGridSkeleton() {
           <div
             className={`${adminBlogCardShell} animate-pulse ring-0 hover:translate-y-0 hover:shadow-[0_8px_28px_-16px_rgba(20,34,24,0.12)]`}
           >
-            <div className="aspect-5/3 w-full bg-[#dfecea]" />
+            <div className="aspect-2/1 w-full bg-[#dfecea]" />
             <div className="flex flex-col gap-3 p-5">
               <div className="h-3 w-20 rounded bg-[#005D51]/15" />
               <div className="h-5 w-full max-w-[90%] rounded bg-[#142218]/10" />
@@ -64,7 +68,7 @@ function AdminBlogPostCard({
           : ''
       }`}
     >
-      <div className="relative aspect-5/3 w-full shrink-0 overflow-hidden bg-[#e4f2ef]">
+      <div className="relative aspect-2/1 w-full shrink-0 overflow-hidden bg-[#e4f2ef]">
         <Image
           src={article.image}
           alt={article.title}
@@ -140,6 +144,8 @@ export function AdminInsightsPanel() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [articleModalOpen, setArticleModalOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
   const imageFileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -178,13 +184,19 @@ export function AdminInsightsPanel() {
     }
   }, [status, articleModalOpen]);
 
+  const closeCropModal = () => {
+    setCropModalOpen(false);
+    if (cropImageSrc) {
+      URL.revokeObjectURL(cropImageSrc);
+      setCropImageSrc(null);
+    }
+  };
+
   const handleFormSubmit = (e: FormEvent) => {
     void submit(e);
   };
 
-  const handleHeroImageFile = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleHeroImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
@@ -196,27 +208,33 @@ export function AdminInsightsPanel() {
     }
 
     setUploadError(null);
+    if (cropImageSrc) {
+      URL.revokeObjectURL(cropImageSrc);
+    }
+    const url = URL.createObjectURL(file);
+    setCropImageSrc(url);
+    setCropModalOpen(true);
+  };
+
+  const uploadCroppedHeroFile = async (file: File): Promise<boolean> => {
+    const sizeErr = validateJpegPngUnder3Mb(file);
+    if (sizeErr) {
+      setUploadError(sizeErr);
+      return false;
+    }
     setUploadingImage(true);
+    setUploadError(null);
     try {
-      const body = new FormData();
-      body.append('file', file);
-      const res = await fetch('/api/upload/cloudinary', {
-        method: 'POST',
-        credentials: 'include',
-        body,
-      });
-      const data = (await res.json().catch(() => ({}))) as { url?: string };
-      if (!res.ok) {
-        setUploadError(getApiErrorMessage(data, 'Upload failed'));
-        return;
+      const result = await uploadImageToCloudinary(file);
+      if (!result.ok) {
+        setUploadError(result.message);
+        return false;
       }
-      if (typeof data.url === 'string' && data.url) {
-        setField('image', data.url);
-      } else {
-        setUploadError('Upload did not return an image URL.');
-      }
+      setField('image', result.url);
+      return true;
     } catch {
       setUploadError('Upload failed.');
+      return false;
     } finally {
       setUploadingImage(false);
     }
@@ -385,9 +403,7 @@ export function AdminInsightsPanel() {
                 accept="image/jpeg,image/jpg,image/png,.jpg,.jpeg,.png"
                 className="sr-only"
                 aria-label="Upload hero image"
-                onChange={(e) => {
-                  void handleHeroImageFile(e);
-                }}
+                onChange={handleHeroImageFile}
               />
               <div className="flex flex-wrap items-center gap-3">
                 <button
@@ -405,12 +421,13 @@ export function AdminInsightsPanel() {
                   </span>
                 ) : (
                   <span className="font-poppins text-xs font-medium text-[#5a6570]">
-                    JPG or PNG, up to 3 MB. Or paste a URL below.
+                    JPG or PNG, up to 3 MB. You’ll crop to a 2:1 frame (Medium-style)
+                    before upload, or paste a URL below.
                   </span>
                 )}
               </div>
               {form.image ? (
-                <div className="relative mt-2 aspect-video w-full max-w-md overflow-hidden rounded-xl border border-[#005D51]/12 bg-[#dfecea]">
+                <div className="relative mt-2 aspect-2/1 w-full max-w-md overflow-hidden rounded-xl border border-[#005D51]/12 bg-[#dfecea]">
                   <img
                     src={form.image}
                     alt=""
@@ -454,6 +471,13 @@ export function AdminInsightsPanel() {
           <FormStatusBanner status={status} />
         </form>
       </AdminModal>
+
+      <ArticleHeroCropModal
+        open={cropModalOpen}
+        imageSrc={cropImageSrc}
+        onClose={closeCropModal}
+        onCropped={(file) => uploadCroppedHeroFile(file)}
+      />
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { IoStar } from 'react-icons/io5';
 
 import { TestimonialCardSkeleton } from './TestimonialCardSkeleton';
-import { getApiUrl } from '@/lib/api';
+import { getSameOriginApiUrl } from '@/lib/api';
 import { Testimonial } from '@/types';
 import { Badge } from '../ui';
 
@@ -16,9 +16,15 @@ export function Testimonials() {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const res = await fetch(getApiUrl('/testimonials'));
-        const data = await res.json();
+        const res = await fetch(getSameOriginApiUrl('testimonials'));
+        if (!res.ok) {
+          setTestimonials([]);
+          return;
+        }
+        const data = await res.json().catch(() => []);
         setTestimonials(Array.isArray(data) ? data : []);
+      } catch {
+        setTestimonials([]);
       } finally {
         setLoading(false);
       }

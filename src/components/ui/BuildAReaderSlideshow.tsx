@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const FALLBACK_SRC = '/build-a-reader-image.png';
 const INTERVAL_MS = 6000;
@@ -12,19 +12,22 @@ type BuildAReaderSlideshowProps = {
 };
 
 export function BuildAReaderSlideshow({ urls }: BuildAReaderSlideshowProps) {
-  const remote = (urls ?? []).filter(
-    (u) => typeof u === 'string' && /^https?:\/\//i.test(u.trim()),
+  const remoteList = useMemo(
+    () =>
+      (urls ?? [])
+        .filter((u) => typeof u === 'string' && /^https?:\/\//i.test(u.trim()))
+        .map((u) => u.trim()),
+    [urls],
   );
-  const slides =
-    remote.length > 0
-      ? remote.slice(0, 5)
-      : [FALLBACK_SRC];
+
+  const slides = remoteList.length > 0 ? remoteList.slice(0, 5) : [FALLBACK_SRC];
+  const slidesKey = remoteList.join('\0');
 
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
     setIndex(0);
-  }, [slides.join('|')]);
+  }, [slidesKey]);
 
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -37,7 +40,7 @@ export function BuildAReaderSlideshow({ urls }: BuildAReaderSlideshowProps) {
       setIndex((i) => (i + 1) % slides.length);
     }, INTERVAL_MS);
     return () => window.clearInterval(t);
-  }, [slides.length]);
+  }, [slides.length, slidesKey]);
 
   const go = useCallback(
     (delta: number) => {
@@ -51,26 +54,27 @@ export function BuildAReaderSlideshow({ urls }: BuildAReaderSlideshowProps) {
 
   return (
     <div className="relative w-full max-w-[550px] overflow-hidden rounded-xl bg-[#dfecea] shadow-[0_12px_36px_-20px_rgba(20,34,24,0.28)] ring-1 ring-[#005D51]/10">
-      <div className="relative aspect-[550/680] w-full">
+      {/* Fixed max frame keeps layout stable; object-contain preserves each image’s aspect ratio (letterboxing when needed). */}
+      <div className="relative h-[min(680px,78vh)] w-full min-h-[220px] sm:min-h-[280px]">
         <Image
           key={src}
           src={src}
           alt="Build a Reader"
           fill
           sizes="(max-width: 1024px) 100vw, 550px"
-          className="object-cover"
+          className="object-contain"
           priority={index === 0}
           unoptimized={isRemote}
         />
 
         {slides.length > 1 ? (
           <>
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/45 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-1 h-24 bg-linear-to-t from-black/45 to-transparent" />
             <button
               type="button"
               aria-label="Previous slide"
               onClick={() => go(-1)}
-              className="absolute left-2 top-1/2 z-2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg font-semibold text-[#142218] shadow-md transition hover:bg-white"
+              className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg font-semibold text-[#142218] shadow-md transition hover:bg-white"
             >
               ‹
             </button>
@@ -78,12 +82,12 @@ export function BuildAReaderSlideshow({ urls }: BuildAReaderSlideshowProps) {
               type="button"
               aria-label="Next slide"
               onClick={() => go(1)}
-              className="absolute right-2 top-1/2 z-2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg font-semibold text-[#142218] shadow-md transition hover:bg-white"
+              className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg font-semibold text-[#142218] shadow-md transition hover:bg-white"
             >
               ›
             </button>
             <div
-              className="absolute bottom-3 left-0 right-0 z-2 flex justify-center gap-1.5"
+              className="absolute bottom-3 left-0 right-0 z-20 flex justify-center gap-1.5"
               role="tablist"
               aria-label="Slides"
             >

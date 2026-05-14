@@ -37,3 +37,46 @@ export async function uploadImageToCloudinary(
     return { ok: false, message: 'Upload failed.' };
   }
 }
+
+/** Same as `uploadImageToCloudinary` but reports upload bytes sent (0–100). */
+export function uploadImageToCloudinaryWithProgress(
+  file: File,
+  onProgress: (percent: number) => void,
+): Promise<{ ok: true; url: string } | { ok: false; message: string }> {
+  return new Promise((resolve) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/upload/cloudinary');
+    xhr.withCredentials = true;
+    xhr.upload.onprogress = (ev) => {
+      if (ev.lengthComputable && ev.total > 0) {
+        onProgress(Math.min(100, Math.round((ev.loaded / ev.total) * 100)));
+      }
+    };
+    xhr.onload = () => {
+      onProgress(100);
+      let data: { url?: string } = {};
+      try {
+        data = JSON.parse(xhr.responseText) as { url?: string };
+      } catch {
+        data = {};
+      }
+      if (xhr.status >= 200 && xhr.status < 300 && typeof data.url === 'string' && data.url) {
+        resolve({ ok: true, url: data.url });
+        return;
+      }
+      resolve({
+        ok: false,
+        message: getApiErrorMessage(data, xhr.status === 0 ? 'Upload failed.' : 'Upload failed'),
+      });
+    };
+    xhr.onerror = () => {
+      resolve({ ok: false, message: 'Upload failed.' });
+    };
+    xhr.onabort = () => {
+      resolve({ ok: false, message: 'Upload cancelled.' });
+    };
+    const body = new FormData();
+    body.append('file', file);
+    xhr.send(body);
+  });
+}

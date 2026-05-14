@@ -5,14 +5,14 @@ import { toast } from 'sonner';
 
 import type { FormSubmitStatus, Testimonial } from '@/types';
 import { getApiErrorMessage } from '@/lib/api-errors';
-import { getApiUrl, adminJsonHeaders } from '@/lib/api';
+import { getSameOriginApiUrl, adminJsonHeaders } from '@/lib/api';
 
 export function useAdminTestimonials() {
   const [items, setItems] = useState<Testimonial[]>([]);
   const [status, setStatus] = useState<FormSubmitStatus>({ type: 'idle' });
 
   useEffect(() => {
-    fetch(getApiUrl('testimonials'))
+    fetch(getSameOriginApiUrl('testimonials'))
       .then((r) => r.json())
       .then(setItems)
       .catch(() => setItems([]));
@@ -43,7 +43,7 @@ export function useAdminTestimonials() {
       e.preventDefault();
       setStatus({ type: 'loading' });
       try {
-        const res = await fetch(getApiUrl('testimonials'), {
+        const res = await fetch(getSameOriginApiUrl('testimonials'), {
           method: 'PUT',
           credentials: 'include',
           headers: adminJsonHeaders(),
