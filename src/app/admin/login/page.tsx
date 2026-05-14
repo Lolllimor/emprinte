@@ -5,7 +5,10 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { AdminBrandLogo } from '@/components/admin/AdminBrandLogo';
-import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import {
+  createSupabaseBrowserClient,
+  isSupabaseBrowserConfigured,
+} from '@/lib/supabase/client';
 
 const inputClassName =
   'w-full rounded-xl border border-[#005D51]/25 bg-white px-4 py-3.5 text-base text-[#142218] outline-none font-poppins transition-[box-shadow,border-color] focus:border-[#005D51] focus:ring-2 focus:ring-[#6FE19B]/50 disabled:opacity-60';
@@ -72,6 +75,58 @@ function AdminLoginForm() {
     }
   }
 
+  function safeNextPath(): string {
+    const nextParam = searchParams.get('next')?.trim();
+    if (
+      nextParam &&
+      nextParam.startsWith('/') &&
+      !nextParam.startsWith('//')
+    ) {
+      return nextParam;
+    }
+    return '/admin';
+  }
+
+  function adminGoogleRedirectUrl(): string {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const next = safeNextPath();
+    return `${origin}/admin/auth/callback?next=${encodeURIComponent(next)}`;
+  }
+
+  async function signInWithGoogle() {
+    setError(null);
+    if (!isSupabaseBrowserConfigured()) {
+      setError(
+        'Supabase is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY, then redeploy or restart the dev server.',
+      );
+      return;
+    }
+    setBusy(true);
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error: oAuthError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: adminGoogleRedirectUrl(),
+        },
+      });
+      if (oAuthError) {
+        setError(
+          oAuthError.message || 'Google sign-in did not start. Try email and password.',
+        );
+        setBusy(false);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : '';
+      setError(
+        msg.includes('Missing NEXT_PUBLIC_SUPABASE')
+          ? 'Supabase is not configured in this build.'
+          : msg || 'Something went wrong. Try again.',
+      );
+      setBusy(false);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#F0FFFD] text-[#142218] flex flex-col items-center justify-center px-6 py-16">
       <div className="w-full max-w-[400px]">
@@ -80,11 +135,8 @@ function AdminLoginForm() {
           Admin sign in
         </h1>
         <p className="mt-3 text-[15px] leading-relaxed text-[#4a5c50] font-poppins">
-          Use the same Supabase account as the app. If you are already an app admin
-          (role <span className="font-medium text-[#142218]">admin</span> on your
-          user), you can sign in here too. Otherwise ask an owner to set that role,
-          or <span className="font-medium text-[#142218]">landing_admin</span> in App
-          metadata for landing-only access.
+          Use your app credentials — email and password, or Google if that is how you
+          signed up.
         </p>
 
         <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-5">
@@ -139,6 +191,26 @@ function AdminLoginForm() {
             {busy ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
+
+        <div className="mt-7 flex items-center gap-4">
+          <span className="h-px flex-1 bg-linear-to-r from-transparent via-black/10 to-transparent" />
+          <span className="shrink-0 font-poppins text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9aa89e]">
+            or
+          </span>
+          <span className="h-px flex-1 bg-linear-to-r from-transparent via-black/10 to-transparent" />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => void signInWithGoogle()}
+          disabled={busy}
+          className="mt-7 flex min-h-[52px] w-full items-center justify-center gap-3 rounded-xl border-2 border-[#142218]/10 bg-white font-poppins text-base font-semibold text-[#142218] transition hover:border-[#005D51]/25 disabled:opacity-60"
+        >
+          <span className="text-lg" aria-hidden>
+            G
+          </span>
+          Continue with Google
+        </button>
 
         <p className="mt-5 text-center text-sm font-poppins">
           <Link
