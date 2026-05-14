@@ -18,7 +18,10 @@ export function Footer({
   contactInfo = defaultContactInfo,
 }: FooterProps) {
   return (
-    <footer className="w-full bg-white px-4 py-9 xl:px-[120px] lg:px-[64px] md:px-[32px]  ">
+    <footer
+      id="site-footer"
+      className="w-full bg-white px-4 py-9 xl:px-[120px] lg:px-[64px] md:px-[32px]  "
+    >
       <div className="max-w-[1440px] mx-auto  flex flex-col items-start gap-2.5">
         <div className="w-full flex flex-col items-end gap-[42px]">
           <div className="flex items-start gap-[38px] md:justify-between w-full">
