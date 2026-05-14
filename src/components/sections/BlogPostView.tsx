@@ -74,6 +74,25 @@ export function BlogPostView({ article }: BlogPostViewProps) {
                 {article.description}
               </p>
             ) : null}
+            {(article.authorName?.trim() || article.authorRole?.trim()) ? (
+              <div className="mt-2 flex max-w-xl flex-col gap-2 rounded-2xl border border-[#005D51]/14 bg-white/85 px-5 py-4 shadow-[0_8px_30px_-18px_rgba(20,34,24,0.2)] sm:flex-row sm:items-start sm:gap-5">
+                <p className="shrink-0 font-poppins text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#005D51]">
+                  Author
+                </p>
+                <div className="flex min-w-0 flex-col gap-0.5">
+                  {article.authorName?.trim() ? (
+                    <p className="font-lora text-lg font-semibold leading-snug text-[#142218] sm:text-xl">
+                      {article.authorName.trim()}
+                    </p>
+                  ) : null}
+                  {article.authorRole?.trim() ? (
+                    <p className="font-poppins text-sm font-medium leading-relaxed text-[#5a6570] sm:text-[0.95rem]">
+                      {article.authorRole.trim()}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
           </header>
         </div>
       </div>

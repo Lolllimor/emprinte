@@ -83,6 +83,9 @@ export interface InsightArticle {
   /** Full article text shown on `/blog/[id]`. */
   body?: string;
   href?: string;
+  /** Byline on the article page (optional). */
+  authorName?: string;
+  authorRole?: string;
 }
 
 export interface DesktopNavigationProps {
@@ -101,6 +104,8 @@ export interface BookProgressProps {
   booksCollected: number;
   totalBooks: number;
   pricePerBook: number;
+  /** Up to 5 https image URLs (e.g. Cloudinary). Empty = homepage uses built-in fallback image. */
+  slideshowUrls: string[];
 }
 
 /** Payload for creating an insight from the admin form (no server id yet). */
@@ -111,6 +116,8 @@ export interface InsightFormInput {
   date: string;
   image: string;
   href: string;
+  authorName: string;
+  authorRole: string;
 }
 
 /** Site config editable from admin; reuses public content shapes. */

@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-import { BuildAReaderImage } from '../ui/BuildAReaderImage';
+import { BuildAReaderSlideshow } from '../ui/BuildAReaderSlideshow';
 import { BookProgressProps } from '@/types';
 import { BookIcon } from './BookIcon';
 import { getSameOriginApiUrl } from '@/lib/api';
@@ -20,7 +20,18 @@ export function BookClub() {
         cache: 'no-store',
       });
       const data = await res.json();
-      setBookProgress(data);
+      const slides = Array.isArray(data?.slideshowUrls)
+        ? data.slideshowUrls.filter(
+            (s: unknown): s is string =>
+              typeof s === 'string' && /^https?:\/\//i.test(s.trim()),
+          )
+        : [];
+      setBookProgress({
+        booksCollected: typeof data?.booksCollected === 'number' ? data.booksCollected : 0,
+        totalBooks: typeof data?.totalBooks === 'number' ? data.totalBooks : 0,
+        pricePerBook: typeof data?.pricePerBook === 'number' ? data.pricePerBook : 0,
+        slideshowUrls: slides.map((s: string) => s.trim()).slice(0, 5),
+      });
     };
     fetchBookProgress();
   }, []); 
@@ -30,10 +41,9 @@ export function BookClub() {
       className="w-full relative bg-[url(/map-green.png)] bg-cover bg-center flex flex-col items-center  h-full mx-auto"
     >
      
-      <div className="flex items-center justify-start w-full gap-7.5 z-10 xl:pr-[120px] lg:pr-[75px] pr-6 max-w-[1200px] mx-auto">
-        <div className='hidden lg:block'>
-
-        <BuildAReaderImage />
+      <div className="flex flex-col items-stretch gap-7.5 z-10 xl:pr-[120px] lg:pr-[75px] pr-6 max-w-[1200px] mx-auto lg:flex-row lg:items-center">
+        <div className="w-full shrink-0 px-4 lg:w-auto lg:max-w-[550px] lg:px-0">
+          <BuildAReaderSlideshow urls={bookProgress?.slideshowUrls} />
         </div>
         <div className="flex-1 flex flex-col gap-8 py-8 pl-4 lg:py-0 lg:pl-0 ">
           <Badge>

@@ -58,6 +58,8 @@ export async function PATCH(
     image,
     href,
     body: articleBody,
+    authorName,
+    authorRole,
   } = parsed.data;
 
   const item = {
@@ -68,6 +70,8 @@ export async function PATCH(
     image,
     ...(articleBody ? { body: articleBody } : {}),
     ...(href ? { href } : {}),
+    ...(authorName ? { authorName } : {}),
+    ...(authorRole ? { authorRole } : {}),
   };
 
   replaceInsight(item);

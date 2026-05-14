@@ -304,7 +304,7 @@ export function AdminInsightsPanel() {
         description={
           editingId
             ? 'Update the fields below and save. Changes appear on the live site right away.'
-            : 'Add title, excerpt, optional full article, date, and hero image (upload or URL). Publish when you are ready.'
+            : 'Add title, excerpt, optional author, full article, date, and hero image (upload or URL). Publish when you are ready.'
         }
         wide
       >
@@ -351,6 +351,31 @@ export function AdminInsightsPanel() {
             onChange={(e) => setField('date', e.target.value)}
             required
           />
+
+          <div className="rounded-xl border border-[#005D51]/10 bg-[#fafcfb] px-4 py-4 sm:px-5">
+            <p className="font-poppins text-sm font-semibold text-[#142218]">
+              Author byline
+            </p>
+            <p className="mt-1 font-poppins text-xs leading-relaxed text-[#5a6570]">
+              Optional. Shown on the public article page under the headline.
+            </p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <LabeledInput
+                label="Author name"
+                value={form.authorName}
+                onChange={(e) => setField('authorName', e.target.value)}
+                placeholder="e.g. Olalekan Owolabi"
+                maxLength={120}
+              />
+              <LabeledInput
+                label="Role or title"
+                value={form.authorRole}
+                onChange={(e) => setField('authorRole', e.target.value)}
+                placeholder="e.g. Director, Emprinte Readers Hub"
+                maxLength={200}
+              />
+            </div>
+          </div>
 
           <div className="space-y-3">
             <FieldLabel label="Hero image">

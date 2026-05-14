@@ -9,5 +9,7 @@ export function createDefaultInsightForm(): InsightFormInput {
     date: todayIsoLocal(),
     image: '',
     href: '',
+    authorName: '',
+    authorRole: '',
   };
 }

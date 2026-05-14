@@ -12,17 +12,34 @@ let buildAReaderMemory = {
   booksCollected: 119,
   totalBooks: 500,
   pricePerBook: 2500,
+  slideshowUrls: [] as string[],
 };
 
 const noStore = { 'Cache-Control': 'no-store, max-age=0' } as const;
 
+function normalizeResponse(
+  body: typeof buildAReaderMemory,
+): typeof buildAReaderMemory {
+  return {
+    ...body,
+    slideshowUrls: Array.isArray(body.slideshowUrls)
+      ? body.slideshowUrls
+          .filter((s) => typeof s === 'string' && /^https?:\/\//i.test(s.trim()))
+          .map((s) => s.trim())
+          .slice(0, 5)
+      : [],
+  };
+}
+
 export async function GET() {
   const fromDb = await fetchBuildAReaderRow();
   if (fromDb) {
-    buildAReaderMemory = fromDb;
-    return NextResponse.json(fromDb, { headers: noStore });
+    buildAReaderMemory = normalizeResponse(fromDb);
+    return NextResponse.json(buildAReaderMemory, { headers: noStore });
   }
-  return NextResponse.json(buildAReaderMemory, { headers: noStore });
+  return NextResponse.json(normalizeResponse(buildAReaderMemory), {
+    headers: noStore,
+  });
 }
 
 async function writeBuildAReader(request: Request) {
@@ -43,7 +60,7 @@ async function writeBuildAReader(request: Request) {
     );
   }
 
-  const data = parsed.data;
+  const data = normalizeResponse(parsed.data);
   await upsertBuildAReaderRow(data);
   buildAReaderMemory = data;
 

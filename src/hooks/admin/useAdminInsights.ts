@@ -6,8 +6,8 @@ import { type FormEvent, useCallback, useEffect, useState } from 'react';
 import { createDefaultInsightForm } from '@/constants/admin';
 import { getApiErrorMessage } from '@/lib/api-errors';
 import {
-  getApiUrl,
-  getApiUrlWithQuery,
+  getSameOriginApiUrl,
+  getSameOriginApiUrlWithQuery,
   adminJsonHeaders,
 } from '@/lib/api';
 import {
@@ -21,7 +21,7 @@ import type {
 } from '@/types';
 
 async function fetchInsightsList(): Promise<InsightArticle[]> {
-  const res = await fetch(getApiUrl('insights'));
+  const res = await fetch(getSameOriginApiUrl('insights'), { cache: 'no-store' });
   const data = await res.json();
   return Array.isArray(data) ? data : [];
 }
@@ -70,6 +70,8 @@ export function useAdminInsights() {
       date: insightDateToInputValue(item.date),
       image: item.image,
       href: item.href ?? '',
+      authorName: item.authorName ?? '',
+      authorRole: item.authorRole ?? '',
     });
     setStatus({ type: 'idle' });
   }, []);
@@ -86,7 +88,7 @@ export function useAdminInsights() {
       setStatus({ type: 'loading' });
 
       const wasEditing = editingId !== null;
-      const payload = {
+      const payload: Record<string, unknown> = {
         title: form.title,
         description: form.description,
         body: form.body.trim() ? form.body.trim() : undefined,
@@ -94,18 +96,19 @@ export function useAdminInsights() {
         image: form.image,
         href: form.href?.trim() ? form.href : undefined,
       };
+      const an = form.authorName.trim();
+      const ar = form.authorRole.trim();
+      if (an) payload.authorName = an;
+      if (ar) payload.authorRole = ar;
 
       try {
         if (editingId) {
-          const res = await fetch(
-            getApiUrl(`insights/${editingId}`),
-            {
-              method: 'PATCH',
-              credentials: 'include',
-              headers: adminJsonHeaders(),
-              body: JSON.stringify(payload),
-            },
-          );
+          const res = await fetch(getSameOriginApiUrl(`insights/${editingId}`), {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: adminJsonHeaders(),
+            body: JSON.stringify(payload),
+          });
           const data = await res.json();
           if (!res.ok) {
             setStatus({
@@ -115,7 +118,7 @@ export function useAdminInsights() {
             return;
           }
         } else {
-          const res = await fetch(getApiUrl('insights'), {
+          const res = await fetch(getSameOriginApiUrl('insights'), {
             method: 'POST',
             credentials: 'include',
             headers: adminJsonHeaders(),
@@ -151,14 +154,11 @@ export function useAdminInsights() {
       if (!globalThis.confirm('Delete this article from the database?')) return;
       setStatus({ type: 'loading' });
       try {
-        const res = await fetch(
-          getApiUrlWithQuery('insights', { id }),
-          {
-            method: 'DELETE',
-            credentials: 'include',
-            headers: adminJsonHeaders(),
-          },
-        );
+        const res = await fetch(getSameOriginApiUrlWithQuery('insights', { id }), {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: adminJsonHeaders(),
+        });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
           setStatus({

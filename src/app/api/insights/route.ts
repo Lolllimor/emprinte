@@ -39,6 +39,8 @@ export async function POST(request: Request) {
     image,
     href,
     body: articleBody,
+    authorName,
+    authorRole,
   } = parsed.data;
 
   const id = String(Date.now());
@@ -50,6 +52,8 @@ export async function POST(request: Request) {
     image,
     ...(articleBody ? { body: articleBody } : {}),
     ...(href ? { href } : {}),
+    ...(authorName ? { authorName } : {}),
+    ...(authorRole ? { authorRole } : {}),
   };
 
   prependInsight(item);
@@ -83,6 +87,8 @@ export async function PATCH(request: Request) {
     image,
     href,
     body: articleBody,
+    authorName,
+    authorRole,
   } = parsed.data;
 
   if (!findInsightById(id)) {
@@ -97,6 +103,8 @@ export async function PATCH(request: Request) {
     image,
     ...(articleBody ? { body: articleBody } : {}),
     ...(href ? { href } : {}),
+    ...(authorName ? { authorName } : {}),
+    ...(authorRole ? { authorRole } : {}),
   };
 
   replaceInsight(item);

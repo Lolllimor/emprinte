@@ -12,7 +12,6 @@ import type {
 } from '@/types';
 
 export const navigationLinks: NavigationLink[] = [
-  { label: 'Home', href: '/' },
   { label: 'About Us', href: '#about' },
   { label: 'Initiatives', href: '#initiatives' },
   { label: 'Bootcamps', href: '#bootcamps' },

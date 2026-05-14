@@ -87,6 +87,20 @@ export function getApiUrlWithQuery(
   return qs ? `${base}?${qs}` : base;
 }
 
+/** Same-origin `/api/...?…` for admin client fetches. */
+export function getSameOriginApiUrlWithQuery(
+  path: string,
+  params: Record<string, string | undefined | null>,
+): string {
+  const base = getSameOriginApiUrl(path);
+  const q = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value != null && value !== '') q.set(key, value);
+  }
+  const qs = q.toString();
+  return qs ? `${base}?${qs}` : base;
+}
+
 export async function apiFetch<T>(
   path: string,
   options?: RequestInit,

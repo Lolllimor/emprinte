@@ -13,6 +13,20 @@ export const insightSchema = z.object({
     .string()
     .optional()
     .transform((v) => (v && v.trim() ? v : undefined)),
+  authorName: z
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((v) => {
+      if (v == null || typeof v !== 'string') return undefined;
+      const t = v.trim();
+      return t.length ? t.slice(0, 120) : undefined;
+    }),
+  authorRole: z
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((v) => {
+      if (v == null || typeof v !== 'string') return undefined;
+      const t = v.trim();
+      return t.length ? t.slice(0, 200) : undefined;
+    }),
 });
 
 export const insightUpdateSchema = insightSchema.extend({
@@ -75,6 +89,17 @@ export const buildAReaderSchema = z.object({
   booksCollected: z.number().int().min(0),
   totalBooks: z.number().int().min(1),
   pricePerBook: z.number().int().min(0),
+  slideshowUrls: z
+    .array(
+      z
+        .string()
+        .trim()
+        .min(1)
+        .max(2000)
+        .refine((s) => /^https?:\/\//i.test(s), 'Each slide must be an https URL'),
+    )
+    .max(5)
+    .default([]),
 });
 
 export const testimonialSchema = z.object({
