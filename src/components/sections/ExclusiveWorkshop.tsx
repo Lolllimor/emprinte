@@ -5,7 +5,7 @@ import { HiLockClosed } from 'react-icons/hi';
 import { Badge } from '../ui';
 
 const WORKSHOP_REGISTER_URL =
-  process.env.NEXT_PUBLIC_WORKSHOP_REGISTER_URL ?? '/apply';
+  process.env.NEXT_PUBLIC_WORKSHOP_REGISTER_URL ?? '/workshop/register';
 
 const learnItems = [
   {
@@ -24,7 +24,7 @@ export function ExclusiveWorkshop() {
       id="exclusive-workshop"
       className="w-full bg-[#F0FFFD] px-4 py-12 sm:px-6 md:px-8 md:py-16 lg:px-[75px] lg:py-20 xl:px-[120px]"
     >
-      <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16">
+      <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:items-stretch lg:gap-12 xl:gap-16">
         <div className="flex min-w-0 flex-col gap-6 md:gap-8">
           <div className="flex flex-col gap-3 sm:gap-4">
             <Badge>Exclusive Workshop</Badge>
@@ -75,8 +75,8 @@ export function ExclusiveWorkshop() {
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[560px] lg:max-w-none lg:justify-self-end">
-          <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl sm:rounded-3xl">
+        <div className="relative mx-auto flex w-full max-w-[560px] lg:mx-0 lg:max-w-none lg:h-full lg:justify-self-end">
+          <div className="relative min-h-[280px] w-full flex-1 overflow-hidden rounded-2xl sm:min-h-[360px] sm:rounded-3xl lg:min-h-full">
             <Image
               src="/exclusive-workshop.webp"
               alt="Young professionals in a financial literacy workshop"
