@@ -6,6 +6,7 @@ import { BookClub } from '@/components/sections/BookClub';
 import { Header } from '@/components/sections/Header';
 import { Footer } from '@/components/sections/Footer';
 import { Stats } from '@/components/sections/Stats';
+import { ExclusiveWorkshop } from '@/components/sections/ExclusiveWorkshop';
 import { Hero } from '@/components/sections/Hero';
 import { Insights } from '@/components/sections/Insights';
 import { insightArticles } from '@/constants/data';
@@ -23,6 +24,7 @@ export default async function Home() {
         <Header contactEmail={settings.contactInfo.email} />
         <Hero />
         <Stats />
+        <ExclusiveWorkshop />
         <BookClub />
         <Initiatives />
         <Bootcamps />

@@ -9,4 +9,5 @@ export { Insights } from './Insights';
 export { Footer } from './Footer';
 export { Header } from './Header';
 export { Stats } from './Stats';
+export { ExclusiveWorkshop } from './ExclusiveWorkshop';
 export { Hero } from './Hero';
