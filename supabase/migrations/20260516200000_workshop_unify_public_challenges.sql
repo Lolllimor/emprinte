@@ -29,7 +29,7 @@ insert into public.challenges (
   landing_lead
 )
 values (
-  'a20260516-0000-4000-8000-000000000001'::uuid,
+  '20260516-0000-4000-8000-000000000001'::uuid,
   'Practical Steps to Financial Independence',
   'A focused session for young professionals and entrepreneurs ready to build a clearer system for keeping and growing money.',
   1,
@@ -58,7 +58,7 @@ alter table landing.workshop_registrations
   add column if not exists workshop_id uuid references public.challenges (id) on delete restrict;
 
 update landing.workshop_registrations
-set workshop_id = 'a20260516-0000-4000-8000-000000000001'::uuid
+set workshop_id = '20260516-0000-4000-8000-000000000001'::uuid
 where workshop_id is null;
 
 alter table landing.workshop_registrations
