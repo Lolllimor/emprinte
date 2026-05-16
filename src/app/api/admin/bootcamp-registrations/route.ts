@@ -3,11 +3,9 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServiceRoleClient } from '@/lib/supabase/db';
 import { requireLandingAdminApiAuth } from '@/lib/supabase-api-auth';
 
-const BUCKET = 'workshop-registrations';
 const MAX_EXPORT_ROWS = 10_000;
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;
-const SIGNED_URL_TTL_SEC = 3600;
 
 type RegistrationSource = 'web' | 'app';
 
@@ -18,67 +16,49 @@ function parsePositiveInt(value: string | null, fallback: number, max?: number) 
   return Math.floor(n);
 }
 
-async function attachReceiptUrls<T extends { receipt_storage_path: string | null }>(
-  service: ReturnType<typeof createSupabaseServiceRoleClient>,
-  rows: T[],
-): Promise<(T & { receipt_signed_url: string | null })[]> {
-  return Promise.all(
-    rows.map(async (row) => {
-      const path = row.receipt_storage_path?.trim();
-      if (!path || !service) {
-        return { ...row, receipt_signed_url: null };
-      }
-      const { data, error } = await service.storage
-        .from(BUCKET)
-        .createSignedUrl(path, SIGNED_URL_TTL_SEC);
-      return {
-        ...row,
-        receipt_signed_url: error || !data?.signedUrl ? null : data.signedUrl,
-      };
-    }),
-  );
-}
-
-type AppParticipantRow = {
+type AppBootcampParticipantRow = {
   id: string;
-  challenge_id: string;
+  bootcamp_id: string;
   user_id: string;
   request_status: string;
-  requested_at: string | null;
+  participant_type: string;
+  payment_status: string;
   joined_at: string;
   users: { full_name: string | null; email: string | null } | null;
-  challenges: { title: string | null } | null;
+  bootcamps: { title: string | null } | null;
 };
 
-function mapAppParticipant(row: AppParticipantRow) {
+function mapAppParticipant(row: AppBootcampParticipantRow) {
   return {
     source: 'app' as const,
     id: row.id,
-    workshop_id: row.challenge_id,
+    bootcamp_id: row.bootcamp_id,
     full_name: row.users?.full_name?.trim() || '—',
     email: row.users?.email?.trim() || '—',
+    phone: null as string | null,
     request_status: row.request_status,
-    submitted_at: row.requested_at ?? row.joined_at,
-    workshop_title: row.challenges?.title ?? null,
+    participant_type: row.participant_type,
+    submitted_at: row.joined_at,
+    bootcamp_title: row.bootcamps?.title ?? null,
   };
 }
 
-async function fetchAppWorkshopJoins(
+async function fetchAppBootcampJoins(
   service: NonNullable<ReturnType<typeof createSupabaseServiceRoleClient>>,
-  workshopId: string | null,
+  bootcampId: string | null,
   exportAll: boolean,
   page: number,
   pageSize: number,
 ) {
   let query = service
-    .from('challenge_participants')
+    .from('bootcamp_participants')
     .select(
-      'id, challenge_id, user_id, request_status, requested_at, joined_at, users(full_name, email), challenges(title)',
+      'id, bootcamp_id, user_id, request_status, participant_type, payment_status, joined_at, users(full_name, email), bootcamps(title)',
       exportAll ? undefined : { count: 'exact' },
     );
 
-  if (workshopId) {
-    query = query.eq('challenge_id', workshopId);
+  if (bootcampId) {
+    query = query.eq('bootcamp_id', bootcampId);
   }
 
   query = query.order('joined_at', { ascending: false });
@@ -88,7 +68,7 @@ async function fetchAppWorkshopJoins(
     if (error) {
       return { error: error.message, registrations: [], total: 0 };
     }
-    const list = (data ?? []).map((r) => mapAppParticipant(r as unknown as AppParticipantRow));
+    const list = (data ?? []).map((r) => mapAppParticipant(r as unknown as AppBootcampParticipantRow));
     return { registrations: list, total: list.length };
   }
 
@@ -98,7 +78,7 @@ async function fetchAppWorkshopJoins(
   if (error) {
     return { error: error.message, registrations: [], total: 0 };
   }
-  const list = (data ?? []).map((r) => mapAppParticipant(r as unknown as AppParticipantRow));
+  const list = (data ?? []).map((r) => mapAppParticipant(r as unknown as AppBootcampParticipantRow));
   return { registrations: list, total: count ?? 0 };
 }
 
@@ -111,7 +91,7 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         error: 'Server misconfigured',
-        message: 'Set SUPABASE_SERVICE_ROLE_KEY to load workshop registrations.',
+        message: 'Set SUPABASE_SERVICE_ROLE_KEY to load bootcamp registrations.',
       },
       { status: 503 },
     );
@@ -119,7 +99,7 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const exportAll = url.searchParams.get('export') === 'all';
-  const workshopId = url.searchParams.get('workshopId')?.trim() || null;
+  const bootcampId = url.searchParams.get('bootcampId')?.trim() || null;
   const source = (url.searchParams.get('source')?.trim() || 'web') as RegistrationSource;
 
   if (source === 'app') {
@@ -129,9 +109,9 @@ export async function GET(request: Request) {
       MAX_PAGE_SIZE,
     );
     const page = parsePositiveInt(url.searchParams.get('page'), 1);
-    const result = await fetchAppWorkshopJoins(
+    const result = await fetchAppBootcampJoins(
       service,
-      workshopId,
+      bootcampId,
       exportAll,
       page,
       pageSize,
@@ -153,10 +133,10 @@ export async function GET(request: Request) {
     );
   }
 
-  let webQuery = service.schema('landing').from('workshop_registrations').select('*');
+  let webQuery = service.schema('landing').from('bootcamp_registrations').select('*');
 
-  if (workshopId) {
-    webQuery = webQuery.eq('workshop_id', workshopId);
+  if (bootcampId) {
+    webQuery = webQuery.eq('bootcamp_id', bootcampId);
   }
 
   if (exportAll) {
@@ -170,11 +150,7 @@ export async function GET(request: Request) {
         { status: 500 },
       );
     }
-
-    const list = (await attachReceiptUrls(service, data ?? [])).map((r) => ({
-      ...r,
-      source: 'web' as const,
-    }));
+    const list = (data ?? []).map((r) => ({ ...r, source: 'web' as const }));
     return NextResponse.json(
       {
         source: 'web',
@@ -197,11 +173,11 @@ export async function GET(request: Request) {
 
   let paginatedQuery = service
     .schema('landing')
-    .from('workshop_registrations')
+    .from('bootcamp_registrations')
     .select('*', { count: 'exact' });
 
-  if (workshopId) {
-    paginatedQuery = paginatedQuery.eq('workshop_id', workshopId);
+  if (bootcampId) {
+    paginatedQuery = paginatedQuery.eq('bootcamp_id', bootcampId);
   }
 
   const { data, error, count } = await paginatedQuery
@@ -215,10 +191,7 @@ export async function GET(request: Request) {
     );
   }
 
-  const list = (await attachReceiptUrls(service, data ?? [])).map((r) => ({
-    ...r,
-    source: 'web' as const,
-  }));
+  const list = (data ?? []).map((r) => ({ ...r, source: 'web' as const }));
 
   return NextResponse.json(
     {

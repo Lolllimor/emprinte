@@ -59,18 +59,26 @@ function formatCategory(value: string): string {
   return value.replace(/_/g, ' ');
 }
 
-function listUrl(page: number, pageSize: number, workshopId: string | null): string {
+type RegistrationSource = 'web' | 'app';
+
+function listUrl(
+  page: number,
+  pageSize: number,
+  workshopId: string | null,
+  source: RegistrationSource,
+): string {
   const base = getSameOriginApiUrl('admin/workshop-registrations');
   const params = new URLSearchParams({
     page: String(page),
     pageSize: String(pageSize),
+    source,
   });
   if (workshopId) params.set('workshopId', workshopId);
   return `${base}?${params.toString()}`;
 }
 
-function exportUrl(workshopId: string | null): string {
-  const params = new URLSearchParams({ export: 'all' });
+function exportUrl(workshopId: string | null, source: RegistrationSource): string {
+  const params = new URLSearchParams({ export: 'all', source });
   if (workshopId) params.set('workshopId', workshopId);
   return `${getSameOriginApiUrl('admin/workshop-registrations')}?${params.toString()}`;
 }
@@ -78,6 +86,7 @@ function exportUrl(workshopId: string | null): string {
 export default function AdminWorkshopRegistrationsPage() {
   const [workshops, setWorkshops] = useState<AdminWorkshopOption[]>([]);
   const [workshopId, setWorkshopId] = useState<string>('');
+  const [source, setSource] = useState<RegistrationSource>('web');
   const [rows, setRows] = useState<WorkshopRegistrationRow[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -114,7 +123,7 @@ export default function AdminWorkshopRegistrationsPage() {
     setError(null);
     const filterId = workshopId.trim() || null;
     try {
-      const res = await fetch(listUrl(page, pageSize, filterId), {
+      const res = await fetch(listUrl(page, pageSize, filterId, source), {
         credentials: 'include',
         cache: 'no-store',
       });
@@ -144,7 +153,7 @@ export default function AdminWorkshopRegistrationsPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, workshopId]);
+  }, [page, pageSize, workshopId, source]);
 
   useEffect(() => {
     void load();
@@ -157,7 +166,7 @@ export default function AdminWorkshopRegistrationsPage() {
     setError(null);
     try {
       const filterId = workshopId.trim() || null;
-      const res = await fetch(exportUrl(filterId), {
+      const res = await fetch(exportUrl(filterId, source), {
         credentials: 'include',
         cache: 'no-store',
       });
@@ -193,7 +202,7 @@ export default function AdminWorkshopRegistrationsPage() {
     } finally {
       setExporting(false);
     }
-  }, [workshopId]);
+  }, [workshopId, source]);
 
   const headerActions = useMemo(
     () => (
@@ -223,9 +232,40 @@ export default function AdminWorkshopRegistrationsPage() {
       id="workshop-registrations-heading"
       eyebrow="People"
       title="Workshop registrations"
-      description="Web workshop sign-ups linked to events in the app catalog. Non-members include a payment receipt — signed receipt links expire after about an hour."
+      description="Web sign-ups and in-app join requests for workshops. Non-members on the web include a payment receipt — signed links expire after about an hour."
       actions={headerActions}
     >
+      <div className="flex gap-2 rounded-xl border border-[#142218]/10 bg-white p-1 font-poppins text-sm">
+        <button
+          type="button"
+          onClick={() => {
+            setSource('web');
+            setPage(1);
+          }}
+          className={`min-h-9 flex-1 rounded-lg px-3 font-semibold transition ${
+            source === 'web'
+              ? 'bg-[#005D51] text-white'
+              : 'text-[#4a5c50] hover:bg-[#005D51]/06'
+          }`}
+        >
+          Web registrations
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setSource('app');
+            setPage(1);
+          }}
+          className={`min-h-9 flex-1 rounded-lg px-3 font-semibold transition ${
+            source === 'app'
+              ? 'bg-[#005D51] text-white'
+              : 'text-[#4a5c50] hover:bg-[#005D51]/06'
+          }`}
+        >
+          App join requests
+        </button>
+      </div>
+
       {workshops.length > 0 ? (
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <label className="flex flex-col gap-1.5 font-poppins text-sm text-[#4a5c50]">
@@ -269,25 +309,60 @@ export default function AdminWorkshopRegistrationsPage() {
                 <Th>Submitted</Th>
                 <Th>Name</Th>
                 <Th>Email</Th>
-                <Th>Member</Th>
-                <Th>Category</Th>
-                <Th>Primary goal</Th>
-                <Th>Receipt</Th>
+                {source === 'web' ? (
+                  <>
+                    <Th>Member</Th>
+                    <Th>Category</Th>
+                    <Th>Primary goal</Th>
+                    <Th>Receipt</Th>
+                  </>
+                ) : (
+                  <>
+                    <Th>Status</Th>
+                    <Th>Workshop</Th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-[#5c6b5f]">
+                  <td
+                    colSpan={source === 'web' ? 7 : 5}
+                    className="px-4 py-10 text-center text-[#5c6b5f]"
+                  >
                     Loading…
                   </td>
                 </tr>
               ) : !rows.length ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-[#5c6b5f]">
+                  <td
+                    colSpan={source === 'web' ? 7 : 5}
+                    className="px-4 py-10 text-center text-[#5c6b5f]"
+                  >
                     No registrations yet.
                   </td>
                 </tr>
+              ) : source === 'app' ? (
+                rows.map((r) => {
+                  const app = r as WorkshopRegistrationRow & {
+                    request_status?: string;
+                    workshop_title?: string | null;
+                  };
+                  return (
+                    <tr key={app.id} className="border-b border-[#142218]/06 last:border-0">
+                      <Td title={app.submitted_at}>{formatWhen(app.submitted_at)}</Td>
+                      <Td bold title={app.full_name}>
+                        {app.full_name}
+                      </Td>
+                      <Td title={app.email}>{app.email}</Td>
+                      <Td>{app.request_status ?? '—'}</Td>
+                      <Td title={app.workshop_title ?? undefined}>
+                        {app.workshop_title ?? '—'}
+                      </Td>
+                    </tr>
+                  );
+                })
               ) : (
                 rows.map((r) => (
                   <tr key={r.id} className="border-b border-[#142218]/06 last:border-0">

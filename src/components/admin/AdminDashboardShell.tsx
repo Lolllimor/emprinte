@@ -48,6 +48,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const newsletterActive = pathname === '/admin/newsletter';
   const applicationsActive = pathname === '/admin/community-applications';
   const workshopRegistrationsActive = pathname === '/admin/workshop-registrations';
+  const bootcampRegistrationsActive = pathname === '/admin/bootcamp-registrations';
   const profileActive = pathname === '/admin/profile';
   const inviteActive = pathname === '/admin/invite';
 
@@ -113,6 +114,17 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             aria-hidden
           />
           <span>Workshop registrations</span>
+        </Link>
+        <Link
+          href="/admin/bootcamp-registrations"
+          onClick={onNavigate}
+          className={navLinkClass(bootcampRegistrationsActive)}
+        >
+          <HiOutlineClipboardDocumentList
+            className={`${navIconClass} ${bootcampRegistrationsActive ? navIconActive : ''}`}
+            aria-hidden
+          />
+          <span>Bootcamp registrations</span>
         </Link>
         <Link
           href="/admin/profile"
