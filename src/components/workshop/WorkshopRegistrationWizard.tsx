@@ -1,415 +1,460 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
   FINANCIAL_CATEGORY_OPTIONS,
-  WORKSHOP_INTRO_COPY,
-  WORKSHOP_WHATSAPP_GROUP_URL,
+  WORKSHOP_PAGE_COPY,
+  WORKSHOP_WIZARD_STEPS,
 } from '@/constants/workshop-registration';
 import { getSameOriginApiUrl } from '@/lib/api';
-import type { WorkshopRegistrationInput } from '@/lib/validation/workshop-registration';
+import type { FinancialCategory } from '@/lib/validation/workshop-registration';
 import { workshopRegistrationSchema } from '@/lib/validation/workshop-registration';
 
 const inputClass =
-  'w-full border-0 border-b border-[#dadce0] bg-transparent px-0 py-2 font-poppins text-base text-[#202124] outline-none placeholder:text-[#70757a] focus:border-[#005D51]';
+  'w-full rounded-xl border border-[#142218]/10 bg-white px-4 py-3 text-base text-[#142218] outline-none font-poppins transition placeholder:text-[#9aa89e] focus:border-[#005D51] focus:ring-[3px] focus:ring-[#6FE19B]/35 disabled:opacity-60';
 
-const labelClass = 'font-poppins text-base font-medium text-[#202124]';
+const textareaClass = `${inputClass} min-h-[112px] resize-y`;
 
-const cardClass = 'overflow-hidden rounded-lg bg-white shadow-sm';
+const labelClass =
+  'text-xs font-semibold uppercase tracking-[0.1em] text-[#4a5c50] font-poppins';
 
-const requiredMark = <span className="text-[#E63715]"> *</span>;
+const labelSentenceClass =
+  'text-sm font-semibold tracking-tight text-[#142218] font-poppins';
 
-const HUB_CHECKLIST = ['Read', 'Apply', 'Grow', 'Belong', 'Become'] as const;
+const cardShell =
+  'rounded-2xl border border-black/6 bg-white p-6 md:p-8';
 
-const emptyForm: WorkshopRegistrationInput = {
+const TOTAL_STEPS = WORKSHOP_WIZARD_STEPS.length;
+
+type WorkshopFormState = {
+  fullName: string;
+  email: string;
+  primaryGoal: string;
+  isMember: '' | 'yes' | 'no';
+  financialCategory: '' | FinancialCategory;
+  financeChallenges: string;
+  workshopQuestions: string;
+};
+
+const initialForm: WorkshopFormState = {
   fullName: '',
   email: '',
   primaryGoal: '',
-  isMember: 'no',
-  financialCategory: 'saver',
+  isMember: '',
+  financialCategory: '',
   financeChallenges: '',
   workshopQuestions: '',
 };
 
-type Step = 1 | 2;
+function choiceCardClass(active: boolean) {
+  return [
+    'grid min-h-[48px] cursor-pointer grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 rounded-xl border-2 px-4 py-3 font-poppins text-sm leading-snug transition',
+    '[&>input[type=radio]]:m-0 [&>input[type=radio]]:h-4 [&>input[type=radio]]:w-4 [&>input[type=radio]]:shrink-0 [&>input[type=radio]]:accent-[#005D51]',
+    '[&>span]:min-w-0 [&>span]:self-center',
+    active
+      ? 'border-[#005D51] bg-white text-[#142218]'
+      : 'border-[#142218]/10 bg-white text-[#142218] hover:border-[#005D51]/25',
+  ].join(' ');
+}
 
-function WorkshopFormHeader() {
-  return (
-    <div className="overflow-hidden rounded-t-lg bg-[#005D51] px-5 py-6 text-white sm:px-8 sm:py-8">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <p className="font-poppins text-2xl font-bold tracking-wide sm:text-3xl">
-            EMPRINTE
-          </p>
-          <p className="font-poppins text-lg font-semibold sm:text-xl">Readers Hub</p>
-          <p className="font-poppins text-sm text-white/85">
-            Making readers out of Africa
-          </p>
-        </div>
-        <ul className="flex flex-col gap-2 font-poppins text-sm sm:text-base">
-          {HUB_CHECKLIST.map((item) => (
-            <li key={item} className="flex items-center gap-2">
-              <span
-                className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border border-white/80 bg-white/10 text-xs"
-                aria-hidden
-              >
-                ✓
-              </span>
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
+function financeCardClass(active: boolean) {
+  return [
+    'flex cursor-pointer flex-col gap-1 rounded-xl border-2 px-4 py-4 font-poppins transition',
+    '[&>input[type=radio]]:sr-only',
+    active
+      ? 'border-[#005D51] bg-[#fafcfb]'
+      : 'border-[#142218]/10 bg-white hover:border-[#005D51]/25',
+  ].join(' ');
+}
+
+function validateStep(step: number, form: WorkshopFormState): string | null {
+  if (step === 0) {
+    if (!form.fullName.trim()) return 'Add your full name to continue.';
+    if (!form.email.trim()) return 'Add the email we should use for updates.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      return 'Enter a valid email address.';
+    }
+    if (!form.primaryGoal.trim()) return 'Share your primary goal for attending.';
+    if (!form.isMember) return 'Let us know if you are already a Hub member.';
+    return null;
+  }
+  if (step === 1) {
+    if (!form.financialCategory) return 'Choose the category that fits you best today.';
+    if (!form.financeChallenges.trim()) {
+      return 'Describe the challenges you face organising your finances.';
+    }
+    if (!form.workshopQuestions.trim()) {
+      return 'Add at least one question you would like addressed.';
+    }
+    return null;
+  }
+  return null;
+}
+
+function toPayload(form: WorkshopFormState) {
+  return {
+    fullName: form.fullName.trim(),
+    email: form.email.trim(),
+    primaryGoal: form.primaryGoal.trim(),
+    isMember: form.isMember as 'yes' | 'no',
+    financialCategory: form.financialCategory as FinancialCategory,
+    financeChallenges: form.financeChallenges.trim(),
+    workshopQuestions: form.workshopQuestions.trim(),
+  };
 }
 
 export function WorkshopRegistrationWizard() {
-  const [step, setStep] = useState<Step>(1);
-  const [form, setForm] = useState<WorkshopRegistrationInput>(emptyForm);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const router = useRouter();
+  const [step, setStep] = useState(0);
+  const [form, setForm] = useState<WorkshopFormState>(initialForm);
+  const [busy, setBusy] = useState(false);
 
-  function updateField<K extends keyof WorkshopRegistrationInput>(
-    key: K,
-    value: WorkshopRegistrationInput[K],
-  ) {
-    setForm((prev) => ({ ...prev, [key]: value }));
-    setFieldErrors((prev) => {
-      const next = { ...prev };
-      delete next[key];
-      return next;
-    });
-  }
+  const meta = WORKSHOP_WIZARD_STEPS[step]!;
+  const currentStepNum = step + 1;
 
-  function validateStep1(): boolean {
-    const partial = workshopRegistrationSchema.pick({
-      fullName: true,
-      email: true,
-      primaryGoal: true,
-      isMember: true,
-    });
-    const result = partial.safeParse(form);
-    if (!result.success) {
-      const errors: Record<string, string> = {};
-      for (const [key, messages] of Object.entries(
-        result.error.flatten().fieldErrors,
-      )) {
-        if (messages?.[0]) errors[key] = messages[0];
-      }
-      setFieldErrors(errors);
-      return false;
+  function nextStep() {
+    const err = validateStep(step, form);
+    if (err) {
+      toast.error(err);
+      return;
     }
-    setFieldErrors({});
-    return true;
+    setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    if (step === 1) {
-      if (validateStep1()) setStep(2);
+  function prevStep() {
+    setStep((s) => Math.max(s - 1, 0));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goToStep(target: number) {
+    if (busy) return;
+    if (target > step) {
+      toast.message('Finish this step before skipping ahead.');
+      return;
+    }
+    if (target !== step) {
+      setStep(target);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  async function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    const err = validateStep(1, form);
+    if (err) {
+      toast.error(err);
       return;
     }
 
-    const result = workshopRegistrationSchema.safeParse(form);
-    if (!result.success) {
-      const errors: Record<string, string> = {};
-      for (const [key, messages] of Object.entries(
-        result.error.flatten().fieldErrors,
-      )) {
-        if (messages?.[0]) errors[key] = messages[0];
-      }
-      setFieldErrors(errors);
+    const payload = toPayload(form);
+    const parsed = workshopRegistrationSchema.safeParse(payload);
+    if (!parsed.success) {
+      toast.error('Please check your answers and try again.');
       return;
     }
 
-    setSubmitting(true);
+    setBusy(true);
     try {
       const res = await fetch(getSameOriginApiUrl('workshop-registration'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(result.data),
+        body: JSON.stringify(parsed.data),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
         toast.error(
           typeof json.message === 'string'
             ? json.message
-            : 'Could not submit your registration. Please try again.',
+            : 'Could not save your registration. Please try again.',
         );
         return;
       }
-      setSubmitted(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      router.replace('/workshop/register/thank-you');
     } catch {
-      toast.error('Network error. Please check your connection and try again.');
+      toast.error('Network error. Check your connection and try again.');
     } finally {
-      setSubmitting(false);
+      setBusy(false);
     }
   }
 
-  function clearForm() {
-    setForm(emptyForm);
-    setFieldErrors({});
-    setStep(1);
-    setSubmitted(false);
-  }
-
-  if (submitted) {
-    return (
-      <div className="mx-auto w-full max-w-[640px] space-y-3">
-        <div className={cardClass}>
-          <WorkshopFormHeader />
-          <div className="border-t-4 border-[#E63715] px-5 py-8 sm:px-8">
-            <h1 className="font-poppins text-[28px] font-normal leading-tight text-[#202124] sm:text-[32px]">
-              {WORKSHOP_INTRO_COPY.title}
-            </h1>
-            <p className="mt-6 font-poppins text-base leading-relaxed text-[#202124]">
-              Your response has been recorded. Kindly join the waiting group chat on
-              WhatsApp:
-            </p>
-            <p className="mt-4">
-              <a
-                href={WORKSHOP_WHATSAPP_GROUP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-poppins text-base text-[#1a73e8] underline"
-              >
-                {WORKSHOP_WHATSAPP_GROUP_URL}
-              </a>
-            </p>
-            <button
-              type="button"
-              onClick={clearForm}
-              className="mt-8 font-poppins text-sm text-[#1a73e8] underline"
-            >
-              Submit another response
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="mx-auto w-full max-w-[640px] space-y-3">
-      {step === 1 ? (
-        <>
-          <div className={cardClass}>
-            <WorkshopFormHeader />
-            <div className="border-t-4 border-[#E63715] px-5 py-6 sm:px-8">
-              <h1 className="font-poppins text-[28px] font-normal leading-tight text-[#202124] sm:text-[32px]">
-                {WORKSHOP_INTRO_COPY.title}
-              </h1>
-              <div className="mt-4 space-y-4 font-poppins text-sm leading-relaxed text-[#202124] sm:text-base">
-                {WORKSHOP_INTRO_COPY.paragraphs.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-                <p>
-                  <strong>{WORKSHOP_INTRO_COPY.privacyHeading}</strong>{' '}
-                  {WORKSHOP_INTRO_COPY.privacyBody}
+    <>
+      <div className="mb-2">
+        <h2 className="text-center font-lora text-xl font-semibold text-[#142218] md:text-2xl">
+          {meta.title}
+        </h2>
+        <p className="mx-auto mt-2 max-w-md text-center font-poppins text-sm leading-relaxed text-[#4a5c50]">
+          {meta.subtitle}
+        </p>
+      </div>
+
+      <nav className="mb-2 w-full" aria-label="Registration steps">
+        <ol className="m-0 grid w-full list-none grid-cols-2 gap-3 p-0">
+          {WORKSHOP_WIZARD_STEPS.map((s, i) => {
+            const stepNum = i + 1;
+            const done = stepNum < currentStepNum;
+            const current = stepNum === currentStepNum;
+            const isFuture = i > step;
+            const stateClasses = current
+              ? 'border border-[#004438] bg-[#005D51] text-white'
+              : done
+                ? 'border border-[#005D51]/28 bg-white text-[#005D51]'
+                : 'border border-[#142218]/10 bg-white text-[#142218]';
+            const interactive = !isFuture
+              ? 'cursor-pointer hover:border-[#005D51]/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#005D51]'
+              : 'cursor-not-allowed opacity-55';
+
+            return (
+              <li key={s.short} className="min-w-0" aria-current={current ? 'step' : undefined}>
+                <button
+                  type="button"
+                  disabled={isFuture || busy}
+                  onClick={() => goToStep(i)}
+                  title={isFuture ? 'Complete earlier steps first' : `Go to ${s.title}`}
+                  className={`flex min-h-12 w-full flex-col items-center justify-center rounded-xl px-2 py-2 text-center transition-colors duration-200 ${stateClasses} ${interactive}`}
+                >
+                  <span className="font-poppins text-[11px] font-semibold uppercase leading-none tracking-[0.05em]">
+                    {done ? '✓' : s.short}
+                  </span>
+                  <span
+                    className={`mt-1 font-poppins text-[10px] font-medium tabular-nums leading-none ${
+                      current ? 'text-white/90' : done ? 'text-[#005D51]/75' : 'text-[#5c6b5f]'
+                    }`}
+                  >
+                    {stepNum}/{TOTAL_STEPS}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
+      <div
+        className="mb-8 flex w-full gap-1.5"
+        role="group"
+        aria-label={`Registration progress, step ${currentStepNum} of ${TOTAL_STEPS}`}
+      >
+        {WORKSHOP_WIZARD_STEPS.map((s, i) => {
+          const filled = i + 1 <= currentStepNum;
+          return (
+            <div
+              key={`progress-${s.short}`}
+              className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-[#142218]/8"
+            >
+              <div
+                className={`h-full rounded-full bg-[#005D51] transition-[width] duration-500 ease-out ${
+                  filled ? 'w-full' : 'w-0'
+                }`}
+              />
+            </div>
+          );
+        })}
+      </div>
+
+      <form
+        id="workshop-register-form"
+        onSubmit={step === TOTAL_STEPS - 1 ? onSubmit : (e) => e.preventDefault()}
+        className="flex flex-col gap-8"
+      >
+        {step === 0 ? (
+          <section className={cardShell}>
+            <div className="mb-6 rounded-xl border border-[#005D51]/12 bg-[#eef7f4] px-4 py-4">
+              <p className="font-poppins text-sm leading-relaxed text-[#4a5c50]">
+                {WORKSHOP_PAGE_COPY.lead}
+              </p>
+              <p className="mt-3 font-poppins text-xs leading-relaxed text-[#5c6b5f]">
+                {WORKSHOP_PAGE_COPY.privacyNote}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-5">
+              <div>
+                <label className={labelClass} htmlFor="workshop-fullName">
+                  Full name
+                </label>
+                <input
+                  id="workshop-fullName"
+                  className={`${inputClass} mt-1.5`}
+                  value={form.fullName}
+                  onChange={(e) => setForm((s) => ({ ...s, fullName: e.target.value }))}
+                  autoComplete="name"
+                  placeholder="As you would like it on the list"
+                />
+              </div>
+
+              <div>
+                <label className={labelClass} htmlFor="workshop-email">
+                  Email
+                </label>
+                <input
+                  id="workshop-email"
+                  type="email"
+                  inputMode="email"
+                  className={`${inputClass} mt-1.5`}
+                  value={form.email}
+                  onChange={(e) => setForm((s) => ({ ...s, email: e.target.value }))}
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                />
+                <p className="mt-1.5 font-poppins text-xs text-[#7B7B7B]">
+                  For confirmation and pre-workshop materials only.
                 </p>
               </div>
-              <p className="mt-6 font-poppins text-xs text-[#70757a]">
-                <span className="text-[#E63715]">*</span> Indicates required question
-              </p>
-            </div>
-          </div>
 
-          <FieldCard
-            label="Full Name"
-            required
-            error={fieldErrors.fullName}
-          >
-            <input
-              type="text"
-              value={form.fullName}
-              onChange={(e) => updateField('fullName', e.target.value)}
-              placeholder="Your answer"
-              className={inputClass}
-              autoComplete="name"
-            />
-          </FieldCard>
-
-          <FieldCard label="Email" required error={fieldErrors.email}>
-            <input
-              type="email"
-              value={form.email}
-              onChange={(e) => updateField('email', e.target.value)}
-              placeholder="Your answer"
-              className={inputClass}
-              autoComplete="email"
-            />
-          </FieldCard>
-
-          <FieldCard
-            label="What is your primary goal for attending this event?"
-            required
-            error={fieldErrors.primaryGoal}
-          >
-            <input
-              type="text"
-              value={form.primaryGoal}
-              onChange={(e) => updateField('primaryGoal', e.target.value)}
-              placeholder="Your answer"
-              className={inputClass}
-            />
-          </FieldCard>
-
-          <FieldCard
-            label="Are you a member of Emprinte Readers Hub?"
-            required
-            error={fieldErrors.isMember}
-          >
-            <div className="mt-3 flex flex-col gap-3">
-              {(['yes', 'no'] as const).map((value) => (
-                <label
-                  key={value}
-                  className="flex cursor-pointer items-center gap-3 font-poppins text-base text-[#202124]"
-                >
-                  <input
-                    type="radio"
-                    name="isMember"
-                    value={value}
-                    checked={form.isMember === value}
-                    onChange={() => updateField('isMember', value)}
-                    className="h-4 w-4 accent-[#005D51]"
-                  />
-                  {value === 'yes' ? 'Yes' : 'No'}
+              <div>
+                <label className={labelSentenceClass} htmlFor="workshop-primaryGoal">
+                  What is your primary goal for attending?
                 </label>
-              ))}
+                <textarea
+                  id="workshop-primaryGoal"
+                  className={`${textareaClass} mt-1.5`}
+                  value={form.primaryGoal}
+                  onChange={(e) => setForm((s) => ({ ...s, primaryGoal: e.target.value }))}
+                  placeholder="e.g. Build a monthly savings habit, understand investing basics…"
+                  rows={3}
+                />
+              </div>
+
+              <fieldset>
+                <legend className={labelSentenceClass}>
+                  Are you a member of Emprinte Readers Hub?
+                </legend>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {(['yes', 'no'] as const).map((value) => (
+                    <label
+                      key={value}
+                      className={choiceCardClass(form.isMember === value)}
+                    >
+                      <input
+                        type="radio"
+                        name="isMember"
+                        value={value}
+                        checked={form.isMember === value}
+                        onChange={() => setForm((s) => ({ ...s, isMember: value }))}
+                      />
+                      <span>{value === 'yes' ? 'Yes' : 'Not yet'}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
             </div>
-          </FieldCard>
-        </>
-      ) : (
-        <>
-          <div className={cardClass}>
-            <div className="bg-[#E63715] px-5 py-3 sm:px-8">
-              <p className="font-poppins text-lg font-medium text-white">Last Lap</p>
-            </div>
-            <div className="px-5 py-6 sm:px-8">
-              <p className={labelClass}>
-                What financial category would you place yourself in?
-                {requiredMark}
+          </section>
+        ) : (
+          <section className={`${cardShell} flex flex-col gap-6`}>
+            <fieldset>
+              <legend className={labelSentenceClass}>
+                What financial category would you place yourself in today?
+              </legend>
+              <p className="mt-1 font-poppins text-xs text-[#7B7B7B]">
+                Pick the option that feels most accurate right now — not where you want to be.
               </p>
-              {fieldErrors.financialCategory ? (
-                <p className="mt-1 font-poppins text-sm text-[#E63715]">
-                  {fieldErrors.financialCategory}
-                </p>
-              ) : null}
-              <div className="mt-4 flex flex-col gap-3">
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {FINANCIAL_CATEGORY_OPTIONS.map((option) => (
                   <label
                     key={option.value}
-                    className="flex cursor-pointer items-center gap-3 font-poppins text-base text-[#202124]"
+                    className={financeCardClass(form.financialCategory === option.value)}
                   >
                     <input
                       type="radio"
                       name="financialCategory"
                       value={option.value}
                       checked={form.financialCategory === option.value}
-                      onChange={() => updateField('financialCategory', option.value)}
-                      className="h-4 w-4 accent-[#005D51]"
+                      onChange={() =>
+                        setForm((s) => ({ ...s, financialCategory: option.value }))
+                      }
                     />
-                    {option.label}
+                    <span className="text-sm font-semibold text-[#142218]">
+                      {option.label}
+                    </span>
+                    <span className="text-xs leading-relaxed text-[#5c6b5f]">
+                      {option.hint}
+                    </span>
                   </label>
                 ))}
               </div>
+            </fieldset>
+
+            <div>
+              <label className={labelSentenceClass} htmlFor="workshop-challenges">
+                What challenges do you face organising your finances?
+              </label>
+              <textarea
+                id="workshop-challenges"
+                className={`${textareaClass} mt-1.5`}
+                value={form.financeChallenges}
+                onChange={(e) =>
+                  setForm((s) => ({ ...s, financeChallenges: e.target.value }))
+                }
+                placeholder="Be as specific as you like — budgeting, debt, irregular income…"
+                rows={4}
+              />
             </div>
-          </div>
 
-          <FieldCard
-            label="What are the challenges you face in organising your finances?"
-            required
-            error={fieldErrors.financeChallenges}
+            <div>
+              <label className={labelSentenceClass} htmlFor="workshop-questions">
+                Questions you want addressed at the workshop
+              </label>
+              <textarea
+                id="workshop-questions"
+                className={`${textareaClass} mt-1.5`}
+                value={form.workshopQuestions}
+                onChange={(e) =>
+                  setForm((s) => ({ ...s, workshopQuestions: e.target.value }))
+                }
+                placeholder="Topics, decisions, or situations you would like us to cover"
+                rows={4}
+              />
+            </div>
+          </section>
+        )}
+
+        <p className="pb-4 text-center font-poppins text-[11px] leading-relaxed text-[#9aa89e]">
+          Need help?{' '}
+          <a
+            href="mailto:hello@emprintereaders.com"
+            className="font-semibold text-[#005D51] underline decoration-[#005D51]/25 underline-offset-2"
           >
-            <input
-              type="text"
-              value={form.financeChallenges}
-              onChange={(e) => updateField('financeChallenges', e.target.value)}
-              placeholder="Your answer"
-              className={inputClass}
-            />
-          </FieldCard>
+            hello@emprintereaders.com
+          </a>
+        </p>
+      </form>
 
-          <FieldCard
-            label="Are there any specific questions you'd like to have addressed at the workshop?"
-            required
-            error={fieldErrors.workshopQuestions}
+      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-black/6 bg-white px-4 py-3 supports-[padding:max(0px)]:pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={prevStep}
+            disabled={step === 0 || busy}
+            className="min-h-[48px] min-w-[96px] rounded-xl border-2 border-[#142218]/10 bg-white px-4 font-poppins text-sm font-semibold text-[#142218] transition hover:border-[#005D51]/25 disabled:opacity-35"
           >
-            <input
-              type="text"
-              value={form.workshopQuestions}
-              onChange={(e) => updateField('workshopQuestions', e.target.value)}
-              placeholder="Your answer"
-              className={inputClass}
-            />
-          </FieldCard>
-        </>
-      )}
-
-      <div className="flex flex-wrap items-center justify-between gap-4 px-1 pb-8 pt-2">
-        <div className="flex flex-wrap gap-3">
-          {step === 2 ? (
+            Back
+          </button>
+          {step < TOTAL_STEPS - 1 ? (
             <button
               type="button"
-              onClick={() => setStep(1)}
-              className="inline-flex h-10 items-center justify-center rounded border border-[#dadce0] bg-white px-6 font-poppins text-sm font-medium text-[#E63715] transition hover:bg-[#f8f9fa]"
+              onClick={nextStep}
+              disabled={busy}
+              className="min-h-[48px] flex-1 rounded-xl bg-[#005D51] px-6 font-poppins text-sm font-semibold text-white transition hover:bg-[#004438] disabled:opacity-55 sm:max-w-[220px] sm:flex-none"
             >
-              Back
+              Continue
             </button>
-          ) : null}
-          <button
-            type="submit"
-            disabled={submitting}
-            className="inline-flex h-10 min-w-[88px] items-center justify-center rounded bg-[#E63715] px-6 font-poppins text-sm font-medium text-white transition hover:bg-[#c42e12] disabled:opacity-60"
-          >
-            {submitting ? 'Submitting…' : step === 1 ? 'Next' : 'Submit'}
-          </button>
+          ) : (
+            <button
+              type="submit"
+              form="workshop-register-form"
+              disabled={busy}
+              className="min-h-[48px] flex-1 rounded-xl bg-[#005D51] px-6 font-poppins text-sm font-semibold text-white transition hover:bg-[#004438] disabled:opacity-55 sm:max-w-[240px] sm:flex-none"
+            >
+              {busy ? 'Saving…' : 'Complete registration'}
+            </button>
+          )}
         </div>
-        <button
-          type="button"
-          onClick={clearForm}
-          className="font-poppins text-sm text-[#E63715] hover:underline"
-        >
-          Clear form
-        </button>
       </div>
-
-      <p className="pb-4 text-center font-poppins text-xs text-[#70757a]">
-        <Link href="/" className="text-[#1a73e8] hover:underline">
-          Back to Emprinte home
-        </Link>
-      </p>
-    </form>
-  );
-}
-
-function FieldCard({
-  label,
-  required,
-  error,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className={`${cardClass} px-5 py-6 sm:px-8`}>
-      <p className={labelClass}>
-        {label}
-        {required ? requiredMark : null}
-      </p>
-      {error ? (
-        <p className="mt-1 font-poppins text-sm text-[#E63715]">{error}</p>
-      ) : null}
-      <div className="mt-4">{children}</div>
-    </div>
+    </>
   );
 }
