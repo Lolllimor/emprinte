@@ -11,6 +11,7 @@ import {
   HiOutlineSquares2X2,
   HiOutlineUserCircle,
   HiOutlineUserPlus,
+  HiOutlineAcademicCap,
   HiXMark,
 } from 'react-icons/hi2';
 
@@ -46,6 +47,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const blogActive = pathname === '/admin/blog';
   const newsletterActive = pathname === '/admin/newsletter';
   const applicationsActive = pathname === '/admin/community-applications';
+  const workshopRegistrationsActive = pathname === '/admin/workshop-registrations';
   const profileActive = pathname === '/admin/profile';
   const inviteActive = pathname === '/admin/invite';
 
@@ -100,6 +102,17 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             aria-hidden
           />
           <span>Membership applications</span>
+        </Link>
+        <Link
+          href="/admin/workshop-registrations"
+          onClick={onNavigate}
+          className={navLinkClass(workshopRegistrationsActive)}
+        >
+          <HiOutlineAcademicCap
+            className={`${navIconClass} ${workshopRegistrationsActive ? navIconActive : ''}`}
+            aria-hidden
+          />
+          <span>Workshop registrations</span>
         </Link>
         <Link
           href="/admin/profile"

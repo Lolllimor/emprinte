@@ -1,12 +1,31 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 import { Logo } from '@/components/ui/Logo';
 import {
+  DEFAULT_WORKSHOP_SLUG,
   WORKSHOP_THANK_YOU_COPY,
   WORKSHOP_WHATSAPP_GROUP_URL,
+  whatsappUrlForWorkshop,
 } from '@/constants/workshop-registration';
+import { fetchWorkshopBySlug } from '@/lib/landing-workshops-db';
 
-export default function WorkshopThankYouPage() {
+type PageProps = {
+  searchParams: Promise<{ slug?: string }>;
+};
+
+export default async function WorkshopThankYouPage({ searchParams }: PageProps) {
+  const { slug: slugParam } = await searchParams;
+  const slug = (slugParam?.trim() || DEFAULT_WORKSHOP_SLUG).toLowerCase();
+  const workshop = await fetchWorkshopBySlug(slug);
+
+  if (!workshop) {
+    notFound();
+  }
+
+  const whatsappUrl =
+    whatsappUrlForWorkshop(workshop) ?? WORKSHOP_WHATSAPP_GROUP_URL;
+
   return (
     <main className="min-h-screen px-4 pb-16 pt-10 md:flex md:items-center md:justify-center md:py-16">
       <div className="mx-auto flex w-full max-w-lg flex-col items-center text-center">
@@ -29,7 +48,7 @@ export default function WorkshopThankYouPage() {
           </p>
 
           <a
-            href={WORKSHOP_WHATSAPP_GROUP_URL}
+            href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-8 flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-[#005D51] px-5 font-poppins text-sm font-semibold text-white transition hover:bg-[#004438]"

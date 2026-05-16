@@ -2,10 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { HiLockClosed } from 'react-icons/hi';
 
+import { DEFAULT_WORKSHOP_SLUG } from '@/constants/workshop-registration';
+
 import { Badge } from '../ui';
 
 const WORKSHOP_REGISTER_URL =
-  process.env.NEXT_PUBLIC_WORKSHOP_REGISTER_URL ?? '/workshop/register';
+  process.env.NEXT_PUBLIC_WORKSHOP_REGISTER_URL ??
+  `/workshop/register?slug=${DEFAULT_WORKSHOP_SLUG}`;
 
 const learnItems = [
   {

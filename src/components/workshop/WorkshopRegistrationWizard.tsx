@@ -1,15 +1,21 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
   FINANCIAL_CATEGORY_OPTIONS,
-  WORKSHOP_PAGE_COPY,
-  WORKSHOP_WIZARD_STEPS,
+  WORKSHOP_BANK_DETAILS,
+  WORKSHOP_PAYMENT_COPY,
+  WORKSHOP_STEP_ABOUT,
+  WORKSHOP_STEP_MONEY,
+  WORKSHOP_STEP_PAYMENT,
+  formatFeeNaira,
+  paymentFeeLine,
 } from '@/constants/workshop-registration';
 import { getSameOriginApiUrl } from '@/lib/api';
+import type { WorkshopPublic } from '@/lib/landing-workshops-db';
 import type { FinancialCategory } from '@/lib/validation/workshop-registration';
 import { workshopRegistrationSchema } from '@/lib/validation/workshop-registration';
 
@@ -26,8 +32,6 @@ const labelSentenceClass =
 
 const cardShell =
   'rounded-2xl border border-black/6 bg-white p-6 md:p-8';
-
-const TOTAL_STEPS = WORKSHOP_WIZARD_STEPS.length;
 
 type WorkshopFormState = {
   fullName: string;
@@ -70,7 +74,20 @@ function financeCardClass(active: boolean) {
   ].join(' ');
 }
 
-function validateStep(step: number, form: WorkshopFormState): string | null {
+function extFromFile(file: File): string {
+  const n = file.name;
+  const i = n.lastIndexOf('.');
+  if (i === -1) return 'bin';
+  return n.slice(i + 1).toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+}
+
+function validateStep(
+  step: number,
+  form: WorkshopFormState,
+  receipt: File | null,
+  needsPayment: boolean,
+  feeLabel: string,
+): string | null {
   if (step === 0) {
     if (!form.fullName.trim()) return 'Add your full name to continue.';
     if (!form.email.trim()) return 'Add the email we should use for updates.';
@@ -91,11 +108,20 @@ function validateStep(step: number, form: WorkshopFormState): string | null {
     }
     return null;
   }
+  if (needsPayment && step === 2) {
+    if (!receipt) return `Upload your ₦${feeLabel} workshop fee receipt to continue.`;
+    return null;
+  }
   return null;
 }
 
-function toPayload(form: WorkshopFormState) {
+function toPayload(
+  workshopId: string,
+  form: WorkshopFormState,
+  receiptStoragePath: string | null,
+) {
   return {
+    workshopId,
     fullName: form.fullName.trim(),
     email: form.email.trim(),
     primaryGoal: form.primaryGoal.trim(),
@@ -103,25 +129,66 @@ function toPayload(form: WorkshopFormState) {
     financialCategory: form.financialCategory as FinancialCategory,
     financeChallenges: form.financeChallenges.trim(),
     workshopQuestions: form.workshopQuestions.trim(),
+    receiptStoragePath: form.isMember === 'no' ? receiptStoragePath : null,
   };
 }
 
-export function WorkshopRegistrationWizard() {
+type WorkshopPageCopy = {
+  kicker: string;
+  title: string;
+  lead: string;
+  privacyNote: string;
+};
+
+type WorkshopRegistrationWizardProps = {
+  workshop: WorkshopPublic;
+  pageCopy: WorkshopPageCopy;
+};
+
+export function WorkshopRegistrationWizard({
+  workshop,
+  pageCopy,
+}: WorkshopRegistrationWizardProps) {
   const router = useRouter();
+  const feeLabel = formatFeeNaira(workshop.feeAmountNaira);
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<WorkshopFormState>(initialForm);
+  const [receipt, setReceipt] = useState<File | null>(null);
+  const [uploadId] = useState(() => crypto.randomUUID());
   const [busy, setBusy] = useState(false);
 
-  const meta = WORKSHOP_WIZARD_STEPS[step]!;
+  const needsPayment = form.isMember === 'no';
+
+  const steps = useMemo(() => {
+    const base = [WORKSHOP_STEP_ABOUT, WORKSHOP_STEP_MONEY] as const;
+    if (needsPayment) return [...base, WORKSHOP_STEP_PAYMENT] as const;
+    return base;
+  }, [needsPayment]);
+
+  const totalSteps = steps.length;
+  const meta = steps[step]!;
   const currentStepNum = step + 1;
+  const isLastStep = step === totalSteps - 1;
+
+  useEffect(() => {
+    if (step >= totalSteps) {
+      setStep(Math.max(0, totalSteps - 1));
+    }
+  }, [step, totalSteps]);
+
+  useEffect(() => {
+    if (form.isMember === 'yes') {
+      setReceipt(null);
+    }
+  }, [form.isMember]);
 
   function nextStep() {
-    const err = validateStep(step, form);
+    const err = validateStep(step, form, receipt, needsPayment, feeLabel);
     if (err) {
       toast.error(err);
       return;
     }
-    setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
+    setStep((s) => Math.min(s + 1, totalSteps - 1));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -142,23 +209,57 @@ export function WorkshopRegistrationWizard() {
     }
   }
 
+  async function uploadReceipt(): Promise<string | null> {
+    if (!receipt) return null;
+    const body = new FormData();
+    body.append('file', receipt);
+    body.append('uploadId', uploadId);
+    const res = await fetch(getSameOriginApiUrl('workshop-registration/receipt'), {
+      method: 'POST',
+      body,
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      toast.error(
+        typeof json.message === 'string'
+          ? json.message
+          : typeof json.error === 'string'
+            ? json.error
+            : 'Could not upload your receipt. Try again.',
+      );
+      return null;
+    }
+    const path = json.receiptStoragePath;
+    if (typeof path !== 'string' || !path.trim()) {
+      toast.error('Upload succeeded but path was missing. Try again.');
+      return null;
+    }
+    return path.trim();
+  }
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    const err = validateStep(1, form);
+    const err = validateStep(step, form, receipt, needsPayment, feeLabel);
     if (err) {
       toast.error(err);
       return;
     }
 
-    const payload = toPayload(form);
-    const parsed = workshopRegistrationSchema.safeParse(payload);
-    if (!parsed.success) {
-      toast.error('Please check your answers and try again.');
-      return;
-    }
-
     setBusy(true);
     try {
+      let receiptStoragePath: string | null = null;
+      if (needsPayment) {
+        receiptStoragePath = await uploadReceipt();
+        if (!receiptStoragePath) return;
+      }
+
+      const payload = toPayload(workshop.id, form, receiptStoragePath);
+      const parsed = workshopRegistrationSchema.safeParse(payload);
+      if (!parsed.success) {
+        toast.error('Please check your answers and try again.');
+        return;
+      }
+
       const res = await fetch(getSameOriginApiUrl('workshop-registration'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -173,13 +274,18 @@ export function WorkshopRegistrationWizard() {
         );
         return;
       }
-      router.replace('/workshop/register/thank-you');
+      router.replace(
+        `/workshop/register/thank-you?slug=${encodeURIComponent(workshop.slug)}`,
+      );
     } catch {
       toast.error('Network error. Check your connection and try again.');
     } finally {
       setBusy(false);
     }
   }
+
+  const stepperCols =
+    totalSteps === 3 ? 'grid-cols-3' : 'grid-cols-2';
 
   return (
     <>
@@ -193,8 +299,8 @@ export function WorkshopRegistrationWizard() {
       </div>
 
       <nav className="mb-2 w-full" aria-label="Registration steps">
-        <ol className="m-0 grid w-full list-none grid-cols-2 gap-3 p-0">
-          {WORKSHOP_WIZARD_STEPS.map((s, i) => {
+        <ol className={`m-0 grid w-full list-none gap-3 p-0 ${stepperCols}`}>
+          {steps.map((s, i) => {
             const stepNum = i + 1;
             const done = stepNum < currentStepNum;
             const current = stepNum === currentStepNum;
@@ -225,7 +331,7 @@ export function WorkshopRegistrationWizard() {
                       current ? 'text-white/90' : done ? 'text-[#005D51]/75' : 'text-[#5c6b5f]'
                     }`}
                   >
-                    {stepNum}/{TOTAL_STEPS}
+                    {stepNum}/{totalSteps}
                   </span>
                 </button>
               </li>
@@ -237,9 +343,9 @@ export function WorkshopRegistrationWizard() {
       <div
         className="mb-8 flex w-full gap-1.5"
         role="group"
-        aria-label={`Registration progress, step ${currentStepNum} of ${TOTAL_STEPS}`}
+        aria-label={`Registration progress, step ${currentStepNum} of ${totalSteps}`}
       >
-        {WORKSHOP_WIZARD_STEPS.map((s, i) => {
+        {steps.map((s, i) => {
           const filled = i + 1 <= currentStepNum;
           return (
             <div
@@ -258,18 +364,24 @@ export function WorkshopRegistrationWizard() {
 
       <form
         id="workshop-register-form"
-        onSubmit={step === TOTAL_STEPS - 1 ? onSubmit : (e) => e.preventDefault()}
+        onSubmit={isLastStep ? onSubmit : (ev) => ev.preventDefault()}
         className="flex flex-col gap-8"
       >
         {step === 0 ? (
           <section className={cardShell}>
             <div className="mb-6 rounded-xl border border-[#005D51]/12 bg-[#eef7f4] px-4 py-4">
               <p className="font-poppins text-sm leading-relaxed text-[#4a5c50]">
-                {WORKSHOP_PAGE_COPY.lead}
+                {pageCopy.lead}
               </p>
               <p className="mt-3 font-poppins text-xs leading-relaxed text-[#5c6b5f]">
-                {WORKSHOP_PAGE_COPY.privacyNote}
+                {pageCopy.privacyNote}
               </p>
+              {needsPayment ? (
+                <p className="mt-3 font-poppins text-xs font-medium text-[#E63715]">
+                  Not a Hub member yet? You will pay ₦{feeLabel} and upload a receipt in
+                  the final step.
+                </p>
+              ) : null}
             </div>
 
             <div className="flex flex-col gap-5">
@@ -344,7 +456,7 @@ export function WorkshopRegistrationWizard() {
               </fieldset>
             </div>
           </section>
-        ) : (
+        ) : step === 1 ? (
           <section className={`${cardShell} flex flex-col gap-6`}>
             <fieldset>
               <legend className={labelSentenceClass}>
@@ -411,6 +523,86 @@ export function WorkshopRegistrationWizard() {
               />
             </div>
           </section>
+        ) : (
+          <section className={`${cardShell} overflow-hidden p-0`}>
+            <div className="bg-[#E63715] px-6 py-3.5 md:px-8">
+              <p className="font-poppins text-base font-semibold text-white">
+                {WORKSHOP_PAYMENT_COPY.heading}
+              </p>
+            </div>
+            <div className="flex flex-col gap-6 p-6 md:p-8">
+              <p className="font-poppins text-sm leading-relaxed text-[#142218]">
+                {paymentFeeLine(workshop)}
+                <span className="text-[#E63715]" aria-hidden>
+                  {' '}
+                  *
+                </span>
+              </p>
+              <p className="font-poppins text-sm italic text-[#4a5c50]">
+                {WORKSHOP_PAYMENT_COPY.receiptHint}
+              </p>
+
+              <div>
+                <p className="font-poppins text-sm font-medium text-[#142218]">
+                  Kindly make payment to:
+                </p>
+                <ul
+                  className="mt-4 space-y-2.5 rounded-2xl border-2 border-[#005D51]/35 bg-[#F0FFFD] p-5 font-poppins text-sm text-[#142218] sm:p-6"
+                  aria-label="Bank account for workshop fee"
+                >
+                  <li>
+                    <span className="text-[#4a5c50]">Bank · </span>
+                    <strong>{WORKSHOP_BANK_DETAILS.bank}</strong>
+                  </li>
+                  <li>
+                    <span className="text-[#4a5c50]">Account name · </span>
+                    <strong>{WORKSHOP_BANK_DETAILS.accountName}</strong>
+                  </li>
+                  <li>
+                    <span className="text-[#4a5c50]">Account number · </span>
+                    <strong className="font-mono tracking-wide">
+                      {WORKSHOP_BANK_DETAILS.accountNumber}
+                    </strong>
+                  </li>
+                  <li className="pt-1 text-xs leading-relaxed text-[#4a5c50]">
+                    Narration example:{' '}
+                    <em>Workshop fee — {form.fullName.trim() || 'Your full name'}</em>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <p className={labelClass}>Payment receipt</p>
+                <p className="mt-1 font-poppins text-xs text-[#7B7B7B]">
+                  {WORKSHOP_PAYMENT_COPY.uploadHelp}
+                </p>
+                <label
+                  htmlFor="workshop-receipt"
+                  className="mt-3 flex min-h-[120px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#142218]/15 bg-white px-4 py-6 text-center outline-none transition hover:border-[#005D51]/40 focus-within:border-[#005D51]/40 focus-within:ring-2 focus-within:ring-[#005D51]/30 focus-within:ring-offset-2"
+                >
+                  <span className="font-poppins text-sm font-semibold text-[#005D51]">
+                    {receipt ? 'Replace receipt' : 'Add file'}
+                  </span>
+                  {receipt ? (
+                    <span className="mt-2 max-w-full truncate font-poppins text-xs text-[#4a5c50]">
+                      {receipt.name} ({extFromFile(receipt)})
+                    </span>
+                  ) : (
+                    <span className="mt-2 font-poppins text-xs text-[#7B7B7B]">
+                      PDF, image, or Word document
+                    </span>
+                  )}
+                  <input
+                    id="workshop-receipt"
+                    type="file"
+                    accept="image/*,.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    className="sr-only"
+                    onChange={(e) => setReceipt(e.target.files?.[0] ?? null)}
+                  />
+                </label>
+              </div>
+            </div>
+          </section>
         )}
 
         <p className="pb-4 text-center font-poppins text-[11px] leading-relaxed text-[#9aa89e]">
@@ -434,7 +626,7 @@ export function WorkshopRegistrationWizard() {
           >
             Back
           </button>
-          {step < TOTAL_STEPS - 1 ? (
+          {!isLastStep ? (
             <button
               type="button"
               onClick={nextStep}
@@ -448,7 +640,7 @@ export function WorkshopRegistrationWizard() {
               type="submit"
               form="workshop-register-form"
               disabled={busy}
-              className="min-h-[48px] flex-1 rounded-xl bg-[#005D51] px-6 font-poppins text-sm font-semibold text-white transition hover:bg-[#004438] disabled:opacity-55 sm:max-w-[240px] sm:flex-none"
+              className="min-h-[48px] flex-1 rounded-xl bg-[#005D51] px-6 font-poppins text-sm font-semibold text-white transition hover:bg-[#004438] disabled:opacity-55 sm:max-w-[260px] sm:flex-none"
             >
               {busy ? 'Saving…' : 'Complete registration'}
             </button>

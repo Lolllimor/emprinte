@@ -5,6 +5,7 @@ import { workshopRegistrationSchema } from '@/lib/validation/workshop-registrati
 
 type WorkshopRow = {
   id: string;
+  workshopId: string;
   fullName: string;
   email: string;
   primaryGoal: string;
@@ -12,6 +13,7 @@ type WorkshopRow = {
   financialCategory: string;
   financeChallenges: string;
   workshopQuestions: string;
+  receiptStoragePath: string | null;
   submittedAt: string;
 };
 
@@ -55,6 +57,7 @@ export async function POST(request: Request) {
 
   const data = parsed.data;
   const row = {
+    workshop_id: data.workshopId,
     full_name: data.fullName,
     email: data.email.trim().toLowerCase(),
     primary_goal: data.primaryGoal,
@@ -62,6 +65,8 @@ export async function POST(request: Request) {
     financial_category: data.financialCategory,
     finance_challenges: data.financeChallenges,
     workshop_questions: data.workshopQuestions,
+    receipt_storage_path:
+      data.isMember === 'no' ? data.receiptStoragePath?.trim() ?? null : null,
   };
 
   if (isSupabaseReady()) {
@@ -84,6 +89,7 @@ export async function POST(request: Request) {
   if (allowMemoryStore()) {
     memoryRegistrations.push({
       id: crypto.randomUUID(),
+      workshopId: data.workshopId,
       fullName: data.fullName,
       email: data.email,
       primaryGoal: data.primaryGoal,
@@ -91,6 +97,8 @@ export async function POST(request: Request) {
       financialCategory: data.financialCategory,
       financeChallenges: data.financeChallenges,
       workshopQuestions: data.workshopQuestions,
+      receiptStoragePath:
+        data.isMember === 'no' ? data.receiptStoragePath?.trim() ?? null : null,
       submittedAt: new Date().toISOString(),
     });
     return NextResponse.json({ ok: true });

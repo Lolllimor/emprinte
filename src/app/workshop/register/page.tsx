@@ -1,10 +1,30 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 import { WorkshopRegistrationWizard } from '@/components/workshop/WorkshopRegistrationWizard';
-import { WORKSHOP_PAGE_COPY } from '@/constants/workshop-registration';
+import {
+  DEFAULT_WORKSHOP_SLUG,
+  pageCopyFromWorkshop,
+} from '@/constants/workshop-registration';
 import { Logo } from '@/components/ui/Logo';
+import { fetchWorkshopBySlug } from '@/lib/landing-workshops-db';
 
-export default function WorkshopRegisterPage() {
+type PageProps = {
+  searchParams: Promise<{ slug?: string }>;
+};
+
+/** Workshop sign-up and payment happen on the web only; the app links here. */
+export default async function WorkshopRegisterPage({ searchParams }: PageProps) {
+  const { slug: slugParam } = await searchParams;
+  const slug = (slugParam?.trim() || DEFAULT_WORKSHOP_SLUG).toLowerCase();
+  const workshop = await fetchWorkshopBySlug(slug);
+
+  if (!workshop || !workshop.registrationOpen) {
+    notFound();
+  }
+
+  const pageCopy = pageCopyFromWorkshop(workshop);
+
   return (
     <main className="min-h-screen px-4 pb-28 pt-6 md:pb-32 md:pt-10">
       <div className="mx-auto max-w-2xl">
@@ -13,17 +33,17 @@ export default function WorkshopRegisterPage() {
             <Logo />
           </Link>
           <p className="font-poppins text-[10px] font-semibold uppercase tracking-[0.18em] text-[#005D51]/85 sm:text-xs sm:tracking-[0.2em]">
-            {WORKSHOP_PAGE_COPY.kicker}
+            {pageCopy.kicker}
           </p>
           <h1 className="mt-2 font-lora text-2xl font-semibold leading-tight text-[#142218] md:text-3xl">
-            {WORKSHOP_PAGE_COPY.title}
+            {pageCopy.title}
           </h1>
           <p className="mx-auto mt-2 max-w-md font-poppins text-sm leading-relaxed text-[#4a5c50]">
-            {WORKSHOP_PAGE_COPY.lead}
+            {pageCopy.lead}
           </p>
         </header>
 
-        <WorkshopRegistrationWizard />
+        <WorkshopRegistrationWizard workshop={workshop} pageCopy={pageCopy} />
       </div>
     </main>
   );
