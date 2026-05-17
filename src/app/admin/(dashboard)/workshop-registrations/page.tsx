@@ -9,6 +9,7 @@ import {
   csvBlobWithBom,
   triggerCsvDownload,
 } from '@/lib/csv-export';
+import type { WorkshopRegistrationRow as WorkshopRegistrationRowBase } from '@emprinte/types';
 
 type AdminWorkshopOption = {
   id: string;
@@ -16,19 +17,9 @@ type AdminWorkshopOption = {
   slug: string | null;
 };
 
-export type WorkshopRegistrationRow = {
-  id: string;
-  workshop_id?: string;
-  full_name: string;
-  email: string;
-  primary_goal: string;
-  is_member: boolean;
-  financial_category: string;
-  finance_challenges: string;
-  workshop_questions: string;
-  receipt_storage_path: string | null;
+/** DB row + admin-only signed receipt URL from API. */
+export type WorkshopRegistrationRow = WorkshopRegistrationRowBase & {
   receipt_signed_url?: string | null;
-  submitted_at: string;
 };
 
 const CSV_COLUMNS: { key: keyof WorkshopRegistrationRow; header: string }[] = [
